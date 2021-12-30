@@ -1,0 +1,59 @@
+
+/*--------------------------------------------------------------
+# Sections
+--------------------------------------------------------------*/
+section {
+  padding: 60px 0;
+  overflow: hidden;
+}
+
+.section-header {
+  text-align: center;
+  padding-bottom: 40px;
+}
+.section-header h2 {
+  font-size: 13px;
+  letter-spacing: 1px;
+  font-weight: 700;
+  margin: 0;
+  color: #4154f1;
+  text-transform: uppercase;
+}
+.section-header p {
+  margin: 10px 0 0 0;
+  padding: 0;
+  font-size: 38px;
+  line-height: 42px;
+  font-weight: 700;
+  color: #012970;
+}
+@media (max-width: 768px) {
+  .section-header p {
+    font-size: 28px;
+    line-height: 32px;
+  }
+}
+
+.faq .accordion-collapse {
+    border: 0;
+  }
+  .faq .accordion-button {
+    padding: 15px 15px 20px 0;
+    font-weight: 600;
+    border: 0;
+    font-size: 18px;
+    color: #444444;
+    text-align: left;
+  }
+  .faq .accordion-button:focus {
+    box-shadow: none;
+  }
+  .faq .accordion-button:not(.collapsed) {
+    background: none;
+    color: #4154f1;
+    border-bottom: 0;
+  }
+  .faq .accordion-body {
+    padding: 0 0 25px 0;
+    border: 0;
+  }

@@ -1,4 +1,5 @@
-# Changelogs:(Phuong - 31/12)
+# Changelogs:
+(Phuong - 31/12)
 
 ## Note:
 - in `components` folder, please put the same directory of components existing in `pages` in to the same name folder. More specficially, If multiple pages share the same components, put it inside `components` directory but outside `folder that have the same name with pages`.

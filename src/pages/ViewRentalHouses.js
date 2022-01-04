@@ -1,5 +1,7 @@
 import React from 'react';
 import AdminSidebarNav from '../components/AdminSidebarNav';
+import Loader from '../components/Loader'
+import { withAuthenticationRequired} from "@auth0/auth0-react"
 
 const ViewRentalHouses = () => {
     return (
@@ -9,4 +11,6 @@ const ViewRentalHouses = () => {
     );
 };
 
-export default ViewRentalHouses;
+export default withAuthenticationRequired(ViewRentalHouses, {
+    onRedirecting: () => <Loader />,
+})

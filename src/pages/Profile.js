@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import UserSidebarNav from '../components/UserSidebarNav';
 import ProfileForm from '../components/ProfileForm';
+import Loader from '../components/Loader'
+import { withAuthenticationRequired} from "@auth0/auth0-react";
 
 const Profile = () => {
 
@@ -12,4 +14,6 @@ const Profile = () => {
     );
 };
 
-export default Profile;
+export default withAuthenticationRequired(Profile, {
+    onRedirecting: () => <Loader />,
+})

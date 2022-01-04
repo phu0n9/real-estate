@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 import AdminSidebarNav from '../components/AdminSidebarNav'
+import Loader from '../components/Loader'
+import { withAuthenticationRequired} from "@auth0/auth0-react"
 
-export default function AddHouse() {
+const AddHouse = () =>{
     const [name, setName] = useState("")
     const [image, setImage] = useState([])
 
@@ -56,3 +58,7 @@ export default function AddHouse() {
         </>
     )
 }
+
+export default withAuthenticationRequired(AddHouse, {
+    onRedirecting: () => <Loader />,
+})

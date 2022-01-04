@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { ScheduleComponent, Week, Month, ViewsDirective, ViewDirective, Inject } from '@syncfusion/ej2-react-schedule'
 import UserSidebarNav from '../components/UserSidebarNav';
+import Loader from '../components/Loader'
+import { withAuthenticationRequired} from "@auth0/auth0-react";
+
 
 const Calendar = () => {
 
@@ -53,4 +56,6 @@ const Calendar = () => {
     );
 };
 
-export default Calendar;
+export default withAuthenticationRequired(Calendar, {
+    onRedirecting: () => <Loader />,
+})

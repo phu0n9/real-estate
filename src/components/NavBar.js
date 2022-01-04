@@ -1,6 +1,7 @@
 import React from 'react';
 import '../stylesheet/Navbar.css'
 import { HashLink as Link } from 'react-router-hash-link'   
+import { AuthenticationButton } from '../login-button/AuthenticationButton';
 
 export default function NavBar() {
     return (
@@ -28,8 +29,8 @@ export default function NavBar() {
                     </li>
                     <li className="dropdown"><a href="/auth/profile"><span>Profile</span> <i className="bi bi-chevron-down"></i></a>
                         <ul>
-                        <li><a href="/myPage">Drop Down 1</a></li>
-                        <li><a href="/">Drop Down 2</a></li>
+                        <li><a href="/myPage">My Page</a></li>
+                        <li><AuthenticationButton /></li>
                         <li><a href="/">Drop Down 3</a></li>
                         <li><a href="/">Drop Down 4</a></li>
                         </ul>

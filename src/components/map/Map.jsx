@@ -3,9 +3,8 @@ import GoogleMapReact from 'google-map-react'
 import { Icon } from '@iconify/react'
 import locationIcon from '@iconify/icons-mdi/map-marker'
 import './map.css'
-require('dotenv').config()
+import { useEnv } from '../../context/env.context'
 
-const api_key = process.env.REACT_APP_API_KEY_GOOGLE_MAPS
 const LocationPin = ({ text }) => (
   <div className="pin">
     <Icon icon={locationIcon} className="pin-icon" style={{ width: '5rem' }} />
@@ -13,8 +12,11 @@ const LocationPin = ({ text }) => (
   </div>
 )
 
-const Map = ({ location, zoomLevel }) => (
-  <div className="map">
+export default function Map({ location, zoomLevel }) {
+  const { api_key } = useEnv()
+
+  return (
+    <div className="map">
 
     <div className="google-map">
       <GoogleMapReact
@@ -31,6 +33,5 @@ const Map = ({ location, zoomLevel }) => (
       </GoogleMapReact>
     </div>
   </div>
-)
-
-export default Map
+  )
+}

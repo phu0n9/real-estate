@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
-import AdminSidebarNav from '../components/AdminSidebarNav';
 import { ScheduleComponent, Week, Month, ViewsDirective, ViewDirective, Inject } from '@syncfusion/ej2-react-schedule'
 import Loader from '../components/Loader'
-import { withAuthenticationRequired} from "@auth0/auth0-react"
+import AdminSidebarNav from '../components/AdminSidebarNav';
+
+import { Navigate } from 'react-router-dom';  
 import { useEnv } from '../context/env.context'
-import { useAuth0 } from "@auth0/auth0-react"
-import { useNavigate } from 'react-router-dom';
+import { useAuth0,withAuthenticationRequired } from "@auth0/auth0-react"
 
 const AdminCalendar = () => {
 
     const { user} = useAuth0()
     const { audience } = useEnv()
     const role = `${audience}/roles`
-    const navigate = useNavigate()
 
     const [data, setData] = useState([{
         Id: 1,
@@ -36,8 +35,13 @@ const AdminCalendar = () => {
         EndTime: new Date(2021, 11, 20, 11, 0)
     }])
 
+
     if(user[role].length === 0){
-        console.log("not admin")
+        return (
+            <>
+                <Navigate replace to="/" />
+            </>
+        )
     }
     
     return (

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import MeetingForm from '../components/MeetingForm';
+import MeetingForm from '../components/bookMeeting/MeetingForm';
 
 const BookMeeting = () => {
     return (

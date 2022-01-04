@@ -1,6 +1,5 @@
 import React from 'react';
-import '../../stylesheet/Banner.css'
-
+import '../../stylesheet/homepage/Banner.css'
 import AdsBanner from './AdsBanner';
 
 

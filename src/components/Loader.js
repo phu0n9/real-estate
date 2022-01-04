@@ -1,4 +1,5 @@
 import React from 'react'
+import '../stylesheet/Loader.css'
 
 export default function Loader() {
     const loadingImg = "https://cdn.auth0.com/blog/hello-auth0/loader.svg";

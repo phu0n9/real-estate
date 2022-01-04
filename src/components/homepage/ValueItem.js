@@ -1,5 +1,5 @@
 import React from 'react'
-import '../../stylesheet/ValueSection.css'
+import '../../stylesheet/homepage/ValueSection.css'
 import img1 from '../../img/value/values-1.png'
 import img2 from '../../img/value/values-2.png'
 import img3 from '../../img/value/values-3.png'

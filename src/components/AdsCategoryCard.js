@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate } from 'react-router';
-import '../stylesheet/Location.css'
+import '../stylesheet/homepage/Location.css'
 
 const AdsCategoryCard = ({ url, city, color}) => {
 

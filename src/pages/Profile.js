@@ -1,6 +1,6 @@
 import React from 'react';
 import UserSidebarNav from '../components/UserSidebarNav';
-import ProfileForm from '../components/ProfileForm';
+import ProfileForm from '../components/profile/ProfileForm';
 import Loader from '../components/Loader'
 import { withAuthenticationRequired} from "@auth0/auth0-react";
 

@@ -1,6 +1,6 @@
 import React from 'react'
-import '../../stylesheet/BlogRow.css'
 import BlogItem from './BlogItem'
+import '../../stylesheet/homepage/BlogRow.css'
 
 export default function BlogRow() {
     return (

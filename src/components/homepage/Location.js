@@ -1,5 +1,5 @@
 import React from 'react'
-import '../../stylesheet/Location.css'
+import '../../stylesheet/homepage/Location.css'
 import AdsCategoryCard from '../AdsCategoryCard'
 
 export default function Location() {

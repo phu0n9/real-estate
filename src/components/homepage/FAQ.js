@@ -1,5 +1,5 @@
 import React from 'react'
-import '../../stylesheet/FAQ.css'
+import '../../stylesheet/homepage/FAQ.css'
 import FAQItem from './FAQItem'
 
 export default function FAQ() {

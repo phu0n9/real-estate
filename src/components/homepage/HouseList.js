@@ -1,5 +1,5 @@
 import React from 'react'
-import '../../stylesheet/HouseItem.css'
+import '../../stylesheet/homepage/HouseItem.css'
 import HouseItem from './HouseItem'
 
 export default function HouseList() {

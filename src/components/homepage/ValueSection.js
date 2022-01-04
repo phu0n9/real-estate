@@ -1,5 +1,5 @@
 import React from 'react'
-import '../../stylesheet/ValueSection.css'
+import '../../stylesheet/homepage/ValueSection.css'
 import ValueItem from './ValueItem'
 
 export default function ValueSection() {

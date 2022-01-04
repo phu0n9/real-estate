@@ -1,5 +1,5 @@
 import React,{useState} from 'react'
-import '../../stylesheet/FAQ.css'
+import '../../stylesheet/homepage/FAQ.css'
 
 export default function FAQItem({ question,answer,index}) {
 

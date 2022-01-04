@@ -1,5 +1,5 @@
 import React from 'react'
-import '../../stylesheet/BlogRow.css'
+import '../../stylesheet/homepage/BlogRow.css'
 import img1 from '../../img/blog/blog-1.jpg'
 import img2 from '../../img/blog/blog-2.jpg'
 import img3 from '../../img/blog/blog-3.jpg'

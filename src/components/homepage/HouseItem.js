@@ -1,10 +1,20 @@
 import React,{useState,useEffect} from 'react'
 import axios from 'axios'
-import '../../stylesheet/HouseItem.css'
+import '../../stylesheet/homepage/HouseItem.css'
+// import { useExternalApi } from '../../api/api'
 
 export default function HouseItem() {
     
     const [houses, setHouses] = useState([])
+    // const url = "houses/search"
+    // const params = {
+    //     query:"",
+    //     pageNo:1,
+    //     pageSize:9,
+    //     sortBy: "name",
+    //     orderBy:"asc"
+    // }
+    // const {apiResponse,getPublicResource} = useExternalApi({url: url,params: params});
 
     useEffect(() =>{
         const fetchHouse = async () =>{

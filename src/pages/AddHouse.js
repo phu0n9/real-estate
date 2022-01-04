@@ -1,8 +1,11 @@
 import React, { useState } from 'react'
 import axios from 'axios'
-import AdminSidebarNav from '../components/AdminSidebarNav'
 import Loader from '../components/Loader'
-import { withAuthenticationRequired} from "@auth0/auth0-react"
+import AdminSidebarNav from '../components/AdminSidebarNav'
+
+import { Navigate } from 'react-router-dom';  
+import { useEnv } from '../context/env.context'
+import { useAuth0,withAuthenticationRequired } from "@auth0/auth0-react"
 
 const AddHouse = () =>{
     const [name, setName] = useState("")
@@ -16,6 +19,10 @@ const AddHouse = () =>{
         const files = Array.from(e.target.files)
         setImage(files)
     }
+
+    const { user} = useAuth0()
+    const { audience } = useEnv()
+    const role = `${audience}/roles`
 
     // const handleUploadUsingS3 = async () =>{
     //     const formData = new FormData()
@@ -44,6 +51,14 @@ const AddHouse = () =>{
                 console.log(res.data)
             })
             .catch(error => console.log(error))
+    }
+
+    if(user[role].length === 0){
+        return (
+            <>
+                <Navigate replace to="/" />
+            </>
+        )
     }
 
     return (

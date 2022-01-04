@@ -1,30 +1,19 @@
 import React,{useState,useEffect} from 'react'
-import axios from 'axios'
 import '../../stylesheet/homepage/HouseItem.css'
-// import { useExternalApi } from '../../api/api'
+import { useEnv } from '../../context/env.context';
+import axios from "axios";
 
 export default function HouseItem() {
     
     const [houses, setHouses] = useState([])
-    // const url = "houses/search"
-    // const params = {
-    //     query:"",
-    //     pageNo:1,
-    //     pageSize:9,
-    //     sortBy: "name",
-    //     orderBy:"asc"
-    // }
-    // const {apiResponse,getPublicResource} = useExternalApi({url: url,params: params});
+    const { apiServerUrl } = useEnv()
 
     useEffect(() =>{
         const fetchHouse = async () =>{
-            await axios.get('http://localhost:8080/api/v1/houses/search',{
+            await axios.get(`${apiServerUrl}/api/v1/houses/search`,{
                 params:{
-                    query:"",
                     pageNo:1,
                     pageSize:9,
-                    sortBy: "name",
-                    orderBy:"asc"
                 }
             })
             .then((res)=>{
@@ -33,7 +22,7 @@ export default function HouseItem() {
             .catch((err)=>console.error(err))
         }
         fetchHouse()
-    },[])
+    },[apiServerUrl])
 
     return (
         houses.map((house,index)=>{

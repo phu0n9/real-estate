@@ -11,7 +11,7 @@ const HouseItemCard = ({ houses }) => {
 
     return (
         <Card onClick={viewDeatil} style={{ width: '20rem' }}>
-            <Card.Img variant="top" src={houses.image} />
+            <Card.Img variant="top" src={houses.image[3]} />
             <Card.Body>
                 <Card.Title>{houses.name}</Card.Title>
                 <Card.Text>{houses.price + " VND"}</Card.Text>

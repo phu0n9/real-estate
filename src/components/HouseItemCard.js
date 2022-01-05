@@ -6,7 +6,7 @@ const HouseItemCard = ({ houses }) => {
     const navigate = useNavigate();
 
     const viewDeatil = () => {
-        navigate("/viewDeatil/" + houses.houseId)
+        navigate("/viewDetail/" + houses.houseId)
     }
 
     return (

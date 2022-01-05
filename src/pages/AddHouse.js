@@ -54,7 +54,7 @@ const AddHouse = () =>{
         setSquareFeet(e.target.value)
     }
 
-    const { user,isAuthenticated,getAccessTokenSilently} = useAuth0()
+    const { user,getAccessTokenSilently} = useAuth0()
     const { audience } = useEnv()
     const role = `${audience}/roles`
     console.log(user)
@@ -78,21 +78,23 @@ const AddHouse = () =>{
         formData.append('squareFeet', squareFeet)
         formData.append('status', status)
 
-        if(isAuthenticated){
-            const token = await getAccessTokenSilently()
-            console.log(token)
-            await axios.post(`${apiServerUrl}/api/v1/houses`, formData,{
-                headers: {
-                    authorization: `Bearer ${token}`
-                }
-            })
-            .then((res) => {
-                console.log(res)
-            })
-            .catch(error => console.log(error))
-        }
+        // get access token from users to use api
+        const token = await getAccessTokenSilently()
+        console.log(token)
+        await axios.post(`${apiServerUrl}/api/v1/houses`, formData,{
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        })
+        .then((res) => {
+            console.log(res)
+        })
+        .catch(error => console.log(error))
+        
     }
 
+    // checking for if users is admin or not
+    console.log(user)
     if(user[role].length === 0){
         return (
             <>

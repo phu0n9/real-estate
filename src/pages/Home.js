@@ -1,7 +1,6 @@
 import React from 'react';
 
 import HomeBanner from '../components/homepage/HomeBanner';
-import Footer from '../components/Footer';
 import ValueSection from '../components/homepage/ValueSection'
 import Location from '../components/homepage/Location';
 import FAQ from '../components/homepage/FAQ';
@@ -10,6 +9,7 @@ import BlogRow from '../components/homepage/BlogRow';
 import Contact from '../components/homepage/Contact';
 
 const Home = () => {
+
 
     return (
         <div>
@@ -25,7 +25,6 @@ const Home = () => {
             <BlogRow/>
             <br />
             <Contact/>
-            <Footer />
 
         </div>
     );

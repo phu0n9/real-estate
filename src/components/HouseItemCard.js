@@ -5,12 +5,12 @@ import { useNavigate } from 'react-router-dom';
 const HouseItemCard = ({ houses }) => {
     const navigate = useNavigate();
 
-    const viewDeatil = () => {
+    const viewDetail = () => {
         navigate("/viewDetail/" + houses.houseId)
     }
 
     return (
-        <Card onClick={viewDeatil} style={{ width: '20rem' }}>
+        <Card onClick={viewDetail} style={{ width: '20rem' }}>
             <Card.Img variant="top" src={houses.image[3]} />
             <Card.Body>
                 <Card.Title>{houses.name}</Card.Title>

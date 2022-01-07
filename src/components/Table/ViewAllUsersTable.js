@@ -1,24 +1,30 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Container, Button } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { Container } from 'react-bootstrap';
 import { SelectColumnFilter } from './Filter';
 import TableContainer from './TableContainer';
 import axios from 'axios'
+import { useAuth0 } from '@auth0/auth0-react';
+import { useEnv } from '../../context/env.context';
 
 const ViewAllUsersTable = () => {
+
+    const { user, getAccessTokenSilently } = useAuth0()
+    const { audience, apiServerUrl } = useEnv()
+    const role = `${audience}/roles`
 
     const [data, setData] = useState([]);
 
     const fetchAllUsers = async () => {
-        try {
-            const response = await axios.get(
-                'http://localhost:8080/api/v1/users'
-            );
-            setData(response.data);
-        } catch (e) {
-        }
-    };
+        const token = await getAccessTokenSilently()
+        const response = await axios.get(`${apiServerUrl}/api/v1/users`, {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+        setData(response.data);
+    }
 
+    console.log(data)
     useEffect(() => {
         fetchAllUsers();
     }, []);

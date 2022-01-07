@@ -23,6 +23,9 @@ const ViewAllUsers = () => {
 
     return (
         <div>
+            <br />
+            <br />
+            <br />
             <ViewAllUsersTable />
         </div>
     );

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScheduleComponent, Week, Month, ViewsDirective, ViewDirective, Inject } from '@syncfusion/ej2-react-schedule'
+import { ScheduleComponent, Week, Month, ViewsDirective, ViewDirective, Inject, Day } from '@syncfusion/ej2-react-schedule'
 import Loader from '../components/Loader'
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
 import { useEnv } from '../context/env.context';
@@ -71,10 +71,11 @@ const Calendar = () => {
                     }}>
 
                     <ViewsDirective>
+                        <ViewDirective option='Day' />
                         <ViewDirective option='Week' />
                         <ViewDirective option='Month' />
                     </ViewsDirective>
-                    <Inject services={[Week, Month]} />
+                    <Inject services={[Day, Week, Month]} />
                 </ScheduleComponent>
             </div>
         </section>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScheduleComponent, Week, Month, ViewsDirective, ViewDirective, Inject } from '@syncfusion/ej2-react-schedule'
+import { ScheduleComponent, Week, Month, ViewsDirective, ViewDirective, Inject, Day } from '@syncfusion/ej2-react-schedule'
 import Loader from '../components/Loader';
 import axios from 'axios'
 import { useEnv } from '../context/env.context'
@@ -18,22 +18,32 @@ const AdminCalendar = () => {
     const getCalendatData = async () => {
         // get access token from users to use api
         const token = await getAccessTokenSilently()
-        console.log(token)
-
         const response = await axios.get(`${apiServerUrl}/api/v1/meetings`, {
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
+        // console.log(response.data.date)
         setData(response.data);
     }
 
     useEffect(() => {
         getCalendatData();
+        onEdit()
     }, []);
 
-    console.log(data)
+    // console.log(new Date(data[0].date))
+    // console.log(new Date("2022-01-07"))
 
+    const onEdit = () => {
+        setData(
+            data.map((it) =>
+                [{ ...it, date: new Date(it.date.concat(' ', it.time)) }]
+            )
+        );
+    }
+
+    console.log(data)
     // if logged in user is not admin
     if (user[role].length === 0) {
         return (
@@ -43,28 +53,27 @@ const AdminCalendar = () => {
         )
     }
 
-    // const [data, setData] = useState([{
-    //     Id: 1,
-    //     Subject: 'Explosion of Betelgeuse Star',
+    // const [aData, aSetData] = useState([{
+    //     meetingId: 1,
+    //     note: 'Explosion of Betelgeuse Star',
     //     StartTime: new Date(2021, 11, 12, 9, 30),
     //     EndTime: new Date(2021, 11, 12, 11, 0)
     // }, {
-    //     Id: 2,
-    //     Subject: 'Thule Air Crash Report',
+    //     meetingId: 2,
+    //     note: 'Thule Air Crash Report',
     //     StartTime: new Date(2021, 11, 15, 12, 0),
     //     EndTime: new Date(2021, 11, 15, 14, 0)
     // }, {
-    //     Id: 3,
-    //     Subject: 'Thule Air Crash Report',
+    //     meetingId: 3,
+    //     note: 'Thule Air Crash Report',
     //     StartTime: new Date(2021, 11, 18, 12, 0),
     //     EndTime: new Date(2021, 11, 18, 14, 0)
     // }, {
-    //     Id: 4,
-    //     Subject: 'Explosion of Betelgeuse Star',
+    //     meetingId: 4,
+    //     note: 'Explosion of Betelgeuse Star',
     //     StartTime: new Date(2021, 11, 20, 9, 30),
     //     EndTime: new Date(2021, 11, 20, 11, 0)
     // }])
-
 
     return (
         <section className="hero d-flex align-items-center">
@@ -77,19 +86,20 @@ const AdminCalendar = () => {
                     eventSettings={{
                         dataSource: data,
                         fields: {
-                            id: 'Id',
-                            subject: { name: 'Subject' },
+                            Id: 'meetingId',
+                            subject: { name: 'note' },
                             isAllDay: { name: 'IsAllDay' },
-                            startTime: { name: 'StartTime' },
-                            endTime: { name: 'EndTime' }
+                            startTime: { name: 'date' },
+                            endTime: { name: 'date' }
                         }
                     }}>
 
                     <ViewsDirective>
+                        <ViewDirective option='Day' />
                         <ViewDirective option='Week' />
                         <ViewDirective option='Month' />
                     </ViewsDirective>
-                    <Inject services={[Week, Month]} />
+                    <Inject services={[Day, Week, Month]} />
                 </ScheduleComponent>
             </div>
         </section>

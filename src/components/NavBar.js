@@ -9,7 +9,6 @@ export default function NavBar() {
     const { user, getAccessTokenSilently } = useAuth0()
     const { audience } = useEnv()
     const role = `${audience}/roles`
-    console.log(user[role].length)
 
     return (
         <>

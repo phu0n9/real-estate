@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import AdminSidebarNav from '../components/AdminSidebarNav';
 import { ScheduleComponent, Week, Month, ViewsDirective, ViewDirective, Inject } from '@syncfusion/ej2-react-schedule'
 import Loader from '../components/Loader';
 import axios from 'axios'
@@ -21,7 +20,7 @@ const AdminCalendar = () => {
         const token = await getAccessTokenSilently()
         console.log(token)
 
-        const response = await axios.get(`${apiServerUrl}/api/v1/houses`, {
+        const response = await axios.get(`${apiServerUrl}/api/v1/meetings`, {
             headers: {
                 authorization: `Bearer ${token}`
             }
@@ -68,29 +67,32 @@ const AdminCalendar = () => {
 
 
     return (
-        <div className="col-lg-12 mrb30">
-            <AdminSidebarNav />
-            <br />
-            <ScheduleComponent
-                currentView='Month' selectedDate={new Date()} height='850px' style={{ marginLeft: "250px" }} readonly={true}
-                eventSettings={{
-                    dataSource: data,
-                    fields: {
-                        id: 'Id',
-                        subject: { name: 'Subject' },
-                        isAllDay: { name: 'IsAllDay' },
-                        startTime: { name: 'StartTime' },
-                        endTime: { name: 'EndTime' }
-                    }
-                }}>
+        <section className="hero d-flex align-items-center">
+            <div className="col-lg-10">
+                <br />
+                <br />
+                <br />
+                <ScheduleComponent
+                    currentView='Month' selectedDate={new Date()} height='850px' style={{ marginLeft: "250px" }} readonly={true}
+                    eventSettings={{
+                        dataSource: data,
+                        fields: {
+                            id: 'Id',
+                            subject: { name: 'Subject' },
+                            isAllDay: { name: 'IsAllDay' },
+                            startTime: { name: 'StartTime' },
+                            endTime: { name: 'EndTime' }
+                        }
+                    }}>
 
-                <ViewsDirective>
-                    <ViewDirective option='Week' />
-                    <ViewDirective option='Month' />
-                </ViewsDirective>
-                <Inject services={[Week, Month]} />
-            </ScheduleComponent>
-        </div>
+                    <ViewsDirective>
+                        <ViewDirective option='Week' />
+                        <ViewDirective option='Month' />
+                    </ViewsDirective>
+                    <Inject services={[Week, Month]} />
+                </ScheduleComponent>
+            </div>
+        </section>
     );
 };
 

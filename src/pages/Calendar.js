@@ -1,33 +1,56 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScheduleComponent, Week, Month, ViewsDirective, ViewDirective, Inject } from '@syncfusion/ej2-react-schedule'
 import UserSidebarNav from '../components/UserSidebarNav';
 import Loader from '../components/Loader'
-import { withAuthenticationRequired} from "@auth0/auth0-react";
+import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
+import { useEnv } from '../context/env.context';
+import axios from 'axios';
 
 
 const Calendar = () => {
+    const { getAccessTokenSilently } = useAuth0()
 
-    const [data, setData] = useState([{
-        Id: 1,
-        Subject: 'Explosion of Betelgeuse Star',
-        StartTime: new Date(2021, 11, 12, 9, 30),
-        EndTime: new Date(2021, 11, 12, 11, 0)
-    }, {
-        Id: 2,
-        Subject: 'Thule Air Crash Report',
-        StartTime: new Date(2021, 11, 15, 12, 0),
-        EndTime: new Date(2021, 11, 15, 14, 0)
-    }, {
-        Id: 3,
-        Subject: 'Thule Air Crash Report',
-        StartTime: new Date(2021, 11, 18, 12, 0),
-        EndTime: new Date(2021, 11, 18, 14, 0)
-    }, {
-        Id: 4,
-        Subject: 'Explosion of Betelgeuse Star',
-        StartTime: new Date(2021, 11, 20, 9, 30),
-        EndTime: new Date(2021, 11, 20, 11, 0)
-    }])
+    // get the calendar data using token
+    const { apiServerUrl } = useEnv()
+    const [data, setData] = useState([]);
+    const getCalendatData = async () => {
+        // get access token from users to use api
+        const token = await getAccessTokenSilently()
+        console.log(token)
+
+        const response = await axios.get(`${apiServerUrl}/api/v1/houses`, {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+        setData(response.data);
+    }
+
+    useEffect(() => {
+        getCalendatData();
+    }, []);
+
+    // const [data, setData] = useState([{
+    //     Id: 1,
+    //     Subject: 'Explosion of Betelgeuse Star',
+    //     StartTime: new Date(2021, 11, 12, 9, 30),
+    //     EndTime: new Date(2021, 11, 12, 11, 0)
+    // }, {
+    //     Id: 2,
+    //     Subject: 'Thule Air Crash Report',
+    //     StartTime: new Date(2021, 11, 15, 12, 0),
+    //     EndTime: new Date(2021, 11, 15, 14, 0)
+    // }, {
+    //     Id: 3,
+    //     Subject: 'Thule Air Crash Report',
+    //     StartTime: new Date(2021, 11, 18, 12, 0),
+    //     EndTime: new Date(2021, 11, 18, 14, 0)
+    // }, {
+    //     Id: 4,
+    //     Subject: 'Explosion of Betelgeuse Star',
+    //     StartTime: new Date(2021, 11, 20, 9, 30),
+    //     EndTime: new Date(2021, 11, 20, 11, 0)
+    // }])
 
     return (
         <div className="col-lg-12 mrb30">

@@ -1,26 +1,39 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Card, Col, Container, Row, Button, Form, FormGroup } from 'react-bootstrap';
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { useNavigate, useParams } from 'react-router-dom';
+import { useEnv } from '../../context/env.context';
+import { useAuth0 } from "@auth0/auth0-react"
 
 const MeetingForm = () => {
 
     const { id } = useParams();
-    const { houseID } = useParams();
     const navigate = useNavigate();
-    const [user, setUser] = useState([]);
+    const [currentUser, setCurrentUser] = useState([]);
+    const { apiServerUrl } = useEnv()
+    const { user,getAccessTokenSilently } = useAuth0()
 
     useEffect(() => {
-        fetch("http://localhost:8080/api/v1/users" + id)
-            .then((res) => res.json())
-            .then((res) => {
-                setUser(res);
-            }); // asynchronous function
+        const fetchUsers = async () =>{
+            const token = await getAccessTokenSilently()
+            let userId = user.sub.substring(user.sub.lastIndexOf("|")+1,user.sub.length)
+            await axios.get(`${apiServerUrl}/api/v1/users/${userId}`,{
+                headers: {
+                    authorization: `Bearer ${token}`    
+                }
+            })
+            .then((res)=>{setCurrentUser(res.data)})
+            .catch((error)=>{console.error(error)})
+        }
+        fetchUsers()
     }, []);
 
     return (
         <Container>
+            <br />
+            <br />
             <br />
             <br />
             <br />
@@ -39,14 +52,14 @@ const MeetingForm = () => {
                                     <Form.Control name="email"
                                         type="email"
                                         placeholder="Email"
-                                        value={user.email} />
+                                        value={currentUser.email} />
                                 </FormGroup>
 
                                 <FormGroup className="mb-3">
                                     <Form.Label>Full Name</Form.Label>
                                     <Form.Control name="fullName"
                                         placeholder="Full name"
-                                        value={user.fullName}
+                                        value={currentUser.fullName}
                                     />
                                 </FormGroup>
 
@@ -56,7 +69,7 @@ const MeetingForm = () => {
                                         name="phoneNumber"
                                         type="number"
                                         placeholder="Phone number"
-                                        value={user.phoneNumber}
+                                        value={currentUser.phoneNumber}
                                     />
                                 </FormGroup >
 
@@ -75,7 +88,7 @@ const MeetingForm = () => {
                                             <Form.Label>Select Meeting Day</Form.Label>
                                             <DatePicker
                                                 required
-                                                selected={user.dob}
+                                                selected={currentUser.dob}
                                                 maxDate={new Date()}
                                                 dateFormat='yyyy-MM-dd'
                                                 name="dob"
@@ -105,6 +118,10 @@ const MeetingForm = () => {
                     </Card>
                 </Col>
             </Row>
+            <br />
+            <br />
+            <br />
+            <br />
         </Container >
     );
 };

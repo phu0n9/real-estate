@@ -12,15 +12,20 @@ import AdminCalendar from './pages/AdminCalendar';
 import AddHouse from './pages/AddHouse';
 import ViewRentalHouses from './pages/ViewRentalHouses';
 import ViewAllUsers from './pages/ViewAllUsers';
-import React from "react";
+import React,{useEffect} from "react";
 import { Routes, Route} from 'react-router-dom';
 import Loader from './components/Loader';
-import { useAuth0 } from '@auth0/auth0-react';
 import Footer from './components/Footer'
+import { useAuth0 } from "@auth0/auth0-react"
 
 function App() {
   const {isLoading} = useAuth0()
-  
+
+  useEffect(()=>{
+    if (user !== undefined){
+    }
+  },[user])
+
   if (isLoading) {
     return <Loader/>
   }

@@ -56,7 +56,6 @@ const AddHouse = () => {
     const { user, getAccessTokenSilently } = useAuth0()
     const { audience } = useEnv()
     const role = `${audience}/roles`
-    console.log(user)
 
     const handleChange = (e) => {
         const files = Array.from(e.target.files)
@@ -77,23 +76,25 @@ const AddHouse = () => {
         formData.append('squareFeet', squareFeet)
         formData.append('status', status)
 
-        // get access token from users to use api
-        const token = await getAccessTokenSilently()
-        console.log(token)
-        await axios.post(`${apiServerUrl}/api/v1/houses`, formData, {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        })
+        if(!image || !price || !description || !address || !type || !numberOfBeds || !squareFeet || !status){
+            alert('Please fill all the information in the form.')
+        }
+        else{
+            // get access token from users to use api
+            const token = await getAccessTokenSilently()
+            await axios.post(`${apiServerUrl}/api/v1/houses`, formData, {
+                headers: {
+                    authorization: `Bearer ${token}`
+                }
+            })
             .then((res) => {
                 console.log(res)
             })
             .catch(error => console.log(error))
-
+        }
     }
 
     // checking for if users is admin or not
-    console.log(user)
     if (user[role].length === 0) {
         return (
             <>
@@ -103,14 +104,6 @@ const AddHouse = () => {
     }
 
     return (
-        // <>
-        //     <br />
-        //     <br />
-        //     <input type="file" multiple onChange={handleChange} />
-        //     <br />
-        //     <input type="text" placeholder="house name" value={name} onChange={nameOnChange} required />
-        //     <button onClick={handleUploadUsingS3}>Upload using s3</button>
-        // </>
         <section className="ftco-section">
             <div className="container">
                 <br />
@@ -119,64 +112,61 @@ const AddHouse = () => {
                     <div className="col-lg-10 col-md-12">
                         <div className="wrapper">
                             <div className="row no-gutters">
-                                {/* <div className="col-md-7 d-flex align-items-stretch"> */}
                                 <div className="contact-wrap w-100 p-md-5 p-4">
                                     <h3 className="mb-4">Add House</h3>
-
-                                    {/* <form method="POST"  name="contactForm"> */}
                                     <div className="row">
 
                                         <div className="col-md-6">
                                             <div className="form-group">
-                                                <input type="text" className="form-control" name="name" placeholder="House Name" onChange={nameOnChange} />
+                                                <input type="text" className="form-control" name="name" placeholder="House Name" onChange={nameOnChange} required/>
                                             </div>
                                         </div>
 
                                         <div className="col-md-6">
                                             <div className="form-group">
-                                                <input type="number" min="0" max="900000" className="form-control" name="price" placeholder="House Price" onChange={priceOnChange} />
+                                                <input type="number" min="0" max="900000" className="form-control" name="price" placeholder="House Price" onChange={priceOnChange} required/>
                                             </div>
                                         </div>
 
                                         <div className="col-md-12">
                                             <div className="form-group">
-                                                <textarea name="description" className="form-control description-box" cols="30" rows="7" placeholder="House Description" onChange={descriptionOnChange}></textarea>
+                                                <textarea name="description" className="form-control description-box" cols="30" rows="7" placeholder="House Description" onChange={descriptionOnChange} required></textarea>
                                             </div>
                                         </div>
 
                                         <div className="col-md-12">
                                             <div className="form-group">
-                                                <input type="text" className="form-control" name="address" placeholder="House Address" onChange={addressOnChange} />
+                                                <input type="text" className="form-control" name="address" placeholder="House Address" onChange={addressOnChange} required/>
                                             </div>
                                         </div>
 
                                         <div className="col-md-6">
                                             <div className="form-group">
-                                                <input type="text" className="form-control" name="type" placeholder="House Type" onChange={typeOnChange} />
+                                                <input type="text" className="form-control" name="type" placeholder="House Type" onChange={typeOnChange} required/>
                                             </div>
                                         </div>
 
                                         <div className="col-md-6">
                                             <div className="form-group">
-                                                <input type="text" className="form-control" name="status" placeholder="House Status" onChange={statusOnChange} />
+                                                <input type="text" className="form-control" name="status" placeholder="House Status" onChange={statusOnChange} required/>
                                             </div>
                                         </div>
 
                                         <div className="col-md-6">
                                             <div className="form-group">
-                                                <input type="number" min="1" max="10" className="form-control" name="numberOfBeds" placeholder="Number of Bedroom" onChange={numberOfBedsOnChange} />
+                                                <input type="number" min="1" max="10" className="form-control" name="numberOfBeds" placeholder="Number of Bedroom" onChange={numberOfBedsOnChange} required/>
                                             </div>
                                         </div>
 
                                         <div className="col-md-6">
                                             <div className="form-group">
-                                                <input type="text" min="100" max="10000" className="form-control" name="squareFeet" placeholder="Square Feet" onChange={squareFeetOnChange} />
+                                                <input type="text" min="100" max="10000" className="form-control" name="squareFeet" placeholder="Square Feet" onChange={squareFeetOnChange} required/>
                                             </div>
                                         </div>
 
                                         <div className="col-md-12">
                                             <div className="form-group">
-                                                <input type="file" multiple onChange={handleChange} className="form-control" />
+                                                <input type="file" multiple onChange={handleChange} className="form-control" required/>
                                             </div>
                                         </div>
 
@@ -189,11 +179,8 @@ const AddHouse = () => {
 
 
                                     </div>
-                                    {/* </form> */}
 
                                 </div>
-
-                                {/* </div> */}
                             </div>
                         </div>
                     </div>

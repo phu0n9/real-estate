@@ -1,5 +1,15 @@
 # Changelogs:
 
+## Modified:
+- viewDetails
+- navigationBar
+- MeetingForm
+
+## `Bugs`:
+- icon in contact does not work, don't know why, somebody please fix
+- logo in my page does not work `navBar`    
+
+
 # INSTRUCTION FOR AUTH0:
 https://docs.google.com/document/d/1LAGecNNdEr2tOjjm9eEe6AdkPSyLVQckuLSNnFtcTkQ/edit?usp=sharing
 
@@ -32,8 +42,4 @@ Feel free to add bootstrap page structures as long as they have the same white b
 - `rental` feel free to add a bootstrap on it but take a look at AirBnB page: https://www.airbnb.com/s/homes?search_mode=flex_destinations_search&date_picker_type=flexible_dates&flex_destinations_session_id=fe80344f-5248-47e1-b6f7-ae1789f3b23d
 
 
-### `Bugs`:
-- icon in contact does not work, don't know why, somebody please fix
-- weird `get started` button does not align in the center, somebody please fix
-- need to fix `contact` while in other page not homepage
-- i accidentally deleted something in `UserSidebarNav`
+

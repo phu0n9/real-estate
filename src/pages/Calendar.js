@@ -11,45 +11,44 @@ const Calendar = () => {
 
     // get the calendar data using token
     const { apiServerUrl } = useEnv()
-    const [data, setData] = useState([]);
+
+    const [meetings, setMettings] = useState([]);
     const getCalendatData = async () => {
         // get access token from users to use api
         const token = await getAccessTokenSilently()
-        console.log(token)
-
-        const response = await axios.get(`${apiServerUrl}/api/v1/meetings/search/byUser/{userId}`, {
+        await axios.get(`${apiServerUrl}/api/v1/meetings/search/byUser/1`, {
             headers: {
                 authorization: `Bearer ${token}`
             }
-        });
-        setData(response.data);
+        }).then((res) => {
+            setMettings(
+                res.data.content.map((it) => (
+                    {
+                        meetingId: it.meetingId,
+                        date: new Date(it.date.concat(' ', it.time)),
+                        title: "".concat(getHouseData(it.userHouse.houseId))
+                    })
+                ))
+        })
+        // setData(response.data);
+    }
+
+    // get the house data using token
+    const getHouseData = async (e) => {
+        // get access token from users to use api
+        const token = await getAccessTokenSilently()
+        await axios.get(`${apiServerUrl}/api/v1/houses/${e}`, {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        }).then((res) => {
+            return res.data.name
+        })
     }
 
     useEffect(() => {
         getCalendatData();
     }, []);
-
-    // const [data, setData] = useState([{
-    //     Id: 1,
-    //     Subject: 'Explosion of Betelgeuse Star',
-    //     StartTime: new Date(2021, 11, 12, 9, 30),
-    //     EndTime: new Date(2021, 11, 12, 11, 0)
-    // }, {
-    //     Id: 2,
-    //     Subject: 'Thule Air Crash Report',
-    //     StartTime: new Date(2021, 11, 15, 12, 0),
-    //     EndTime: new Date(2021, 11, 15, 14, 0)
-    // }, {
-    //     Id: 3,
-    //     Subject: 'Thule Air Crash Report',
-    //     StartTime: new Date(2021, 11, 18, 12, 0),
-    //     EndTime: new Date(2021, 11, 18, 14, 0)
-    // }, {
-    //     Id: 4,
-    //     Subject: 'Explosion of Betelgeuse Star',
-    //     StartTime: new Date(2021, 11, 20, 9, 30),
-    //     EndTime: new Date(2021, 11, 20, 11, 0)
-    // }])
 
     return (
         <section className="hero d-flex align-items-center">
@@ -60,13 +59,12 @@ const Calendar = () => {
                 <ScheduleComponent
                     currentView='Month' selectedDate={new Date()} height='850px' style={{ marginLeft: "250px" }} readonly={true}
                     eventSettings={{
-                        dataSource: data,
+                        dataSource: meetings,
                         fields: {
-                            id: 'Id',
-                            subject: { name: 'Subject' },
-                            isAllDay: { name: 'IsAllDay' },
-                            startTime: { name: 'StartTime' },
-                            endTime: { name: 'EndTime' }
+                            Id: 'meetingId',
+                            subject: { name: 'title' },
+                            startTime: { name: 'date' },
+                            endTime: { name: 'date' }
                         }
                     }}>
 

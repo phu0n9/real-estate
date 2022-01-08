@@ -11,39 +11,62 @@ const AdminCalendar = () => {
     const { user, getAccessTokenSilently } = useAuth0()
     const { audience } = useEnv()
     const role = `${audience}/roles`
+    const { apiServerUrl } = useEnv()
 
     // get the calendar data using token
-    const { apiServerUrl } = useEnv()
-    const [data, setData] = useState([]);
-    const getCalendatData = async () => {
+    const [meetings, setMettings] = useState([]);
+    const getCalendarData = async () => {
         // get access token from users to use api
         const token = await getAccessTokenSilently()
-        const response = await axios.get(`${apiServerUrl}/api/v1/meetings`, {
+        await axios.get(`${apiServerUrl}/api/v1/meetings`, {
             headers: {
                 authorization: `Bearer ${token}`
             }
-        });
-        // console.log(response.data.date)
-        setData(response.data);
+        }).then((res) => {
+            setMettings(
+                res.data.map((it) => (
+                    {
+                        meetingId: it.meetingId,
+                        date: new Date(it.date.concat(' ', it.time)),
+                        title: "".concat(getHouseData(it.userHouse.houseId), "\n", getUserData(it.userHouse.userId))
+                    })
+                ))
+        })
+    }
+
+    // get the user data using token
+    const getUserData = async (e) => {
+        // get access token from users to use api
+        const token = await getAccessTokenSilently()
+        await axios.get(`${apiServerUrl}/api/v1/users/${e}`, {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        }).then((res) => {
+            return res.data.fullName
+            // setUsers(res.data.fullName)
+        })
+    }
+
+    // get the house data using token
+    const getHouseData = async (e) => {
+        // get access token from users to use api
+        const token = await getAccessTokenSilently()
+        await axios.get(`${apiServerUrl}/api/v1/houses/${e}`, {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        }).then((res) => {
+            return res.data.name
+        })
     }
 
     useEffect(() => {
-        getCalendatData();
-        onEdit()
+        getCalendarData()
     }, []);
 
-    // console.log(new Date(data[0].date))
-    // console.log(new Date("2022-01-07"))
+    console.log(meetings)
 
-    const onEdit = () => {
-        setData(
-            data.map((it) =>
-                [{ ...it, date: new Date(it.date.concat(' ', it.time)) }]
-            )
-        );
-    }
-
-    console.log(data)
     // if logged in user is not admin
     if (user[role].length === 0) {
         return (
@@ -52,28 +75,6 @@ const AdminCalendar = () => {
             </>
         )
     }
-
-    // const [aData, aSetData] = useState([{
-    //     meetingId: 1,
-    //     note: 'Explosion of Betelgeuse Star',
-    //     StartTime: new Date(2021, 11, 12, 9, 30),
-    //     EndTime: new Date(2021, 11, 12, 11, 0)
-    // }, {
-    //     meetingId: 2,
-    //     note: 'Thule Air Crash Report',
-    //     StartTime: new Date(2021, 11, 15, 12, 0),
-    //     EndTime: new Date(2021, 11, 15, 14, 0)
-    // }, {
-    //     meetingId: 3,
-    //     note: 'Thule Air Crash Report',
-    //     StartTime: new Date(2021, 11, 18, 12, 0),
-    //     EndTime: new Date(2021, 11, 18, 14, 0)
-    // }, {
-    //     meetingId: 4,
-    //     note: 'Explosion of Betelgeuse Star',
-    //     StartTime: new Date(2021, 11, 20, 9, 30),
-    //     EndTime: new Date(2021, 11, 20, 11, 0)
-    // }])
 
     return (
         <section className="hero d-flex align-items-center">
@@ -84,11 +85,10 @@ const AdminCalendar = () => {
                 <ScheduleComponent
                     currentView='Month' selectedDate={new Date()} height='850px' style={{ marginLeft: "250px" }} readonly={true}
                     eventSettings={{
-                        dataSource: data,
+                        dataSource: meetings,
                         fields: {
                             Id: 'meetingId',
-                            subject: { name: 'note' },
-                            isAllDay: { name: 'IsAllDay' },
+                            subject: { name: 'title' },
                             startTime: { name: 'date' },
                             endTime: { name: 'date' }
                         }

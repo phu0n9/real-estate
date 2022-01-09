@@ -31,20 +31,22 @@ function App() {
       // if userid is bigger than 21, they use oauth2
       const currentUserId = user.sub.length < 21 ? user.sub.substring(user.sub.lastIndexOf("|")+1,user.sub.length) : Math.trunc(user.sub.substring(user.sub.lastIndexOf("|")+1,user.sub.length)/10000)
       
-      // if user is already existed in the database
-          let data = {
-            "userId":currentUserId,
-            "fullName": user.name,
-            "email": user.email
+      // if user does not exist in the database
+      if (user.sub.length > 21){
+        let data = {
+          "auth0Id":currentUserId,
+          "fullName": user.name,
+          "email": user.email
+        }
+        // Request made and server responded
+        await axios.post(`${apiServerUrl}/api/v1/users`,data,{
+          headers: {
+            authorization: `Bearer ${token}`
           }
-          // Request made and server responded
-          await axios.post(`${apiServerUrl}/api/v1/users`,data,{
-            headers: {
-              authorization: `Bearer ${token}`
-            }
-          })
-          .then()
-          .catch((err)=>{console.log(err)})
+        })
+        .then(()=>{})
+        .catch((err)=>{console.log(err)})
+      }
     }
     if (user !== undefined){
       getUser()

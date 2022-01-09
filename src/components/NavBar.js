@@ -4,6 +4,7 @@ import { HashLink as Link } from 'react-router-hash-link'
 import { AuthenticationButton } from '../login-button/AuthenticationButton';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useEnv } from '../context/env.context';
+import defaultPic from '../img/default-pic.jpg'
 
 export default function NavBar() {
     const { user,isAuthenticated } = useAuth0()
@@ -51,7 +52,7 @@ export default function NavBar() {
                                     </ul>
                                 </li>
                             ) : (
-                                <li className="dropdown"><a href="/auth/profile" className={currentPath.includes('auth') ? "active": "right"}> <img src={user.picture} className='profile-pic' alt='profile-pic'/> </a>
+                                <li className="dropdown"><a href="/auth/profile" className={currentPath.includes('auth') ? "active": "right"}> <img src={defaultPic} className='profile-pic' alt='profile-pic'/> </a>
                                     <ul>
                                         <li><a href="/auth/profile">Profile</a></li>
                                         <li><a href="/auth/calendar">Calendar</a></li>

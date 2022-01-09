@@ -45,6 +45,7 @@ const AdminCalendar = () => {
         })
         .catch((err)=>{console.log(err)})
     }
+    
     const getCalendarData = async () => {
         // get access token from users to use api
         const token = await getAccessTokenSilently()
@@ -54,14 +55,18 @@ const AdminCalendar = () => {
             }
         }).then((res) => {
             // setMettings(
-            //     res.data.map((it) => (
-            //         {
-            //             meetingId: it.meetingId,
-            //             date: new Date(it.date.concat(' ', it.time)),
-            //             title: "".concat(getHouseData(it.userHouse.houseId), "\n", getUserData(it.userHouse.userId))
-            //         })
-            //     ))
-            setMettings(res.data)
+                console.log(
+                    res.data.map((it) => (
+                        {
+                            meetingId: it.meetingId,
+                            date: new Date(it.date.concat(' ', it.time)),
+                            title: "".concat(getHouseData(it.userHouse.houseId), "\n", getUserData(it.userHouse.userId))
+                        })
+                    )
+                )
+                
+                // )
+            // setMettings(res.data)
         })
         .catch((err)=>{console.log(err)})
     }

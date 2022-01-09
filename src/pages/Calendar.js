@@ -7,8 +7,6 @@ import axios from 'axios';
 
 const Calendar = () => {
     const { getAccessTokenSilently,user} = useAuth0()
-    const currentUserId = user.sub.length < 10 ? user.sub.substring(user.sub.lastIndexOf("|")+1,user.sub.length) : Math.trunc(user.sub.substring(user.sub.lastIndexOf("|")+1,user.sub.length)/10000)
-    console.log(user)
     
     // get the calendar data using token
     const { apiServerUrl } = useEnv()

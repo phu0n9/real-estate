@@ -31,7 +31,7 @@ export default function NavBar() {
                         <ul>
                             <li><a className={currentPath === "/" ? "nav-link scrollto active": "nav-link scrollto"} href="/">Home</a></li>
                             <li><a className={currentPath === "/rental" ? "nav-link scrollto active": "nav-link scrollto"} href="/rental">Rental</a></li>
-                            <li className="dropdown"><a href="/blog" className={currentPath === "/blog" ? "active": ""}><span>Blog</span> <i className="bi bi-chevron-down"></i></a>
+                            <li className="dropdown"><a href="/blog" className={currentPath === "/blog" ? "active": ""}><span>Blog</span> </a>
                                 <ul>
                                     <li><a href="/">Drop Down 1</a></li>
                                     <li><a href="/">Drop Down 2</a></li>
@@ -41,7 +41,7 @@ export default function NavBar() {
                             </li>
 
                             {isAuthenticated && user[role].length !== 0 ? (
-                                <li className="dropdown"><a href="/auth/admin/calendar" className={currentPath.includes('auth') ? "active": ""}><span>My Page</span> <i className="bi bi-chevron-down"></i></a>
+                                <li className="dropdown"><a href="/auth/admin/calendar" className={currentPath.includes('auth') ? "active": "right"}> <img src={user.picture} className='profile-pic' alt='profile-pic'/> </a>
                                     <ul>
                                         <li><a href="/auth/admin/calendar">Calendar</a></li>
                                         <li><a href="/auth/admin/addHouse">Add House</a></li>
@@ -51,7 +51,7 @@ export default function NavBar() {
                                     </ul>
                                 </li>
                             ) : (
-                                <li className="dropdown"><a href="/auth/profile" className={currentPath.includes('auth') ? "active": ""}><span>My Page</span> <i className="bi bi-chevron-down"></i></a>
+                                <li className="dropdown"><a href="/auth/profile" className={currentPath.includes('auth') ? "active": "right"}> <img src={user.picture} className='profile-pic' alt='profile-pic'/> </a>
                                     <ul>
                                         <li><a href="/auth/profile">Profile</a></li>
                                         <li><a href="/auth/calendar">Calendar</a></li>
@@ -60,7 +60,6 @@ export default function NavBar() {
                                 </li>
                             )}
                         </ul>
-                        <i className="bi bi-list mobile-nav-toggle"></i>
                     </nav>
 
                 </div>

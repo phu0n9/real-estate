@@ -32,14 +32,6 @@ function App() {
       const currentUserId = user.sub.length < 21 ? user.sub.substring(user.sub.lastIndexOf("|")+1,user.sub.length) : Math.trunc(user.sub.substring(user.sub.lastIndexOf("|")+1,user.sub.length)/10000)
       
       // if user is already existed in the database
-      await axios.get(`${apiServerUrl}/api/v1/users/${currentUserId}`, {
-        headers: {
-            authorization: `Bearer ${token}`
-        }
-    })
-      .then(()=>{})
-      .catch(async (error)=>{
-        if (error.response.status === 500) {
           let data = {
             "userId":currentUserId,
             "fullName": user.name,
@@ -51,10 +43,8 @@ function App() {
               authorization: `Bearer ${token}`
             }
           })
-          .then((res) =>{console.log(res)})
+          .then()
           .catch((err)=>{console.log(err)})
-        } 
-      })
     }
     if (user !== undefined){
       getUser()

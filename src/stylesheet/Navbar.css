@@ -132,7 +132,7 @@
 
 .navbar .dropdown .dropdown ul {
   top: 0;
-  left: calc(100% - 30px);
+  left: calc(100% - 30px); 
   visibility: hidden;
 }
 
@@ -288,4 +288,14 @@
 
 .login-button:hover{
   color: #4154f1;
+}
+
+.profile-pic{
+  border-radius: 50%;
+  width: 10%;
+  height: 10%;
+}
+
+.right{
+  float: inline-end;
 }

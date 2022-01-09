@@ -59,8 +59,6 @@ export default function NavBar() {
                                     </ul>
                                 </li>
                             )}
-
-                            <li><Link smooth to="/#contact" className={currentPath.includes("#") ? "nav-link scrollto active": "nav-link scrollto"}>Contact</Link></li>
                         </ul>
                         <i className="bi bi-list mobile-nav-toggle"></i>
                     </nav>

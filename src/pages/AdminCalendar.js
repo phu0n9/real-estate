@@ -15,26 +15,9 @@ const AdminCalendar = () => {
 
     // get the calendar data using token
     const [meetings, setMettings] = useState([]);
-    const getCalendarData = async () => {
-        // get access token from users to use api
-        const token = await getAccessTokenSilently()
-        await axios.get(`${apiServerUrl}/api/v1/meetings`, {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        }).then((res) => {
-            setMettings(
-                res.data.map((it) => (
-                    {
-                        meetingId: it.meetingId,
-                        date: new Date(it.date.concat(' ', it.time)),
-                        title: "".concat(getHouseData(it.userHouse.houseId), "\n", getUserData(it.userHouse.userId))
-                    })
-                ))
-        })
-    }
 
-    // get the user data using token
+    useEffect(() => {
+        // get the user data using token
     const getUserData = async (e) => {
         // get access token from users to use api
         const token = await getAccessTokenSilently()
@@ -46,6 +29,7 @@ const AdminCalendar = () => {
             return res.data.fullName
             // setUsers(res.data.fullName)
         })
+        .catch((err)=>{console.log(err)})
     }
 
     // get the house data using token
@@ -59,13 +43,34 @@ const AdminCalendar = () => {
         }).then((res) => {
             return res.data.name
         })
+        .catch((err)=>{console.log(err)})
     }
-
-    useEffect(() => {
-        getCalendarData()
-    }, []);
+    const getCalendarData = async () => {
+        // get access token from users to use api
+        const token = await getAccessTokenSilently()
+        await axios.get(`${apiServerUrl}/api/v1/meetings`, {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        }).then((res) => {
+            // setMettings(
+            //     res.data.map((it) => (
+            //         {
+            //             meetingId: it.meetingId,
+            //             date: new Date(it.date.concat(' ', it.time)),
+            //             title: "".concat(getHouseData(it.userHouse.houseId), "\n", getUserData(it.userHouse.userId))
+            //         })
+            //     ))
+            setMettings(res.data)
+        })
+        .catch((err)=>{console.log(err)})
+    }
+    console.log(meetings)
+    getCalendarData()
+    }, [getAccessTokenSilently,apiServerUrl]);
 
     console.log(meetings)
+
 
     // if logged in user is not admin
     if (user[role].length === 0) {

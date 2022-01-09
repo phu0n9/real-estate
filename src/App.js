@@ -17,14 +17,49 @@ import { Routes, Route } from 'react-router-dom';
 import Loader from './components/Loader';
 import Footer from './components/Footer'
 import { useAuth0 } from "@auth0/auth0-react"
+import axios from 'axios';
+import { useEnv } from './context/env.context';
 
 function App() {
-  const { isLoading } = useAuth0()
+  const { isLoading, user,getAccessTokenSilently} = useAuth0()
+  const { apiServerUrl } = useEnv()
 
-  // useEffect(()=>{
-  //   if (user !== undefined){
-  //   }
-  // },[user])
+  useEffect(()=>{
+    const getUser = async () =>{
+      const token = await getAccessTokenSilently()
+
+      // if userid is bigger than 21, they use oauth2
+      const currentUserId = user.sub.length < 21 ? user.sub.substring(user.sub.lastIndexOf("|")+1,user.sub.length) : Math.trunc(user.sub.substring(user.sub.lastIndexOf("|")+1,user.sub.length)/10000)
+      
+      // if user is already existed in the database
+      await axios.get(`${apiServerUrl}/api/v1/users/${currentUserId}`, {
+        headers: {
+            authorization: `Bearer ${token}`
+        }
+    })
+      .then(()=>{})
+      .catch(async (error)=>{
+        if (error.response.status === 500) {
+          let data = {
+            "userId":currentUserId,
+            "fullName": user.name,
+            "email": user.email
+          }
+          // Request made and server responded
+          await axios.post(`${apiServerUrl}/api/v1/users`,data,{
+            headers: {
+              authorization: `Bearer ${token}`
+            }
+          })
+          .then((res) =>{console.log(res)})
+          .catch((err)=>{console.log(err)})
+        } 
+      })
+    }
+    if (user !== undefined){
+      getUser()
+    }
+  },[user,apiServerUrl,getAccessTokenSilently])
 
   if (isLoading) {
     return <Loader />

@@ -16,8 +16,9 @@ const AdminCalendar = () => {
     const [meetings, setMeetings] = useState([]);
     useEffect(() => {
         // get the calendar data
-        const getUserData = async () => {
+        const getCalendarData = async () => {
             const token = await getAccessTokenSilently()
+            console.log(token)
             await axios.get(`${apiServerUrl}/api/v1/meetings`, {
                 headers: {
                     authorization: `Bearer ${token}`
@@ -49,7 +50,7 @@ const AdminCalendar = () => {
                                                     houseId: it.userHouse.houseId,
                                                     userId: it.userHouse.userId,
                                                     date: new Date(it.date.concat(' ', it.time)),
-                                                    title: res2Result[i].fullName.concat(res3Result[j].name),
+                                                    title: "user_name : ".concat(res2Result[i].fullName, "/", " house : ", res3Result[j].name),
                                                 }])
                                             }
                                         })
@@ -59,7 +60,7 @@ const AdminCalendar = () => {
                     })
             })
         }
-        getUserData()
+        getCalendarData()
 
     }, []);
     console.log(meetings)

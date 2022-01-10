@@ -27,19 +27,16 @@ function App() {
   useEffect(() => {
     const getUser = async () => {
       const token = await getAccessTokenSilently();
-      console.log(token);
-
       // if userid is bigger than 21, they use oauth2
       const currentUserId =
         user.sub.length < 21
           ? user.sub.substring(user.sub.lastIndexOf("|") + 1, user.sub.length)
           : Math.trunc(
-              user.sub.substring(
-                user.sub.lastIndexOf("|") + 1,
-                user.sub.length
-              ) / 10000
-            );
-
+            user.sub.substring(
+              user.sub.lastIndexOf("|") + 1,
+              user.sub.length
+            ) / 10000
+          );
       // if user does not exist in the database
       if (user.sub.length > 21) {
         let data = {
@@ -54,7 +51,7 @@ function App() {
               authorization: `Bearer ${token}`,
             },
           })
-          .then(() => {})
+          .then((res) => { console.log(res) })
           .catch((err) => {
             console.log(err);
           });

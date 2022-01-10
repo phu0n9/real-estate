@@ -6,49 +6,49 @@ import { useEnv } from '../context/env.context';
 import axios from 'axios';
 
 const Calendar = () => {
-    const { getAccessTokenSilently,user} = useAuth0()
-    
-    // get the calendar data using token
+    const { getAccessTokenSilently, user } = useAuth0()
     const { apiServerUrl } = useEnv()
-
-    const [meetings, setMettings] = useState([]);
-    const getCalendatData = async () => {
-        // get access token from users to use api
-        const token = await getAccessTokenSilently()
-        console.log(token)
-
-        await axios.get(`${apiServerUrl}/api/v1/meetings/search/byUser/1`, {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        }).then((res) => {
-            setMettings(
-                res.data.content.map((it) => (
-                    {
-                        meetingId: it.meetingId,
-                        date: new Date(it.date.concat(' ', it.time)),
-                        title: "".concat(getHouseData(it.userHouse.houseId))
-                    })
-                ))
-        })
-        // setData(response.data);
-    }
-
-    // get the house data using token
-    const getHouseData = async (e) => {
-        // get access token from users to use api
-        const token = await getAccessTokenSilently()
-        await axios.get(`${apiServerUrl}/api/v1/houses/${e}`, {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        }).then((res) => {
-            return res.data.name
-        })
-    }
-
+    const [meetings, setMeetings] = useState([]);
+    const currentUserId =
+        user.sub.length < 21
+            ? user.sub.substring(user.sub.lastIndexOf("|") + 1, user.sub.length)
+            : Math.trunc(
+                user.sub.substring(
+                    user.sub.lastIndexOf("|") + 1,
+                    user.sub.length
+                ) / 10000
+            );
     useEffect(() => {
-        getCalendatData();
+        // get the calendar data
+        const getCalendarData = async () => {
+            const token = await getAccessTokenSilently()
+            // if userid is bigger than 21, they use oauth2
+            await axios.get(`${apiServerUrl}/api/v1/meetings/search/byUser/2`, {
+                headers: {
+                    authorization: `Bearer ${token}`
+                }
+            }).then(res => {  // after fetched all meeting data, get the user data using userId in meeting data
+                Promise.all(res.data.content.map(i =>
+                    fetch(`${apiServerUrl}/api/v1/houses/${i.userHouse.houseId}`)
+                )).then(res2 => Promise.all(res2.map(r => r.json())))
+                    .then(result => {
+                        Promise.all(res.data.content.map((it) => {
+                            result.map((data, i) => {
+                                if (it.userHouse.userId === result[i].houseId) {
+                                    setMeetings(prevList => [...prevList, {
+                                        meetingId: it.meetingId,
+                                        houseId: it.userHouse.houseId,
+                                        userId: it.userHouse.userId,
+                                        date: new Date(it.date.concat(' ', it.time)),
+                                        title: result[i].name,
+                                    }])
+                                }
+                            })
+                        }))
+                    })
+            })
+        }
+        getCalendarData()
     }, []);
 
     return (

@@ -5,10 +5,9 @@ import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
 import { useEnv } from '../context/env.context';
 import axios from 'axios';
 
-
 const Calendar = () => {
-    const { getAccessTokenSilently } = useAuth0()
-
+    const { getAccessTokenSilently,user} = useAuth0()
+    
     // get the calendar data using token
     const { apiServerUrl } = useEnv()
 
@@ -16,6 +15,8 @@ const Calendar = () => {
     const getCalendatData = async () => {
         // get access token from users to use api
         const token = await getAccessTokenSilently()
+        console.log(token)
+
         await axios.get(`${apiServerUrl}/api/v1/meetings/search/byUser/1`, {
             headers: {
                 authorization: `Bearer ${token}`

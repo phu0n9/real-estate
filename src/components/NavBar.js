@@ -4,6 +4,7 @@ import { HashLink as Link } from 'react-router-hash-link'
 import { AuthenticationButton } from '../login-button/AuthenticationButton';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useEnv } from '../context/env.context';
+import defaultPic from '../img/default-pic.jpg'
 
 export default function NavBar() {
     const { user,isAuthenticated } = useAuth0()
@@ -31,7 +32,7 @@ export default function NavBar() {
                         <ul>
                             <li><a className={currentPath === "/" ? "nav-link scrollto active": "nav-link scrollto"} href="/">Home</a></li>
                             <li><a className={currentPath === "/rental" ? "nav-link scrollto active": "nav-link scrollto"} href="/rental">Rental</a></li>
-                            <li className="dropdown"><a href="/blog" className={currentPath === "/blog" ? "active": ""}><span>Blog</span> <i className="bi bi-chevron-down"></i></a>
+                            <li className="dropdown"><a href="/blog" className={currentPath === "/blog" ? "active": ""}><span>Blog</span> </a>
                                 <ul>
                                     <li><a href="/">Drop Down 1</a></li>
                                     <li><a href="/">Drop Down 2</a></li>
@@ -41,7 +42,7 @@ export default function NavBar() {
                             </li>
 
                             {isAuthenticated && user[role].length !== 0 ? (
-                                <li className="dropdown"><a href="/auth/admin/calendar" className={currentPath.includes('auth') ? "active": ""}><span>My Page</span> <i className="bi bi-chevron-down"></i></a>
+                                <li className="dropdown"><a href="/auth/admin/calendar" className={currentPath.includes('auth') ? "active": "right"}> <img src={user.picture} className='profile-pic' alt='profile-pic'/> </a>
                                     <ul>
                                         <li><a href="/auth/admin/calendar">Calendar</a></li>
                                         <li><a href="/auth/admin/addHouse">Add House</a></li>
@@ -51,7 +52,7 @@ export default function NavBar() {
                                     </ul>
                                 </li>
                             ) : (
-                                <li className="dropdown"><a href="/auth/profile" className={currentPath.includes('auth') ? "active": ""}><span>My Page</span> <i className="bi bi-chevron-down"></i></a>
+                                <li className="dropdown"><a href="/auth/profile" className={currentPath.includes('auth') ? "active": "right"}> <img src={defaultPic} className='profile-pic' alt='profile-pic'/> </a>
                                     <ul>
                                         <li><a href="/auth/profile">Profile</a></li>
                                         <li><a href="/auth/calendar">Calendar</a></li>
@@ -59,10 +60,7 @@ export default function NavBar() {
                                     </ul>
                                 </li>
                             )}
-
-                            <li><Link smooth to="/#contact" className={currentPath.includes("#") ? "nav-link scrollto active": "nav-link scrollto"}>Contact</Link></li>
                         </ul>
-                        <i className="bi bi-list mobile-nav-toggle"></i>
                     </nav>
 
                 </div>

@@ -14,58 +14,56 @@ const AdminCalendar = () => {
     const { apiServerUrl } = useEnv()
 
     // get the calendar data using token
-    const [meetings, setMettings] = useState([]);
-    const getCalendarData = async () => {
-        // get access token from users to use api
-        const token = await getAccessTokenSilently()
-        await axios.get(`${apiServerUrl}/api/v1/meetings`, {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        }).then((res) => {
-            setMettings(
-                res.data.map((it) => (
-                    {
-                        meetingId: it.meetingId,
-                        date: new Date(it.date.concat(' ', it.time)),
-                        title: "".concat(getHouseData(it.userHouse.houseId), "\n", getUserData(it.userHouse.userId))
-                    })
-                ))
-        })
-    }
-
-    // get the user data using token
-    const getUserData = async (e) => {
-        // get access token from users to use api
-        const token = await getAccessTokenSilently()
-        await axios.get(`${apiServerUrl}/api/v1/users/${e}`, {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        }).then((res) => {
-            return res.data.fullName
-            // setUsers(res.data.fullName)
-        })
-    }
-
+    const [meetings, setMeetings] = useState([]);
     // get the house data using token
     const getHouseData = async (e) => {
         // get access token from users to use api
         const token = await getAccessTokenSilently()
-        await axios.get(`${apiServerUrl}/api/v1/houses/${e}`, {
+        const res = await axios.get(`${apiServerUrl}/api/v1/houses/${e}`, {
             headers: {
                 authorization: `Bearer ${token}`
             }
-        }).then((res) => {
-            return res.data.name
         })
+        return res.data.name
     }
 
     useEffect(() => {
+        const getCalendarData = async () => {
+            const token = await getAccessTokenSilently()
+            await axios.get(`${apiServerUrl}/api/v1/meetings`, {
+                headers: {
+                    authorization: `Bearer ${token}`
+                }
+            }).then(res => {
+                Promise.all(res.data.map(i =>
+                    fetch(`${apiServerUrl}/api/v1/users/${i.userHouse.userId}`, {
+                        method: 'GET',
+                        headers: {
+                            authorization: `Bearer ${token}`
+                        }
+                    })))
+                    .then(res2 => Promise.all(res2.map(r => r.json())))
+                    .then(result => {
+                        res.data.map((it) =>
+                        (
+                            result.map((data, i) => {
+                                if (it.userHouse.userId === result[i].userId) {
+                                    setMeetings(prevList => [...prevList, {
+                                        meetingId: it.meetingId,
+                                        houseId: it.userHouse.houseId,
+                                        userId: it.userHouse.userId,
+                                        date: new Date(it.date.concat(' ', it.time)),
+                                        title: result[i].fullName
+                                    }])
+                                }
+                            })
+                        )
+                        )
+                    })
+            })
+        }
         getCalendarData()
     }, []);
-
-    console.log(meetings)
 
     // if logged in user is not admin
     if (user[role].length === 0) {

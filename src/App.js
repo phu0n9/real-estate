@@ -19,6 +19,7 @@ import Footer from "./components/Footer";
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
 import { useEnv } from "./context/env.context";
+import UpdateHouse from "./pages/UpdateHouse";
 
 function App() {
   const { isLoading, user, getAccessTokenSilently } = useAuth0();
@@ -93,6 +94,8 @@ function App() {
           element={<ViewRentalHouses />}
         />
         <Route path="/auth/admin/viewUsers" exact element={<ViewAllUsers />} />
+
+        <Route path="/auth/admin/updateHouse/:id" exact element={<UpdateHouse/>}/>
 
         <Route path="*" component={() => "404 NOT FOUND"} />
       </Routes>

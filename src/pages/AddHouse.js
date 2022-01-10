@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 import Loader from '../components/Loader'
-import { Navigate } from 'react-router-dom';
+import { Navigate,useNavigate } from 'react-router-dom';
 import { useEnv } from '../context/env.context'
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react"
 
@@ -20,6 +20,8 @@ const AddHouse = () => {
     const [image, setImage] = useState([])
 
     const { apiServerUrl } = useEnv()
+
+    let navigate = useNavigate()
 
     const nameOnChange = (e) => {
         setHouseName(e.target.value)
@@ -87,8 +89,8 @@ const AddHouse = () => {
                     authorization: `Bearer ${token}`
                 }
             })
-            .then((res) => {
-                console.log(res)
+            .then(() => {
+                navigate('/rental')
             })
             .catch(error => console.log(error))
         }

@@ -13,58 +13,56 @@ const AdminCalendar = () => {
     const role = `${audience}/roles`
     const { apiServerUrl } = useEnv()
 
-    // get the calendar data using token
     const [meetings, setMeetings] = useState([]);
-    // get the house data using token
-    const getHouseData = async (e) => {
-        // get access token from users to use api
-        const token = await getAccessTokenSilently()
-        const res = await axios.get(`${apiServerUrl}/api/v1/houses/${e}`, {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        })
-        return res.data.name
-    }
-
     useEffect(() => {
-        const getCalendarData = async () => {
+        // get the calendar data
+        const getUserData = async () => {
             const token = await getAccessTokenSilently()
             await axios.get(`${apiServerUrl}/api/v1/meetings`, {
                 headers: {
                     authorization: `Bearer ${token}`
                 }
-            }).then(res => {
+            }).then(res => {  // after fetched all meeting data, get the user data using userId in meeting data
                 Promise.all(res.data.map(i =>
                     fetch(`${apiServerUrl}/api/v1/users/${i.userHouse.userId}`, {
-                        method: 'GET',
                         headers: {
                             authorization: `Bearer ${token}`
                         }
-                    })))
+                    })
+                ))
                     .then(res2 => Promise.all(res2.map(r => r.json())))
-                    .then(result => {
-                        res.data.map((it) =>
-                        (
-                            result.map((data, i) => {
-                                if (it.userHouse.userId === result[i].userId) {
-                                    setMeetings(prevList => [...prevList, {
-                                        meetingId: it.meetingId,
-                                        houseId: it.userHouse.houseId,
-                                        userId: it.userHouse.userId,
-                                        date: new Date(it.date.concat(' ', it.time)),
-                                        title: result[i].fullName
-                                    }])
+                    .then(res2Result => { // after fetched the user data, get the house data using houseId in meeting data
+                        Promise.all(res.data.map(i =>
+                            fetch(`${apiServerUrl}/api/v1/houses/${i.userHouse.houseId}`, {
+                                headers: {
+                                    authorization: `Bearer ${token}`
                                 }
                             })
-                        )
-                        )
+                        )).then(res3 => Promise.all(res3.map(r => r.json())))
+                            .then(res3Result => { // after fetched the house data, spread user full name and house name
+                                Promise.all(res.data.map((it) => {
+                                    res2Result.map((user, i) => {
+                                        res3Result.map((house, j) => {
+                                            if (it.userHouse.userId === res2Result[i].userId && it.userHouse.houseId === res3Result[j].houseId) {
+                                                setMeetings(prevList => [...prevList, {
+                                                    meetingId: it.meetingId,
+                                                    houseId: it.userHouse.houseId,
+                                                    userId: it.userHouse.userId,
+                                                    date: new Date(it.date.concat(' ', it.time)),
+                                                    title: res2Result[i].fullName.concat(res3Result[j].name),
+                                                }])
+                                            }
+                                        })
+                                    })
+                                }))
+                            })
                     })
             })
         }
-        getCalendarData()
-    }, []);
+        getUserData()
 
+    }, []);
+    console.log(meetings)
     // if logged in user is not admin
     if (user[role].length === 0) {
         return (
@@ -87,6 +85,7 @@ const AdminCalendar = () => {
                         fields: {
                             Id: 'meetingId',
                             subject: { name: 'title' },
+                            content: { name: 'content' },
                             startTime: { name: 'date' },
                             endTime: { name: 'date' }
                         }

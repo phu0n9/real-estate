@@ -1,9 +1,11 @@
 # Changelogs:
 
-## Modified: 10/01
+## Modified: 12/01
 - viewDetails
 - navigationBar
 - MeetingForm
+- Deleted page Help
+- Added Redirect pages
 
 ## `Bugs`:
 - logo in my page does not work `navBar`    
@@ -11,6 +13,8 @@
 - word `House Description` cannot be seen
 - sliding button in `ViewDetail` slider is kinda bright
 - Need to resize the picture in `ViewDetail`
+
+
 
 
 # INSTRUCTION FOR AUTH0:

@@ -15,7 +15,7 @@ const ViewRentalHouses = () => {
     if (user[role].length === 0) {
         return (
             <>
-                <Navigate replace to="/" />
+                <Navigate replace to="/unauthorized" />
             </>
         )
     }

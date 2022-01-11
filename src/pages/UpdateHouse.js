@@ -1,12 +1,14 @@
 import React from 'react'
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react"
 import Loader from '../components/Loader'
-import { Navigate,useNavigate } from 'react-router-dom';
+import { Navigate} from 'react-router-dom';
 import { useEnv } from '../context/env.context'
 
-const UpdateHouse = () =>{
+import '../stylesheet/addHouse/form-control.css'
+import HouseForm from '../components/HouseForm';
 
-    const { user, getAccessTokenSilently } = useAuth0()
+const UpdateHouse = () =>{
+    const { user } = useAuth0()
     const { audience } = useEnv()
     const role = `${audience}/roles`
 
@@ -14,13 +16,15 @@ const UpdateHouse = () =>{
     if (user[role].length === 0) {
         return (
             <>
-                <Navigate replace to="/" />
+                <Navigate replace to="/unauthorized" />
             </>
         )
     }
-
+    
     return (
-        <div>update house</div>
+        <section className="ftco-section">
+            <HouseForm pageTitle="Update House"/>
+        </section>
     )
 }
 

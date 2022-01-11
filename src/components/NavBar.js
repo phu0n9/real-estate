@@ -1,10 +1,8 @@
 import React,{useEffect,useState} from 'react';
 import '../stylesheet/Navbar.css'
-import { HashLink as Link } from 'react-router-hash-link'
 import { AuthenticationButton } from '../login-button/AuthenticationButton';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useEnv } from '../context/env.context';
-import defaultPic from '../img/default-pic.jpg'
 
 export default function NavBar() {
     const { user,isAuthenticated } = useAuth0()

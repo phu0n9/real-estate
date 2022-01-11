@@ -1,7 +1,6 @@
 import Calendar from "./pages/Calendar";
 import NavBar from "./components/NavBar";
 import Profile from "./pages/Profile";
-import Help from "./pages/Help";
 import Home from "./pages/Home";
 import MyPage from "./pages/MyPage";
 import Register from "./pages/Register";
@@ -19,6 +18,12 @@ import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
 import { useEnv } from "./context/env.context";
 import UpdateHouse from "./pages/UpdateHouse";
+import UploadHouseImage from "./pages/UploadHouseImage";
+import NotFound from "./redirect-pages/NotFound";
+import Success from './redirect-pages/Success'
+import Processing from "./redirect-pages/Processing";
+import Error from './redirect-pages/Error'
+import Unauthorized from "./redirect-pages/Unauthorized";
 
 function App() {
   const { isLoading, user, getAccessTokenSilently } = useAuth0();
@@ -37,7 +42,6 @@ function App() {
               user.sub.length
             ) / 10000
           );
-          console.log(currentUserId)
       // if user does not exist in the database
       if (user.sub.length > 21) {
         let data = {
@@ -52,7 +56,7 @@ function App() {
               authorization: `Bearer ${token}`,
             },
           })
-          .then((res) => { console.log(res) })
+          .then(() => {})
           .catch((err) => {
             console.log(err);
           });
@@ -71,10 +75,15 @@ function App() {
     <>
       <NavBar />
       <Routes>
+        {/* Redirect pages */}
+        <Route path="/success" exact={true} element={<Success/>}/>
+        <Route path="/error" exact={true} element={<Error/>}/>
+        <Route path="/processing" exact={true} element={<Processing/>}/>
+        <Route path="/unauthorized" exact={true} element={<Unauthorized/>}/>
+
         {/* basic routes */}
         <Route path="/" exact={true} element={<Home />} />
         <Route path="/rental" exact={true} element={<Rental />} />
-        <Route path="/help" exact={true} element={<Help />} />
         <Route path="/myPage" exact element={<MyPage />} />
         <Route path="/BookMeeting/:id" exact element={<BookMeeting />} />
         <Route path="/viewDetail/:id" exact element={<ViewDetail />} />
@@ -97,7 +106,9 @@ function App() {
 
         <Route path="/auth/admin/updateHouse/:id" exact element={<UpdateHouse/>}/>
 
-        <Route path="*" component={() => "404 NOT FOUND"} />
+        <Route path="/auth/admin/uploadImage/:id" exact element={<UploadHouseImage/>}/>
+
+        <Route path="*" element={<NotFound/>} />
       </Routes>
     </>
   );

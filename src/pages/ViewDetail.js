@@ -53,12 +53,13 @@ const ViewDetail = () => {
                     setStatus(res.data.status)
                     setType(res.data.type)
                 })
-                .catch((error)=>{
-                    console.error(error)
+                .catch((err)=>{
+                    console.log(err)
+                    navigate('/error')
                 })
         }
         getData();
-    }, [id,apiServerUrl]);
+    }, [id,apiServerUrl,navigate]);
 
     const deleteHouse = async () =>{
          // get access token from users to use api
@@ -69,7 +70,7 @@ const ViewDetail = () => {
             }
         })
         .then(()=>{
-            navigate('/rental')
+            navigate('/processing')
         })
         .catch((err)=>{console.log(err)})
     }

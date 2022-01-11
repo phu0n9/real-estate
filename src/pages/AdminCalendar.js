@@ -10,6 +10,7 @@ const AdminCalendar = () => {
 
     const { user, getAccessTokenSilently } = useAuth0()
     const { audience, apiServerUrl } = useEnv()
+
     const role = `${audience}/roles`
 
     const [meetings, setMeetings] = useState([]);
@@ -60,7 +61,8 @@ const AdminCalendar = () => {
         }
         getCalendarData()
 
-    }, [apiServerUrl, getAccessTokenSilently]);
+
+    }, [apiServerUrl,getAccessTokenSilently]);
 
     // if logged in user is not admin
     if (user[role].length === 0) {
@@ -86,7 +88,7 @@ const AdminCalendar = () => {
                             subject: { name: 'title' },
                             content: { name: 'content' },
                             startTime: { name: 'date' },
-                            endTime: { name: 'date' },
+                            endTime: { name: 'date' }
                         }
                     }}>
 

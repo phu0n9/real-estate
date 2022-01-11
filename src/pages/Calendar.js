@@ -26,11 +26,8 @@ const Calendar = () => {
         // get the calendar data
         const getCalendarData = async () => {
             const token = await getAccessTokenSilently()
-<<<<<<< HEAD
-            // if userid is bigger than 21, they use oauth2
-=======
 
->>>>>>> 2703768c9648b588b7bf522e66edcc470f3967a7
+            // if userid is bigger than 21, they use oauth2
             await axios.get(`${apiServerUrl}/api/v1/meetings/search/byUser/${currentUserId}`, {
                 headers: {
                     authorization: `Bearer ${token}`
@@ -58,9 +55,6 @@ const Calendar = () => {
             })
         }
         getCalendarData()
-<<<<<<< HEAD
-    }, []);
-=======
     }, [apiServerUrl,currentUserId,getAccessTokenSilently]);
 
     // if logged in user is admin
@@ -72,7 +66,6 @@ const Calendar = () => {
         )
     }
     
->>>>>>> 2703768c9648b588b7bf522e66edcc470f3967a7
     return (
         <section className="hero d-flex align-items-center">
             <div className="col-lg-10">

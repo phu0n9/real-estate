@@ -14,19 +14,41 @@ const AdminViewAllRentalsTable = () => {
 
     const [data, setData] = useState([]);
 
-    const fetchAllUsers = async () => {
+    const fetchAllRentals = async () => {
+
         const token = await getAccessTokenSilently()
-        const response = await axios.get(`${apiServerUrl}/api/v1/rentals/search?pageSize=20000`, {
+        // if userid is bigger than 21, they use oauth2
+        await axios.get(`${apiServerUrl}/api/v1/rentals/search?pageSize=20000`, {
             headers: {
                 authorization: `Bearer ${token}`
             }
-        });
-        setData(response.data.content);
+        }).then(res => {  // after fetched all meeting data, get the user data using userId in meeting data
+            Promise.all(res.data.content.map(i =>
+                fetch(`${apiServerUrl}/api/v1/houses/${i.userHouse.houseId}`)
+            )).then(res2 => Promise.all(res2.map(r => r.json())))
+                .then(result => {
+                    Promise.all(res.data.content.map((it) => {
+                        result.map((data, i) => {
+                            if (it.userHouse.houseId === result[i].houseId) {
+                                setData(prevList =>
+                                    [...prevList, {
+                                        rentalId: it.rentalId,
+                                        houseName: result[i].name,
+                                        startDate: it.startDate,
+                                        endDate: it.endDate,
+                                        depositAmount: it.depositAmount,
+                                        monthlyFee: it.monthlyFee,
+                                        payableFee: it.payableFee
+                                    }])
+                            }
+                        })
+                    }))
+                })
+        })
     }
 
-    console.log(data)
     useEffect(() => {
-        fetchAllUsers();
+        fetchAllRentals();
     }, []);
 
     const columns = useMemo(
@@ -38,6 +60,10 @@ const AdminViewAllRentalsTable = () => {
                 filter: 'equals',
             },
             {
+                Header: 'House Name',
+                accessor: 'houseName',
+            },
+            {
                 Header: 'Start Date',
                 accessor: 'startDate',
             },
@@ -46,20 +72,21 @@ const AdminViewAllRentalsTable = () => {
                 accessor: 'endDate',
             },
             {
-                Header: 'Deposit Amount ($)',
+                Header: '($) Deposit Amount',
                 accessor: 'depositAmount',
             },
             {
-                Header: 'Monthly Fee ($)',
+                Header: '($) Monthly Fee',
                 accessor: 'monthlyFee',
             },
             {
-                Header: 'Payable Fee ($)',
+                Header: '($) Payable Fee',
                 accessor: 'payableFee',
             },
         ],
         []
     );
+
     return (
         <Container style={{ marginTop: 50 }}>
             <TableContainer

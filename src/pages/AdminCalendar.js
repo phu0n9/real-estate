@@ -64,6 +64,11 @@ const AdminCalendar = () => {
 
     }, []);
     console.log(meetings)
+
+    // const handleQuery = (event) => {
+    //     setSearchQuery(event.target.value);
+    // };
+
     // if logged in user is not admin
     if (user[role].length === 0) {
         return (
@@ -80,7 +85,7 @@ const AdminCalendar = () => {
                 <br />
                 <br />
                 <ScheduleComponent
-                    currentView='Month' selectedDate={new Date()} height='850px' style={{ marginLeft: "250px" }} readonly={true}
+                    currentView='Month' selectedDate={new Date()} height='850px' style={{ marginLeft: "250px" }}
                     eventSettings={{
                         dataSource: meetings,
                         fields: {
@@ -88,7 +93,7 @@ const AdminCalendar = () => {
                             subject: { name: 'title' },
                             content: { name: 'content' },
                             startTime: { name: 'date' },
-                            endTime: { name: 'date' }
+                            endTime: { name: 'date' },
                         }
                     }}>
 

@@ -18,12 +18,14 @@ const Calendar = () => {
                     user.sub.length
                 ) / 10000
             );
+
     useEffect(() => {
+
         // get the calendar data
         const getCalendarData = async () => {
             const token = await getAccessTokenSilently()
             // if userid is bigger than 21, they use oauth2
-            await axios.get(`${apiServerUrl}/api/v1/meetings/search/byUser/2`, {
+            await axios.get(`${apiServerUrl}/api/v1/meetings/search/byUser/${currentUserId}`, {
                 headers: {
                     authorization: `Bearer ${token}`
                 }
@@ -50,7 +52,6 @@ const Calendar = () => {
         }
         getCalendarData()
     }, []);
-
     return (
         <section className="hero d-flex align-items-center">
             <div className="col-lg-10">

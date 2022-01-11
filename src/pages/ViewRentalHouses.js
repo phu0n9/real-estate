@@ -1,7 +1,6 @@
 import React from 'react';
 import Loader from '../components/Loader'
-import AdminSidebarNav from '../components/AdminSidebarNav';
-
+import AdminViewAllRentalsTable from '../components/Table/AdminViewAllRentalsTable';
 import { Navigate } from 'react-router-dom';
 import { useEnv } from '../context/env.context'
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react"
@@ -23,7 +22,10 @@ const ViewRentalHouses = () => {
 
     return (
         <div>
-
+            <br />
+            <br />
+            <br />
+            <AdminViewAllRentalsTable />
         </div>
     );
 };

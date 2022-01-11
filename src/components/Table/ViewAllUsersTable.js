@@ -34,7 +34,6 @@ const ViewAllUsersTable = () => {
             {
                 Header: '#',
                 accessor: 'userId',
-                disableSortBy: true,
                 Filter: SelectColumnFilter,
                 filter: 'equals',
             },

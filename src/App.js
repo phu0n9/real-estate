@@ -15,7 +15,6 @@ import ViewAllUsers from "./pages/ViewAllUsers";
 import React, { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import Loader from "./components/Loader";
-import Footer from "./components/Footer";
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
 import { useEnv } from "./context/env.context";
@@ -96,7 +95,6 @@ function App() {
 
         <Route path="*" component={() => "404 NOT FOUND"} />
       </Routes>
-      <Footer />
     </>
   );
 }

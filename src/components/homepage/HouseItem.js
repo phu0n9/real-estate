@@ -13,7 +13,7 @@ export default function HouseItem() {
             await axios.get(`${apiServerUrl}/api/v1/houses/search`,{
                 params:{
                     pageNo:1,
-                    pageSize:9,
+                    pageSize:9
                 }
             })
             .then((res)=>{

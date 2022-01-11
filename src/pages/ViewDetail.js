@@ -9,6 +9,8 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Badge from 'react-bootstrap/Badge'
+import { useAuth0 } from '@auth0/auth0-react';
+import { useEnv } from '../context/env.context';
 
 const ViewDetail = () => {
     let slider = []
@@ -18,6 +20,10 @@ const ViewDetail = () => {
     const [images,setImages] = useState([])
     const [status, setStatus] = useState('')
     const [type, setType] = useState('')
+    const { user,isAuthenticated,getAccessTokenSilently} = useAuth0()
+    const { audience,apiServerUrl } = useEnv()
+    const role = `${audience}/roles`
+    const navigate = useNavigate();
 
     const settings = {
         dots: true,
@@ -31,13 +37,12 @@ const ViewDetail = () => {
     };
 
     const bookMeeting = () => {
-        navigate("/BookMeeting/" + house.houseId)
+        navigate(`/BookMeeting/${id}`)
     }    
-
-    const navigate = useNavigate();
+    
     useEffect(() => {
         const getData = async() => {
-            await axios.get(`http://localhost:8080/api/v1/houses/${id}`)
+            await axios.get(`${apiServerUrl}/api/v1/houses/${id}`)
                 .then((res) => {
                     setHouse(res.data);
                     setLocation({
@@ -49,14 +54,33 @@ const ViewDetail = () => {
                     setStatus(res.data.status)
                     setType(res.data.type)
                 })
-                .catch((error)=>{console.error(error)})
+                .catch((error)=>{
+                    console.error(error)
+                })
         }
         getData();
-    }, [id]);
+    }, [id,apiServerUrl]);
+
+    const deleteHouse = async () =>{
+         // get access token from users to use api
+        const token = await getAccessTokenSilently()
+        await axios.delete(`${apiServerUrl}/api/v1/houses/${id}`,{
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        })
+        .then(()=>{
+            navigate('/rental')
+        })
+        .catch((err)=>{console.log(err)})
+    }
+
+    const updateHouse = () =>{
+        navigate(`/auth/admin/updateHouse/${id}`)
+    }
     
     return (
-    <div>
-        <section id="portfolio-details" className="portfolio-details">
+        <section className="portfolio-details">
         <div className="container">
             <div className="row gy-4">
             <div className="col-lg-8">
@@ -95,8 +119,21 @@ const ViewDetail = () => {
                     </ul>
                 </div>
                 <div className="portfolio-description" style={{paddingLeft: 50}}>
-                    <Button variant="primary" onClick={bookMeeting} style={{ height: '3rem' }}>Book A Meeting</Button>{' '}
-                    <Button variant="success" style={{ height: '3rem' }}>Deposit Money</Button>{' '}
+                    {
+                        isAuthenticated && user[role].length !== 0 ? 
+                        (
+                            <span>
+                                <Button variant='danger' onClick={deleteHouse} >Delete House</Button>
+                                <Button variant='info' onClick={updateHouse} >Update House</Button>
+                            </span>
+                        ) :
+                        (
+                            <span>
+                                <Button variant="primary" onClick={bookMeeting} style={{ height: '3rem' }}>Book A Meeting</Button>
+                                <Button variant="success" style={{ height: '3rem' }}>Deposit Money</Button>
+                            </span>
+                        )
+                    }
                 </div>
                 
                 <div className="portfolio-description">
@@ -106,8 +143,7 @@ const ViewDetail = () => {
             </div>
             </div>
         </div>
-        </section>
-    </div>
+    </section>
     );
 };
 

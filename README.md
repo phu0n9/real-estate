@@ -1,13 +1,15 @@
 # Changelogs:
 
-## Modified:
+## Modified: 10/01
 - viewDetails
 - navigationBar
 - MeetingForm
 
 ## `Bugs`:
-- icon in contact does not work, don't know why, somebody please fix
 - logo in my page does not work `navBar`    
+- Profile picture in navigation bar position is weird
+- word `House Description` cannot be seen
+- sliding button in the detail slider is kinda bright
 
 
 # INSTRUCTION FOR AUTH0:

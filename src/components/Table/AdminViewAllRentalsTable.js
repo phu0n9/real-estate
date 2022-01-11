@@ -12,44 +12,57 @@ const AdminViewAllRentalsTable = () => {
     const { audience, apiServerUrl } = useEnv()
     const role = `${audience}/roles`
 
-    const [data, setData] = useState([]);
-
-    const fetchAllRentals = async () => {
-
-        const token = await getAccessTokenSilently()
-        // if userid is bigger than 21, they use oauth2
-        await axios.get(`${apiServerUrl}/api/v1/rentals/search?pageSize=20000`, {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        }).then(res => {  // after fetched all meeting data, get the user data using userId in meeting data
-            Promise.all(res.data.content.map(i =>
-                fetch(`${apiServerUrl}/api/v1/houses/${i.userHouse.houseId}`)
-            )).then(res2 => Promise.all(res2.map(r => r.json())))
-                .then(result => {
-                    Promise.all(res.data.content.map((it) => {
-                        result.map((data, i) => {
-                            if (it.userHouse.houseId === result[i].houseId) {
-                                setData(prevList =>
-                                    [...prevList, {
-                                        rentalId: it.rentalId,
-                                        houseName: result[i].name,
-                                        startDate: it.startDate,
-                                        endDate: it.endDate,
-                                        depositAmount: it.depositAmount,
-                                        monthlyFee: it.monthlyFee,
-                                        payableFee: it.payableFee
-                                    }])
-                            }
-                        })
-                    }))
-                })
-        })
-    }
+    const [rentals, setRentals] = useState([]);
 
     useEffect(() => {
+        const fetchAllRentals = async () => {
+            let cnt = 0
+            const token = await getAccessTokenSilently()
+            // if userid is bigger than 21, they use oauth2
+            await axios.get(`${apiServerUrl}/api/v1/rentals/search?pageSize=20000&orderBy=desc`, {
+                headers: {
+                    authorization: `Bearer ${token}`
+                }
+            }).then(res => {
+                Promise.all(res.data.content.map(i =>
+                    fetch(`${apiServerUrl}/api/v1/houses/${i.userHouse.houseId}`)
+                )).then(res2 => Promise.all(res2.map(r => r.json())))
+                    .then(result => {
+                        Promise.all(res.data.content.map((it) => {
+                            cnt = 0
+                            result.map((data, i) => {
+                                if (it.userHouse.houseId === result[i].houseId) {
+                                    cnt += 1
+                                    console.log("cnt : " + cnt)
+                                    console.log(it.userHouse.houseId)
+                                    if (cnt === 1) {
+                                        setRentals((prevList) =>
+                                            [...prevList, {
+                                                rentalId: it.rentalId,
+                                                houseName: result[i].name,
+                                                startDate: it.startDate,
+                                                endDate: it.endDate,
+                                                depositAmount: it.depositAmount,
+                                                monthlyFee: it.monthlyFee,
+                                                payableFee: it.payableFee
+                                            }]
+                                        )
+                                    } else {
+                                        cnt = 0
+                                    }
+                                }
+                            })
+                        }))
+                    })
+            })
+        }
+
         fetchAllRentals();
     }, []);
+
+    // rentals.map(i => {
+    //     console.log(i);
+    // })
 
     const columns = useMemo(
         () => [
@@ -91,7 +104,7 @@ const AdminViewAllRentalsTable = () => {
         <Container style={{ marginTop: 50 }}>
             <TableContainer
                 columns={columns}
-                data={data}
+                data={rentals}
             />
         </Container>
     );

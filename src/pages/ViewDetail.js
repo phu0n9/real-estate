@@ -13,7 +13,6 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { useEnv } from '../context/env.context';
 
 const ViewDetail = () => {
-    let slider = []
     const { id } = useParams();
     const [house, setHouse] = useState([]);
     const [location, setLocation] = useState({});

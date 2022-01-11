@@ -9,6 +9,7 @@ import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 import Button from 'react-bootstrap/Button'
 import Pagination from 'react-bootstrap/Pagination'
+import Footer from '../components/Footer'
 
 const Rental = () => {
     let pagination = [];
@@ -156,6 +157,7 @@ const Rental = () => {
                 </div>
             </div>
             <br/>
+            <Footer/>
         </div>
     );
 };

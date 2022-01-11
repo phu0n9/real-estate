@@ -9,16 +9,14 @@ import { Navigate } from 'react-router-dom';
 const AdminCalendar = () => {
 
     const { user, getAccessTokenSilently } = useAuth0()
-    const { audience } = useEnv()
+    const { audience,apiServerUrl } = useEnv()
     const role = `${audience}/roles`
-    const { apiServerUrl } = useEnv()
 
     const [meetings, setMeetings] = useState([]);
     useEffect(() => {
         // get the calendar data
         const getCalendarData = async () => {
             const token = await getAccessTokenSilently()
-            console.log(token)
             await axios.get(`${apiServerUrl}/api/v1/meetings`, {
                 headers: {
                     authorization: `Bearer ${token}`
@@ -62,8 +60,8 @@ const AdminCalendar = () => {
         }
         getCalendarData()
 
-    }, []);
-    console.log(meetings)
+    }, [apiServerUrl,getAccessTokenSilently]);
+
     // if logged in user is not admin
     if (user[role].length === 0) {
         return (
@@ -75,12 +73,12 @@ const AdminCalendar = () => {
 
     return (
         <section className="hero d-flex align-items-center">
-            <div className="col-lg-10">
+            <div className="col-lg-10" >
                 <br />
                 <br />
                 <br />
                 <ScheduleComponent
-                    currentView='Month' selectedDate={new Date()} height='850px' style={{ marginLeft: "250px" }} readonly={true}
+                    currentView='Month' selectedDate={new Date()} height='850px' style={{ marginLeft: "250px"}} readonly={true}
                     eventSettings={{
                         dataSource: meetings,
                         fields: {

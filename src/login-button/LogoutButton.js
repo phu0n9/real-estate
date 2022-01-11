@@ -6,7 +6,7 @@ export default function LogoutButton() {
     const { logout } = useAuth0();
 
     return (
-      <li><button className="scrollto login-button" onClick={() =>
+      <li><button className="scrollto logout-button" onClick={() =>
         logout({
           returnTo: window.location.origin,
         })}>Log out</button></li>

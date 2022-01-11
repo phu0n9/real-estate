@@ -40,26 +40,33 @@ export default function NavBar() {
                                     <li><a href="/">Drop Down 4</a></li>
                                 </ul>
                             </li>
-
-                            {isAuthenticated && user[role].length !== 0 ? (
-                                <li className="dropdown"><a href="/auth/admin/calendar" className={currentPath.includes('auth') ? "active": "right"}> <img src={user.picture} className='profile-pic' alt='profile-pic'/> </a>
-                                    <ul>
-                                        <li><a href="/auth/admin/calendar">Calendar</a></li>
-                                        <li><a href="/auth/admin/addHouse">Add House</a></li>
-                                        <li><a href="/auth/admin/viewRentalHouses">View Rental House</a></li>
-                                        <li><a href="/auth/admin/viewUsers">View users</a></li>
-                                        <AuthenticationButton />
-                                    </ul>
-                                </li>
-                            ) : (
-                                <li className="dropdown"><a href="/auth/profile" className={currentPath.includes('auth') ? "active": "right"}> <img src={defaultPic} className='profile-pic' alt='profile-pic'/> </a>
-                                    <ul>
-                                        <li><a href="/auth/profile">Profile</a></li>
-                                        <li><a href="/auth/calendar">Calendar</a></li>
-                                        <AuthenticationButton />
-                                    </ul>
-                                </li>
-                            )}
+                                {
+                                    isAuthenticated ?
+                                    (user[role].length !== 0 ? (
+                                        <li className="dropdown"><a href="/auth/admin/calendar" className={currentPath.includes('auth') ? "active": "right"}> <img src={user.picture} className='profile-pic' alt='profile-pic'/> </a>
+                                            <ul>
+                                                <li><a href="/auth/admin/calendar">Calendar</a></li>
+                                                <li><a href="/auth/admin/addHouse">Add House</a></li>
+                                                <li><a href="/auth/admin/viewRentalHouses">View Rental House</a></li>
+                                                <li><a href="/auth/admin/viewUsers">View users</a></li>
+                                                <AuthenticationButton />
+                                            </ul>
+                                        </li>
+                                    ) : (
+                                        <li className="dropdown"><a href="/auth/profile" className={currentPath.includes('auth') ? "active": "right"}> <img src={user.picture} className='profile-pic' alt='profile-pic'/> </a>
+                                            <ul>
+                                                <li><a href="/auth/profile">Profile</a></li>
+                                                <li><a href="/auth/calendar">Calendar</a></li>
+                                                <AuthenticationButton />
+                                            </ul>
+                                        </li>
+                                    ))
+                                    :
+                                    <li className='nav-link scrollto'>
+                                        <AuthenticationButton/>
+                                    </li>
+                                }
+                            
                         </ul>
                     </nav>
 

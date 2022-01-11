@@ -37,6 +37,7 @@ function App() {
               user.sub.length
             ) / 10000
           );
+          console.log(currentUserId)
       // if user does not exist in the database
       if (user.sub.length > 21) {
         let data = {

@@ -8,7 +8,7 @@ export default function LoginButton() {
     return (
       <li>
         <button
-        className='scrollto login-button'
+        className='login-button'
         onClick={() => loginWithRedirect()}
       >
         Log In

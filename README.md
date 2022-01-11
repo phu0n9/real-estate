@@ -9,7 +9,8 @@
 - logo in my page does not work `navBar`    
 - Profile picture in navigation bar position is weird
 - word `House Description` cannot be seen
-- sliding button in the detail slider is kinda bright
+- sliding button in `ViewDetail` slider is kinda bright
+- Need to resize the picture in `ViewDetail`
 
 
 # INSTRUCTION FOR AUTH0:

@@ -9,10 +9,14 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Badge from 'react-bootstrap/Badge'
-import { useAuth0 } from '@auth0/auth0-react';
-import { useEnv } from '../context/env.context';
+import { Navigate } from 'react-router-dom';
+import Loader from '../components/Loader'
+import { useEnv } from '../context/env.context'
+import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react"
+import { FaBusinessTime } from 'react-icons/fa';
 
 const ViewDetail = () => {
+    const [uid, setUID] = useState(0);
     const { id } = useParams();
     const [house, setHouse] = useState([]);
     const [location, setLocation] = useState({});
@@ -49,9 +53,11 @@ const ViewDetail = () => {
                         lat: res.data.latitude,
                         lng: res.data.longitude
                     })
-                    setImages(res.data.image)
-                    setStatus(res.data.status)
-                    setType(res.data.type)
+                    setImages(res.data.image);
+                    setStatus(res.data.status);
+                    setType(res.data.type);
+                    let words = (user.sub).split('|')
+                    setUID(Math.trunc(words[1])/10000);
                 })
                 .catch((err)=>{
                     console.log(err)
@@ -75,8 +81,63 @@ const ViewDetail = () => {
         .catch((err)=>{console.log(err)})
     }
 
-    const updateHouse = () =>{
+    const updateHouse = () => {
         navigate(`/auth/admin/updateHouse/${id}`)
+    };
+
+    const saveDeposit = async () => {
+        const monthly_price = (Math.round(Math.trunc(house.price)/12)).toString();
+        const userHouse = {'userId': uid, 'houseId': Math.trunc(id)};   
+        const today = new Date();
+        let dateNow = '1010-10-10';
+        let timeNow = '10:00'
+
+        if (today.getMonth() < 10 ) {
+            dateNow = today.getFullYear() + '-0' + (today.getMonth() + 1) + '-' + today.getDate();
+        }
+        else if (today.getDate() < 10) {
+            dateNow = today.getFullYear() + '-' + (today.getMonth() + 1) + '-0' + today.getDate();
+        }
+        else
+            dateNow = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+
+        if (today.getHours() < 10) {
+            timeNow = '0' + today.getHours() + ':' + today.getMinutes();
+        }
+        else if (today.getMinutes() < 10) {
+            timeNow = '0' + today.getHours() + ':0' + today.getMinutes();
+        }
+        else 
+            timeNow = + today.getHours() + ':' + today.getMinutes();
+
+
+        if(!userHouse || !monthly_price ){
+            alert('Please fill all the information in the form.')
+        }
+        else{
+            const data = {
+                userHouse: userHouse,
+                amount: monthly_price,
+                date: dateNow.toString(),
+                time: timeNow.toString(),
+                note: house.name
+            }
+            // get access token from users to use api
+            const token = await getAccessTokenSilently();
+            console.log(token);
+            await axios.post(`${apiServerUrl}/api/v1/deposits`, data, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    "content-type": "application/json"
+                }
+            })
+            .then((res) => {
+                if (res.status === 200) {
+                    alert('Your Deposit Was Successful, Enjoy Your Stay!')
+                }
+            })
+            .catch(error => console.log(error))
+        }
     }
     
     return (
@@ -123,14 +184,14 @@ const ViewDetail = () => {
                         isAuthenticated && user[role].length !== 0 ? 
                         (
                             <span>
-                                <Button variant='danger' onClick={deleteHouse} >Delete House</Button>
-                                <Button variant='info' onClick={updateHouse} >Update House</Button>
+                                <Button variant="danger" onClick={deleteHouse} >Delete House</Button>
+                                <Button variant="info" onClick={updateHouse} >Update House</Button>
                             </span>
                         ) :
                         (
                             <span>
                                 <Button variant="primary" onClick={bookMeeting} style={{ height: '3rem' }}>Book A Meeting</Button>
-                                <Button variant="success" style={{ height: '3rem' }}>Deposit Money</Button>
+                                <Button variant="success" onClick={saveDeposit} style={{ height: '3rem', display: status === 'available' ? 'block' : 'none' }}>Deposit Money</Button>
                             </span>
                         )
                     }
@@ -147,4 +208,6 @@ const ViewDetail = () => {
     );
 };
 
-export default ViewDetail;
+export default withAuthenticationRequired(ViewDetail, {
+    onRedirecting: () => <Loader />,
+});

@@ -8,7 +8,7 @@ import { Navigate } from 'react-router-dom';
 
 const Calendar = () => {
     const { getAccessTokenSilently, user } = useAuth0()
-    const { apiServerUrl, audience} = useEnv()
+    const { apiServerUrl, audience } = useEnv()
     const role = `${audience}/roles`
     const [meetings, setMeetings] = useState([]);
     const currentUserId =
@@ -22,12 +22,10 @@ const Calendar = () => {
             );
 
     useEffect(() => {
-
         // get the calendar data
         const getCalendarData = async () => {
+            let cnt = 0
             const token = await getAccessTokenSilently()
-
-            // if userid is bigger than 21, they use oauth2
             await axios.get(`${apiServerUrl}/api/v1/meetings/search/byUser/${currentUserId}`, {
                 headers: {
                     authorization: `Bearer ${token}`
@@ -37,9 +35,12 @@ const Calendar = () => {
                     fetch(`${apiServerUrl}/api/v1/houses/${i.userHouse.houseId}`)
                 )).then(res2 => Promise.all(res2.map(r => r.json())))
                     .then(result => {
-                        Promise.all(Object.keys(res.data.content).forEach((it)=>{
-                                Object.keys(result).forEach((i)=>{
-                                    if (it.userHouse.userId === result[i].houseId) {
+                        Promise.all(res.data.content.map((it) => {
+                            cnt = 0
+                            result.map((i) => {
+                                if (it.userHouse.userId === result[i].houseId) {
+                                    cnt += 1
+                                    if (cnt === 1) {
                                         setMeetings(prevList => [...prevList, {
                                             meetingId: it.meetingId,
                                             houseId: it.userHouse.houseId,
@@ -47,15 +48,18 @@ const Calendar = () => {
                                             date: new Date(it.date.concat(' ', it.time)),
                                             title: result[i].name,
                                         }])
+                                    } else {
+                                        cnt = 0
                                     }
-                                })
+                                }
                             })
+                        })
                         )
                     })
             })
         }
         getCalendarData()
-    }, [apiServerUrl,currentUserId,getAccessTokenSilently]);
+    }, [apiServerUrl, currentUserId, getAccessTokenSilently]);
 
     // if logged in user is admin
     if (user[role].length !== 0) {
@@ -65,7 +69,6 @@ const Calendar = () => {
             </>
         )
     }
-    
     return (
         <section className="hero d-flex align-items-center">
             <div className="col-lg-10">

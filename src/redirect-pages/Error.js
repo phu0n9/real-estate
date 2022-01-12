@@ -1,6 +1,6 @@
-import React,{useEffect} from 'react'
+import React, { useEffect } from 'react'
 import '../stylesheet/redirect-page.css'
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Loader from '../components/Loader';
 import { useAuth0 } from "@auth0/auth0-react";
 
@@ -13,17 +13,17 @@ export default function Error() {
         setTimeout(() => {
             navigate('/')
         }, 7000)
-      }, [navigate])
+    }, [navigate])
 
-      if (isLoading) {
+    if (isLoading) {
         return <Loader />;
-      }
+    }
 
     return (
         <div className="redirect-page-wrapper">
-            <img src={loadingImg} alt="request" className='resize'/>
-            <h2 style={{marginLeft:"5%"}}>Try again later</h2>
-            <p style={{marginLeft:"10%"}}>Redirect to homepage</p>
+            <img src={loadingImg} alt="request" className='resize' />
+            <h2 style={{ marginLeft: "5%" }}>Try again later</h2>
+            <p style={{ marginLeft: "10%" }}>Redirect to homepage</p>
         </div>
     )
 }

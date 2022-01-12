@@ -1,12 +1,12 @@
-import React,{useState,useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import '../stylesheet/addHouse/form-control.css'
 import axios from 'axios'
 import { useEnv } from '../context/env.context'
-import { useNavigate,useParams} from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth0 } from "@auth0/auth0-react"
 
-export default function HouseForm({pageTitle}) {
-    const {getAccessTokenSilently } = useAuth0()
+export default function HouseForm({ pageTitle }) {
+    const { getAccessTokenSilently } = useAuth0()
 
     const [name, setHouseName] = useState("")
     const [price, setHousePrice] = useState(0)
@@ -18,8 +18,8 @@ export default function HouseForm({pageTitle}) {
     const [squareFeet, setSquareFeet] = useState(0)
     const { id } = useParams();
     const [image, setImage] = useState([])
-    const [checked,setChecked] = useState(true)
-    const [imageURL,setImageURL] = useState([])
+    const [checked, setChecked] = useState(true)
+    const [imageURL, setImageURL] = useState([])
 
     const { apiServerUrl } = useEnv()
 
@@ -62,39 +62,39 @@ export default function HouseForm({pageTitle}) {
         setImage(files)
     }
 
-    useEffect(()=>{
-        if (id != null){
-            const fetchHouse = async () =>{
+    useEffect(() => {
+        if (id != null) {
+            const fetchHouse = async () => {
                 const token = await getAccessTokenSilently()
-                await axios.get(`${apiServerUrl}/api/v1/houses/${id}`,{
-                    headers:{
+                await axios.get(`${apiServerUrl}/api/v1/houses/${id}`, {
+                    headers: {
                         authorization: `Bearer ${token}`
                     }
                 })
-                .then((res)=>{
-                    setHouseName(res.data.name)
-                    setHousePrice(res.data.price)
-                    setHouseDescription(res.data.description)
-                    setHouseAddress(res.data.address)
-                    setHouseStatus(res.data.status)
-                    setHouseType(res.data.type)
-                    setNumberOfBeds(res.data.numberOfBeds)
-                    setSquareFeet(res.data.squareFeet)
-                    setImage(res.data.image)
-                    setImageURL(res.data.image)
-                })
-                .catch((err)=>{console.log(err)})
+                    .then((res) => {
+                        setHouseName(res.data.name)
+                        setHousePrice(res.data.price)
+                        setHouseDescription(res.data.description)
+                        setHouseAddress(res.data.address)
+                        setHouseStatus(res.data.status)
+                        setHouseType(res.data.type)
+                        setNumberOfBeds(res.data.numberOfBeds)
+                        setSquareFeet(res.data.squareFeet)
+                        setImage(res.data.image)
+                        setImageURL(res.data.image)
+                    })
+                    .catch((err) => { console.log(err) })
             }
             fetchHouse()
         }
-    },[id,apiServerUrl,getAccessTokenSilently])
+    }, [id, apiServerUrl, getAccessTokenSilently])
 
-    const handleCheck = (e) =>{
+    const handleCheck = (e) => {
         setChecked(!checked)
-        if(e.target.checked){
-            setImageURL(oldImg => [...oldImg,e.target.value])
+        if (e.target.checked) {
+            setImageURL(oldImg => [...oldImg, e.target.value])
         }
-        else{
+        else {
             setImageURL(imageURL.filter(item => item !== e.target.value))
         }
     }
@@ -104,7 +104,7 @@ export default function HouseForm({pageTitle}) {
         image.forEach(file => {
             formData.append('files', file)
         })
-        
+
         formData.append('name', name)
         formData.append('price', price)
         formData.append('description', description)
@@ -114,11 +114,11 @@ export default function HouseForm({pageTitle}) {
         formData.append('squareFeet', squareFeet)
         formData.append('status', status)
 
-        if(!image || !price || !description || !address || !type || !numberOfBeds || !squareFeet || !status){
+        if (!image || !price || !description || !address || !type || !numberOfBeds || !squareFeet || !status) {
             alert('Please fill all the information in the form.')
         }
-        else{
-            if (id == null ){ // in add house page
+        else {
+            if (id == null) { // in add house page
                 // get access token from users to use api
                 const token = await getAccessTokenSilently()
                 await axios.post(`${apiServerUrl}/api/v1/houses`, formData, {
@@ -126,42 +126,44 @@ export default function HouseForm({pageTitle}) {
                         authorization: `Bearer ${token}`
                     }
                 })
-                .then(() => {
-                    navigate('/processing')
-                })
-                .catch(error => console.log(error))
+                    .then(() => {
+                        navigate('/processing')
+                    })
+                    .catch(error => console.log(error))
             }
-            else{ // in update house page
+            else { // in update house page
                 let data = {
-                    "name" : name,
-                    "image":imageURL,
-                    "price":price,
-                    "description":description,
-                    "address":address,
-                    "type":type,
-                    "status":status,
-                    "numberOfBeds":numberOfBeds,
-                    "squareFeet":squareFeet
+                    "name": name,
+                    "image": imageURL,
+                    "price": price,
+                    "description": description,
+                    "address": address,
+                    "type": type,
+                    "status": status,
+                    "numberOfBeds": numberOfBeds,
+                    "squareFeet": squareFeet
                 }
+                console.log(data)
                 const token = await getAccessTokenSilently()
                 await axios.put(`${apiServerUrl}/api/v1/houses/${id}`, data, {
                     headers: {
                         authorization: `Bearer ${token}`
                     }
                 })
-                .then(() => {
-                    navigate('/processing')
-                })
-                .catch(error => console.log(error))
+                    .then((res) => {
+                        console.log(res)
+                        navigate('/processing')
+                    })
+                    .catch(error => console.log(error))
             }
         }
     }
 
-    const uploadMoreImage = ()=>{
+    const uploadMoreImage = () => {
         navigate(`/auth/admin/uploadImage/${id}`)
     }
 
-    if (id != null && image === undefined){
+    if (id != null && image === undefined) {
         navigate('/processing')
     }
 
@@ -178,13 +180,13 @@ export default function HouseForm({pageTitle}) {
                                 <div className="row">
                                     <div className="col-md-6">
                                         <div className="form-group">
-                                            <input type="text" className="form-control" name="name" placeholder="House Name" onChange={nameOnChange} required value={name}/>
+                                            <input type="text" className="form-control" name="name" placeholder="House Name" onChange={nameOnChange} required value={name} />
                                         </div>
                                     </div>
 
                                     <div className="col-md-6">
                                         <div className="form-group">
-                                            <input type="number" min="0" max="900000" className="form-control" name="price" placeholder="House Price" onChange={priceOnChange} required value={price}/>
+                                            <input type="number" min="0" max="900000" className="form-control" name="price" placeholder="House Price" onChange={priceOnChange} required value={price} />
                                         </div>
                                     </div>
 
@@ -196,70 +198,70 @@ export default function HouseForm({pageTitle}) {
 
                                     <div className="col-md-12">
                                         <div className="form-group">
-                                            <input type="text" className="form-control" name="address" placeholder="House Address" onChange={addressOnChange} required value={address}/>
+                                            <input type="text" className="form-control" name="address" placeholder="House Address" onChange={addressOnChange} required value={address} />
                                         </div>
                                     </div>
 
                                     <div className="col-md-6">
                                         <div className="form-group">
-                                            <input type="text" className="form-control" name="type" placeholder="House Type" onChange={typeOnChange} required value={type}/>
+                                            <input type="text" className="form-control" name="type" placeholder="House Type" onChange={typeOnChange} required value={type} />
                                         </div>
                                     </div>
 
                                     <div className="col-md-6">
                                         <div className="form-group">
-                                            <input type="text" className="form-control" name="status" placeholder="House Status" onChange={statusOnChange} required value={status}/>
+                                            <input type="text" className="form-control" name="status" placeholder="House Status" onChange={statusOnChange} required value={status} />
                                         </div>
                                     </div>
 
                                     <div className="col-md-6">
                                         <div className="form-group">
-                                            <input type="number" min="1" max="10" className="form-control" name="numberOfBeds" placeholder="Number of Bedroom" onChange={numberOfBedsOnChange} required value={numberOfBeds}/>
+                                            <input type="number" min="1" max="10" className="form-control" name="numberOfBeds" placeholder="Number of Bedroom" onChange={numberOfBedsOnChange} required value={numberOfBeds} />
                                         </div>
                                     </div>
 
                                     <div className="col-md-6">
                                         <div className="form-group">
-                                            <input type="text" min="100" max="10000" className="form-control" name="squareFeet" placeholder="Square Feet" onChange={squareFeetOnChange} required value={squareFeet}/>
+                                            <input type="text" min="100" max="10000" className="form-control" name="squareFeet" placeholder="Square Feet" onChange={squareFeetOnChange} required value={squareFeet} />
                                         </div>
                                     </div>
 
                                     {
                                         id == null ? "" :
-                                        <span className="col-md-12 image-slider">
-                                            {
-                                                image.map((imageLink,key)=>{
-                                                    return <span key={key} >
-                                                        <img src={imageLink} alt="house-pic" className='house-img'/>
-                                                        <input type="checkbox" value={imageLink} onClick={handleCheck} defaultChecked="checked"/>
-                                                    </span>
-                                                })
-                                            }
-                                        </span>
+                                            <span className="col-md-12 image-slider">
+                                                {
+                                                    image.map((imageLink, key) => {
+                                                        return <span key={key} >
+                                                            <img src={imageLink} alt="house-pic" className='house-img' />
+                                                            <input type="checkbox" value={imageLink} onClick={handleCheck} defaultChecked="checked" />
+                                                        </span>
+                                                    })
+                                                }
+                                            </span>
                                     }
 
                                     {
-                                        id == null ? 
-                                        <div className="col-md-12">
-                                            <div className="form-group">
-                                                <input type="file" multiple onChange={handleChange} className="form-control" required/>
+                                        id == null ?
+                                            <div className="col-md-12">
+                                                <div className="form-group">
+                                                    <input type="file" multiple onChange={handleChange} className="form-control" required />
+                                                </div>
                                             </div>
-                                        </div>
-                                    : ""
+                                            : ""
                                     }
 
-                                    
+
                                     <div className="col-md-12">
                                         <div className="form-group">
                                             {
-                                                id == null ? 
-                                                <input type="submit" value={pageTitle} className="btn btn-primary vertical-center" onClick={submitBtnOnClick} />
-                                                :
-                                                <>
-                                                    <input type="submit" value={pageTitle} className="btn btn-primary vertical-center" onClick={submitBtnOnClick} style={{marginLeft:"46%"}}/>
-                                                    <input type="submit" value="Upload more image" className="btn btn-info vertical-center" onClick={uploadMoreImage} />
+                                                id == null ?
+                                                    <input type="submit" value={pageTitle} className="btn btn-primary vertical-center" onClick={submitBtnOnClick} />
+                                                    :
+                                                    <>
+                                                        <input type="submit" value={pageTitle} className="btn btn-primary vertical-center" onClick={submitBtnOnClick} style={{ marginLeft: "46%" }} />
+                                                        <input type="submit" value="Upload more image" className="btn btn-info vertical-center" onClick={uploadMoreImage} />
 
-                                                </>
+                                                    </>
 
                                             }
 

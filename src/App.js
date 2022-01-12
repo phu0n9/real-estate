@@ -24,6 +24,12 @@ import Success from './redirect-pages/Success'
 import Processing from "./redirect-pages/Processing";
 import Error from './redirect-pages/Error'
 import Unauthorized from "./redirect-pages/Unauthorized";
+import AdminViewRentalHouses from "./pages/AdminViewRentalHouses";
+import AdminAddRental from "./pages/AdminAddRental";
+import ViewAllDeposits from "./pages/ViewAllDeposits";
+import EditDeposit from "./pages/EditDeposit";
+import ViewUserDeposits from "./pages/ViewUserDeposit"
+import EditRental from "./pages/EditRental";
 
 function App() {
   const { isLoading, user, getAccessTokenSilently } = useAuth0();
@@ -42,6 +48,7 @@ function App() {
               user.sub.length
             ) / 10000
           );
+      console.log(currentUserId)
       // if user does not exist in the database
       if (user.sub.length > 21) {
         let data = {
@@ -56,7 +63,7 @@ function App() {
               authorization: `Bearer ${token}`,
             },
           })
-          .then(() => {})
+          .then(() => { })
           .catch((err) => {
             console.log(err);
           });
@@ -76,10 +83,10 @@ function App() {
       <NavBar />
       <Routes>
         {/* Redirect pages */}
-        <Route path="/success" exact={true} element={<Success/>}/>
-        <Route path="/error" exact={true} element={<Error/>}/>
-        <Route path="/processing" exact={true} element={<Processing/>}/>
-        <Route path="/unauthorized" exact={true} element={<Unauthorized/>}/>
+        <Route path="/success" exact={true} element={<Success />} />
+        <Route path="/error" exact={true} element={<Error />} />
+        <Route path="/processing" exact={true} element={<Processing />} />
+        <Route path="/unauthorized" exact={true} element={<Unauthorized />} />
 
         {/* basic routes */}
         <Route path="/" exact={true} element={<Home />} />
@@ -93,22 +100,20 @@ function App() {
         {/* logged in users routes */}
         <Route path="/auth/calendar" exact element={<Calendar />} />
         <Route path="/auth/profile" exact element={<Profile />} />
+        <Route path="/auth/ViewRentalHouses" exact element={<ViewRentalHouses />} />
+        <Route path="/auth/viewUserDeposit" exact element={<ViewUserDeposits />} />
 
         {/* admin routes */}
         <Route path="/auth/admin/calendar" exact element={<AdminCalendar />} />
         <Route path="/auth/admin/addHouse" exact element={<AddHouse />} />
-        <Route
-          path="/auth/admin/viewRentalHouses"
-          exact
-          element={<ViewRentalHouses />}
-        />
+        <Route path="/auth/admin/addRentalHouses" exact element={<AdminAddRental />} />
+        <Route path="/auth/admin/editRental/:id" exact element={<EditRental />} />
+        <Route path="/auth/admin/viewAllDeposits" exact element={<ViewAllDeposits />} />
+        <Route path="/auth/admin/editDeposit/:id" exact element={<EditDeposit />} />
+        <Route path="/auth/admin/viewRentalHouses" exact element={<AdminViewRentalHouses />} />
         <Route path="/auth/admin/viewUsers" exact element={<ViewAllUsers />} />
-
-        <Route path="/auth/admin/updateHouse/:id" exact element={<UpdateHouse/>}/>
-
-        <Route path="/auth/admin/uploadImage/:id" exact element={<UploadHouseImage/>}/>
-
-        <Route path="*" element={<NotFound/>} />
+        <Route path="/auth/admin/updateHouse/:id" exact element={<UpdateHouse />} />
+        <Route path="*" component={() => "404 NOT FOUND"} />
       </Routes>
     </>
   );

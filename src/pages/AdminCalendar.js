@@ -10,13 +10,13 @@ const AdminCalendar = () => {
 
     const { user, getAccessTokenSilently } = useAuth0()
     const { audience, apiServerUrl } = useEnv()
-
     const role = `${audience}/roles`
 
     const [meetings, setMeetings] = useState([]);
     useEffect(() => {
         // get the calendar data
         const getCalendarData = async () => {
+            let cnt = 0
             const token = await getAccessTokenSilently()
             await axios.get(`${apiServerUrl}/api/v1/meetings`, {
                 headers: {
@@ -41,16 +41,22 @@ const AdminCalendar = () => {
                         )).then(res3 => Promise.all(res3.map(r => r.json())))
                             .then(res3Result => { // after fetched the house data, spread user full name and house name
                                 Promise.all(res.data.map((it) => {
+                                    cnt = 0
                                     res2Result.map((user, i) => {
                                         res3Result.map((house, j) => {
                                             if (it.userHouse.userId === res2Result[i].userId && it.userHouse.houseId === res3Result[j].houseId) {
-                                                setMeetings(prevList => [...prevList, {
-                                                    meetingId: it.meetingId,
-                                                    houseId: it.userHouse.houseId,
-                                                    userId: it.userHouse.userId,
-                                                    date: new Date(it.date.concat(' ', it.time)),
-                                                    title: "user_name : ".concat(res2Result[i].fullName, "/", " house : ", res3Result[j].name),
-                                                }])
+                                                cnt += 1
+                                                if (cnt === 1) {
+                                                    setMeetings(prevList => [...prevList, {
+                                                        meetingId: it.meetingId,
+                                                        houseId: it.userHouse.houseId,
+                                                        userId: it.userHouse.userId,
+                                                        date: new Date(it.date.concat(' ', it.time)),
+                                                        title: "user_name : ".concat(res2Result[i].fullName, "/", " house : ", res3Result[j].name),
+                                                    }])
+                                                } else {
+                                                    cnt = 0
+                                                }
                                             }
                                         })
                                     })
@@ -61,8 +67,7 @@ const AdminCalendar = () => {
         }
         getCalendarData()
 
-
-    }, [apiServerUrl,getAccessTokenSilently]);
+    }, [apiServerUrl, getAccessTokenSilently]);
 
     // if logged in user is not admin
     if (user[role].length === 0) {

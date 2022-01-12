@@ -1,27 +1,35 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Container, Button, Row, Col } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import { SelectColumnFilter } from './Filter';
 import TableContainer from './TableContainer';
 import axios from 'axios'
 import { useAuth0 } from '@auth0/auth0-react';
 import { useEnv } from '../../context/env.context';
-import { useNavigate } from 'react-router-dom';
-import * as Icons from "react-icons/fa";
 
-const AdminViewAllRentalsTable = () => {
+const ViewAllRentalsTable = () => {
 
-    const { user, getAccessTokenSilently } = useAuth0()
-    const { audience, apiServerUrl } = useEnv()
+    const { getAccessTokenSilently, user } = useAuth0()
+    const { apiServerUrl, audience } = useEnv()
+    const role = `${audience}/roles`
 
-    const navigate = useNavigate();
+    const currentUserId =
+        user.sub.length < 21
+            ? user.sub.substring(user.sub.lastIndexOf("|") + 1, user.sub.length)
+            : Math.trunc(
+                user.sub.substring(
+                    user.sub.lastIndexOf("|") + 1,
+                    user.sub.length
+                ) / 10000
+            );
     const [rentals, setRentals] = useState([]);
 
     useEffect(() => {
         const fetchAllRentals = async () => {
             let cnt = 0
             const token = await getAccessTokenSilently()
+            console.log(token)
             // if userid is bigger than 21, they use oauth2
-            await axios.get(`${apiServerUrl}/api/v1/rentals/search?pageSize=20000&orderBy=desc`, {
+            await axios.get(`${apiServerUrl}/api/v1/rentals/search/byUser/${currentUserId}?pageSize=20000`, {
                 headers: {
                     authorization: `Bearer ${token}`
                 }
@@ -60,25 +68,8 @@ const AdminViewAllRentalsTable = () => {
         fetchAllRentals();
     }, []);
 
-    const renderRowSubComponent = (row) => {
-        return (
-            <div style={{ width: '18rem', margin: '0 auto' }}>
-                <Button variant="primary" onClick={navigate("/auth/admin/editRental/" + row.cells[1].value)}>Edit</Button>
-            </div>
-        );
-    };
-    // {/* <Button variant="primary" onClick={Navigate("/EditCategory/" + id)}>edit</Button> */ }
     const columns = useMemo(
         () => [
-            {
-                Header: () => null,
-                id: 'expander', // 'id' is required
-                Cell: ({ row }) => (
-                    <span {...row.getToggleRowExpandedProps()}>
-                        {row.isExpanded ? <Icons.FaEdit /> : <Icons.FaEdit />}
-                    </span>
-                ),
-            },
             {
                 Header: '#',
                 accessor: 'rentalId',
@@ -114,14 +105,13 @@ const AdminViewAllRentalsTable = () => {
     );
 
     return (
-        <Container style={{ marginTop: 50, marginBottom: 50 }}>
+        <Container style={{ marginTop: 50 }}>
             <TableContainer
                 columns={columns}
                 data={rentals}
-                renderRowSubComponent={renderRowSubComponent}
             />
         </Container>
     );
 };
 
-export default AdminViewAllRentalsTable;
+export default ViewAllRentalsTable;

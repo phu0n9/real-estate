@@ -4,53 +4,71 @@ import Loader from '../components/Loader'
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
 import { useEnv } from '../context/env.context';
 import axios from 'axios';
+import { Navigate } from 'react-router-dom';
 
 const Calendar = () => {
-    const { getAccessTokenSilently,user} = useAuth0()
-    
-    // get the calendar data using token
-    const { apiServerUrl } = useEnv()
-
-    const [meetings, setMettings] = useState([]);
-    const getCalendatData = async () => {
-        // get access token from users to use api
-        const token = await getAccessTokenSilently()
-        console.log(token)
-
-        await axios.get(`${apiServerUrl}/api/v1/meetings/search/byUser/1`, {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        }).then((res) => {
-            setMettings(
-                res.data.content.map((it) => (
-                    {
-                        meetingId: it.meetingId,
-                        date: new Date(it.date.concat(' ', it.time)),
-                        title: "".concat(getHouseData(it.userHouse.houseId))
-                    })
-                ))
-        })
-        // setData(response.data);
-    }
-
-    // get the house data using token
-    const getHouseData = async (e) => {
-        // get access token from users to use api
-        const token = await getAccessTokenSilently()
-        await axios.get(`${apiServerUrl}/api/v1/houses/${e}`, {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        }).then((res) => {
-            return res.data.name
-        })
-    }
+    const { getAccessTokenSilently, user } = useAuth0()
+    const { apiServerUrl, audience } = useEnv()
+    const role = `${audience}/roles`
+    const [meetings, setMeetings] = useState([]);
+    const currentUserId =
+        user.sub.length < 21
+            ? user.sub.substring(user.sub.lastIndexOf("|") + 1, user.sub.length)
+            : Math.trunc(
+                user.sub.substring(
+                    user.sub.lastIndexOf("|") + 1,
+                    user.sub.length
+                ) / 10000
+            );
 
     useEffect(() => {
-        getCalendatData();
-    }, []);
+        // get the calendar data
+        const getCalendarData = async () => {
+            let cnt = 0
+            const token = await getAccessTokenSilently()
+            await axios.get(`${apiServerUrl}/api/v1/meetings/search/byUser/${currentUserId}`, {
+                headers: {
+                    authorization: `Bearer ${token}`
+                }
+            }).then(res => {  // after fetched all meeting data, get the user data using userId in meeting data
+                Promise.all(res.data.content.map(i =>
+                    fetch(`${apiServerUrl}/api/v1/houses/${i.userHouse.houseId}`)
+                )).then(res2 => Promise.all(res2.map(r => r.json())))
+                    .then(result => {
+                        Promise.all(res.data.content.map((it) => {
+                            cnt = 0
+                            result.map((i) => {
+                                if (it.userHouse.userId === result[i].houseId) {
+                                    cnt += 1
+                                    if (cnt === 1) {
+                                        setMeetings(prevList => [...prevList, {
+                                            meetingId: it.meetingId,
+                                            houseId: it.userHouse.houseId,
+                                            userId: it.userHouse.userId,
+                                            date: new Date(it.date.concat(' ', it.time)),
+                                            title: result[i].name,
+                                        }])
+                                    } else {
+                                        cnt = 0
+                                    }
+                                }
+                            })
+                        })
+                        )
+                    })
+            })
+        }
+        getCalendarData()
+    }, [apiServerUrl, currentUserId, getAccessTokenSilently]);
 
+    // if logged in user is admin
+    if (user[role].length !== 0) {
+        return (
+            <>
+                <Navigate replace to="/auth/admin/calendar" />
+            </>
+        )
+    }
     return (
         <section className="hero d-flex align-items-center">
             <div className="col-lg-10">

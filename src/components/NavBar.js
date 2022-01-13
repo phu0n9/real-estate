@@ -3,7 +3,6 @@ import "../stylesheet/Navbar.css";
 import { AuthenticationButton } from "../login-button/AuthenticationButton";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEnv } from "../context/env.context";
-import defaultPic from "../img/default-pic.jpg";
 
 export default function NavBar() {
   const { user, isAuthenticated } = useAuth0();
@@ -74,71 +73,81 @@ export default function NavBar() {
                   </li>
                 </ul>
               </li>
-
-              {isAuthenticated && user[role].length !== 0 ? (
-                <li className="dropdown">
-                  <a
-                    href="/auth/admin/calendar"
-                    className={
-                      currentPath.includes("auth") ? "active" : "right"
-                    }
-                  >
-                    {" "}
-                    <img
-                      src={user.picture}
-                      className="profile-pic"
-                      alt="profile-pic"
-                    />{" "}
-                  </a>
-                  <ul>
-                    <li>
-                      <a href="/auth/admin/calendar">Calendar</a>
-                    </li>
-                    <li>
-                      <a href="/auth/admin/addHouse">Add House</a>
-                    </li>
-                    <li>
-                      <a href="/auth/admin/viewRentalHouses">
-                        View Rental House
-                      </a>
-                    </li>
-                    <li>
-                      <a href="/auth/admin/viewUsers">View users</a>
-                    </li>
-                    <li>
-                      <a href="/auth/admin/payments">Payments</a>
-                    </li>
-                    <AuthenticationButton />
-                  </ul>
-                </li>
+              {isAuthenticated ? (
+                user[role].length !== 0 ? (
+                  <li className="dropdown">
+                    <a
+                      href="/auth/admin/calendar"
+                      className={
+                        currentPath.includes("auth") ? "active" : "right"
+                      }
+                    >
+                      {" "}
+                      <img
+                        src={user.picture}
+                        className="profile-pic"
+                        alt="profile-pic"
+                      />{" "}
+                    </a>
+                    <ul>
+                      <li>
+                        <a href="/auth/admin/calendar">Calendar</a>
+                      </li>
+                      <li>
+                        <a href="/auth/admin/addHouse">Add House</a>
+                      </li>
+                      <li>
+                        <a href="/auth/admin/addRentalHouses">Add Rental</a>
+                      </li>
+                      <li>
+                        <a href="/auth/admin/viewRentalHouses">
+                          View Rental House
+                        </a>
+                      </li>
+                      <li>
+                        <a href="/auth/admin/viewUsers">View users</a>
+                      </li>
+                      <li>
+                        <a href="/auth/admin/payments">Payments</a>
+                      </li>
+                      <AuthenticationButton />
+                    </ul>
+                  </li>
+                ) : (
+                  <li className="dropdown">
+                    <a
+                      href="/auth/profile"
+                      className={
+                        currentPath.includes("auth") ? "active" : "right"
+                      }
+                    >
+                      {" "}
+                      <img
+                        src={user.picture}
+                        className="profile-pic"
+                        alt="profile-pic"
+                      />{" "}
+                    </a>
+                    <ul>
+                      <li>
+                        <a href="/auth/profile">Profile</a>
+                      </li>
+                      <li>
+                        <a href="/auth/calendar">Calendar</a>
+                      </li>
+                      <li>
+                        <a href="/auth/ViewRentalHouses">My Rental</a>
+                      </li>
+                      <li>
+                        <a href="/auth/payments">Payments</a>
+                      </li>
+                      <AuthenticationButton />
+                    </ul>
+                  </li>
+                )
               ) : (
-                <li className="dropdown">
-                  <a
-                    href="/auth/profile"
-                    className={
-                      currentPath.includes("auth") ? "active" : "right"
-                    }
-                  >
-                    {" "}
-                    <img
-                      src={defaultPic}
-                      className="profile-pic"
-                      alt="profile-pic"
-                    />{" "}
-                  </a>
-                  <ul>
-                    <li>
-                      <a href="/auth/profile">Profile</a>
-                    </li>
-                    <li>
-                      <a href="/auth/calendar">Calendar</a>
-                    </li>
-                    <li>
-                      <a href="/auth/payments">Payments</a>
-                    </li>
-
-                    <AuthenticationButton />
-                  </ul>
+                <li className="nav-link scrollto">
+                  <AuthenticationButton />
                 </li>
               )}
             </ul>

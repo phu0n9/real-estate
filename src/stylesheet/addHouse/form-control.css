@@ -56,3 +56,15 @@
   select.form-control:focus::-ms-value {
     color: #495057;
     background-color: #fff; }
+
+.image-slider{
+  overflow-x: scroll;
+  display: inline-flex;
+  overflow-y: hidden;
+}
+
+.house-img{
+  max-width: 300px;
+  height: 300px;
+  padding: 10px 10px;
+}

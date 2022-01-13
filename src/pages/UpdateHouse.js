@@ -1,14 +1,14 @@
 import React from 'react'
-import Loader from '../components/Loader'
-import { Navigate } from 'react-router-dom';
-import { useEnv } from '../context/env.context'
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react"
+import Loader from '../components/Loader'
+import { Navigate} from 'react-router-dom';
+import { useEnv } from '../context/env.context'
 
 import '../stylesheet/addHouse/form-control.css'
 import HouseForm from '../components/HouseForm';
 
-const AddHouse = () => {
-    const { user} = useAuth0()
+const UpdateHouse = () =>{
+    const { user } = useAuth0()
     const { audience } = useEnv()
     const role = `${audience}/roles`
 
@@ -20,14 +20,14 @@ const AddHouse = () => {
             </>
         )
     }
-
+    
     return (
         <section className="ftco-section">
-            <HouseForm pageTitle="Add House"/>
+            <HouseForm pageTitle="Update House"/>
         </section>
     )
 }
 
-export default withAuthenticationRequired(AddHouse, {
+export default withAuthenticationRequired(UpdateHouse, {
     onRedirecting: () => <Loader />,
 })

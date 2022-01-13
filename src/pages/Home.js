@@ -1,5 +1,5 @@
 import React from 'react';
-
+import Footer from "../components/Footer";
 import HomeBanner from '../components/homepage/HomeBanner';
 import ValueSection from '../components/homepage/ValueSection'
 import Location from '../components/homepage/Location';
@@ -14,18 +14,19 @@ const Home = () => {
     return (
         <div>
             <HomeBanner />
-            <ValueSection/>
+            <ValueSection />
             <br />
-            <Location/>
+            <Location />
             <br />
-            <FAQ/>
+            <FAQ />
             <br />
-            <HouseList/>
+            <HouseList />
             <br />
-            <BlogRow/>
+            <BlogRow />
             <br />
-            <Contact/>
-
+            <Contact />
+            <br />
+            <Footer />
         </div>
     );
 };

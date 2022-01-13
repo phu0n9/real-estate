@@ -9,15 +9,19 @@ import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 import Button from 'react-bootstrap/Button'
 import Pagination from 'react-bootstrap/Pagination'
+import Footer from '../components/Footer'
+import { useEnv } from '../context/env.context'
 
 const Rental = () => {
     let pagination = [];
+    const { apiServerUrl } = useEnv()
     const [houses, setHouses] = useState([]);
     const [price, setPrice] = React.useState([0, 900000]);
     const [searchQuery, setSearchQuery] = useState(''); 
     const [pageNum, setPageNum] = useState(1);
     const [sortParam, setSortParam] = useState('');
     const [currentQuery, setCurrentQuery] = useState(0);
+    const [contentState, setContentState] = useState('Not Searched');
 
     // Handle Value States
     function valuetext(value) {
@@ -39,36 +43,51 @@ const Rental = () => {
     // Handle Queries
     const handleSearchQuery = () => {
         console.log(sortParam)
-        axios.get(`http://localhost:8081/api/v1/houses/search?query=${searchQuery}&pageNo=${pageNum}&sortBy=${sortParam}`)
+        axios.get(`${apiServerUrl}/api/v1/houses/search?query=${searchQuery}&pageNo=${pageNum}&sortBy=${sortParam}`)
             .then((res) => {
-                let content = res.data.content
+                let content = res.data.content;
                 setHouses(content);
+                if (content.length === 0) {
+                    console.log("No Result");
+                    setContentState('No Result');
+                }
+                else
+                    setContentState('');
+                
             });
         setCurrentQuery(0)
         setPageNum(1)
     };
 
     const handleSearchPrice = () => {
-        axios.get(`http://localhost:8081/api/v1/houses/search/byPriceBetween?low=${price[0]}&high=${price[1]}&pageNo=${pageNum}&sortBy=${sortParam}`)
+        axios.get(`${apiServerUrl}/api/v1/houses/search/byPriceBetween?low=${price[0]}&high=${price[1]}&pageNo=${pageNum}&sortBy=${sortParam}`)
             .then((res) => {
                 let content = res.data.content
                 setHouses(content);
+
+                if (content.length === 0) {
+                    console.log("No Result");
+                    setContentState('No Result');
+                }
+                else
+                    setContentState('');
             });
         setCurrentQuery(1)
         setPageNum(1)
+        
     };
 
     const handlePageChange = (event) => {
         let page = event.target.getAttribute("value");
         if (currentQuery === 1) {
-            axios.get(`http://localhost:8081/api/v1/houses/search?query=${searchQuery}&pageNo=${page}&sortBy=${sortParam}`)
+            axios.get(`${apiServerUrl}/api/v1/houses/search?query=${searchQuery}&pageNo=${page}&sortBy=${sortParam}`)
             .then((res) => {
                 let content = res.data.content
                 setHouses(content);
             });
         }
         else {
-            axios.get(`http://localhost:8081/api/v1/houses/search/byPriceBetween?low=${price[0]}&high=${price[1]}&pageNo=${page}&sortBy=${sortParam}`)
+            axios.get(`${apiServerUrl}/api/v1/houses/search/byPriceBetween?low=${price[0]}&high=${price[1]}&pageNo=${page}&sortBy=${sortParam}`)
             .then((res) => {
                 let content = res.data.content
                 setHouses(content);
@@ -90,6 +109,8 @@ const Rental = () => {
         <div>
             <br />
             <br />
+            <br/>
+            <br/>
             <div style={{ position: "relative", width: "90%", padding: "10px 20px", margin: "0 auto", letterSpacing: "-.2px", boxShadow: "5px 10px 8px #888888" }}>
                 <div style={{ paddingLeft: "110px" }}>
                     <h2>
@@ -107,7 +128,7 @@ const Rental = () => {
                                     <Button style={{height: 50, width: 150, marginTop: 20}} variant="secondary" onClick={handleSearchQuery}>Search By Query</Button>{' '}
                                 </Col>
                                 <Col xs={2} md={2} lg={2}>
-                                    <Form.Label>Price Range</Form.Label>
+                                    <Form.Label>Price: {price[0]} - {price[1]}</Form.Label>
                                     <Box sx={{ width: 180 }}>
                                         <Slider
                                             getAriaLabel={() => 'Price Range'}
@@ -138,6 +159,10 @@ const Rental = () => {
                         </Container>
                     </div>
                     <br/>
+                    <h5>
+                        {contentState === 'Not Searched' ? 'Please use the search bar or search by price.' : contentState === 'No Result' ? 'There are no houses that match your query. Please try something else.' : ''}
+                    </h5>
+                    <br/>
                     <Container>
                         <Row>
                             {houses.map((house) => (
@@ -156,6 +181,7 @@ const Rental = () => {
                 </div>
             </div>
             <br/>
+            <Footer/>
         </div>
     );
 };

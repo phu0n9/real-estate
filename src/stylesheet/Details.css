@@ -3,6 +3,7 @@
 --------------------------------------------------------------*/
 .portfolio-details {
     padding-top: 40px;
+    margin-top: 10%;
   }
   .portfolio-details .portfolio-details-slider img {
     width: 100%;
@@ -43,6 +44,7 @@
   }
   .portfolio-details .portfolio-description {
     padding-top: 30px;
+    margin-top: 10%;
   }
   .portfolio-details .portfolio-description h2 {
     font-size: 26px;
@@ -51,4 +53,8 @@
   }
   .portfolio-details .portfolio-description p {
     padding: 0;
+  }
+
+  span button{
+    margin-left: 5%;
   }

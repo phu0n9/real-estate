@@ -11,7 +11,7 @@ import AdminCalendar from "./pages/AdminCalendar";
 import AddHouse from "./pages/AddHouse";
 import ViewRentalHouses from "./pages/ViewRentalHouses";
 import ViewAllUsers from "./pages/ViewAllUsers";
-import React, { createContext, useState,useEffect } from "react";
+import React, { createContext, useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import Loader from "./components/Loader";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -27,17 +27,14 @@ import ViewAllDeposits from "./pages/ViewAllDeposits";
 import EditDeposit from "./pages/EditDeposit";
 import ViewUserDeposits from "./pages/ViewUserDeposit";
 import EditRental from "./pages/EditRental";
-<<<<<<< HEAD
 import AdminEditMeeting from "./pages/AdminEditMeeting";
-=======
 import { useEnv } from "./context/env.context";
 import axios from 'axios'
 
 export const UserContext = createContext();
->>>>>>> 6f4596f14d4bc0bbbf6e2cb2032bb92a1a7475ba
 
 function App() {
-  const { isLoading, user,getAccessTokenSilently } = useAuth0();
+  const { isLoading, user, getAccessTokenSilently } = useAuth0();
   // const [isAdmin,setIsAdmin] = useState()
 
   const { apiServerUrl } = useEnv()
@@ -57,11 +54,11 @@ function App() {
       user?.sub.length < 21
         ? user?.sub.substring(user?.sub.lastIndexOf("|") + 1, user?.sub.length)
         : Math.trunc(
-            user?.sub.substring(
-              user?.sub.lastIndexOf("|") + 1,
-              user?.sub.length
-            ) / 10000
-          );
+          user?.sub.substring(
+            user?.sub.lastIndexOf("|") + 1,
+            user?.sub.length
+          ) / 10000
+        );
     return currentUserId;
   };
 
@@ -78,11 +75,6 @@ function App() {
               user.sub.length
             ) / 10000
           );
-<<<<<<< HEAD
-      console.log(currentUserId)
-      console.log(token)
-=======
->>>>>>> 6f4596f14d4bc0bbbf6e2cb2032bb92a1a7475ba
       // if user does not exist in the database
       if (user.sub.length > 21) {
         let data = {
@@ -107,7 +99,7 @@ function App() {
       getUser();
     }
   }, [user, apiServerUrl, getAccessTokenSilently]);
-  
+
 
   if (isLoading) {
     return <Loader />;
@@ -185,9 +177,9 @@ function App() {
         <Route
           path="/auth/admin/payments"
           exact
-          element={<Payment isAdmin/>}
+          element={<Payment isAdmin />}
         />
-        <Route path="*" element={<Error/>}/>
+        <Route path="*" element={<Error />} />
       </Routes>
     </UserContext.Provider>
   );

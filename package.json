@@ -14,7 +14,7 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/pickers": "^3.3.10",
     "@material-ui/styles": "^4.11.4",
-    "@mui/material": "^5.2.7",
+    "@mui/material": "^5.2.8",
     "@syncfusion/ej2-react-buttons": "^19.4.42",
     "@syncfusion/ej2-react-schedule": "^19.3.55",
     "@testing-library/jest-dom": "^5.16.0",

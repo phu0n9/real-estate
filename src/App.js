@@ -35,18 +35,8 @@ export const UserContext = createContext();
 
 function App() {
   const { isLoading, user, getAccessTokenSilently } = useAuth0();
-  // const [isAdmin,setIsAdmin] = useState()
 
   const { apiServerUrl } = useEnv()
-  // const role = `${audience}/roles`
-
-  // useEffect(()=>{
-  //   if (user !== undefined ) {
-  //     if (user[role].length !== 0){
-  //       setIsAdmin(true)
-  //     }
-  //   }
-  // },[role,user])
 
   const getUserId = () => {
     // if userid is bigger than 21, they use oauth2
@@ -65,6 +55,7 @@ function App() {
   useEffect(() => {
     const getUser = async () => {
       const token = await getAccessTokenSilently();
+      console.log(token)
       // if userid is bigger than 21, they use oauth2
       const currentUserId =
         user.sub.length < 21

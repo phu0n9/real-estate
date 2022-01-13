@@ -32,7 +32,7 @@ const ViewAllUsersTable = () => {
     const columns = useMemo(
         () => [
             {
-                Header: '#',
+                Header: 'Id',
                 accessor: 'userId',
                 Filter: SelectColumnFilter,
                 filter: 'equals',
@@ -48,10 +48,6 @@ const ViewAllUsersTable = () => {
             {
                 Header: 'Phone Number',
                 accessor: 'phoneNumber',
-            },
-            {
-                Header: 'Day of Birthday',
-                accessor: 'dob',
             },
         ],
         []

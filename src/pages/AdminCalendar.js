@@ -4,7 +4,10 @@ import Loader from '../components/Loader';
 import axios from 'axios'
 import { useEnv } from '../context/env.context'
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react"
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { ButtonComponent } from '@syncfusion/ej2-react-buttons';
+import Popup from '../components/popup/Popup';
+import AdminMeetingForm from '../components/bookMeeting/AdminMeetingForm';
 
 const AdminCalendar = () => {
 
@@ -49,10 +52,14 @@ const AdminCalendar = () => {
                                                 if (cnt === 1) {
                                                     setMeetings(prevList => [...prevList, {
                                                         meetingId: it.meetingId,
+                                                        title: "Meeting Id : ".concat(it.meetingId, "/", " house : ", res3Result[j].name),
                                                         houseId: it.userHouse.houseId,
+                                                        houseName: res3Result[j].name,
                                                         userId: it.userHouse.userId,
+                                                        userName: res2Result[i].fullName,
                                                         date: new Date(it.date.concat(' ', it.time)),
-                                                        title: "user_name : ".concat(res2Result[i].fullName, "/", " house : ", res3Result[j].name),
+                                                        description: "meeting with : ".concat(res2Result[i].fullName),
+                                                        note: it.note
                                                     }])
                                                 } else {
                                                     cnt = 0
@@ -69,6 +76,14 @@ const AdminCalendar = () => {
 
     }, [apiServerUrl, getAccessTokenSilently]);
 
+    const [openEditPopup, setOpenEditPopup] = useState(false)
+    const [meetingData, setMeetingData] = useState("")
+
+    const editMeeting = (e) => {
+        setMeetingData(e.event)
+        setOpenEditPopup(true)
+    }
+
     // if logged in user is not admin
     if (user[role].length === 0) {
         return (
@@ -79,13 +94,11 @@ const AdminCalendar = () => {
     }
 
     return (
-        <section className="hero d-flex align-items-center">
+        <section className="hero d-flex align-items-center" style={{ marginTop: 100 }}>
             <div className="col-lg-10" >
-                <br />
-                <br />
-                <br />
-                <ScheduleComponent
-                    currentView='Month' selectedDate={new Date()} height='850px' style={{ marginLeft: "250px" }} readonly={true}
+                <ScheduleComponent style={{ marginLeft: "250px" }}
+                    currentView='Month' selectedDate={new Date()} height='850px' readonly={true} popupOpen={false}
+                    eventClick={editMeeting}
                     eventSettings={{
                         dataSource: meetings,
                         fields: {
@@ -93,7 +106,8 @@ const AdminCalendar = () => {
                             subject: { name: 'title' },
                             content: { name: 'content' },
                             startTime: { name: 'date' },
-                            endTime: { name: 'date' }
+                            endTime: { name: 'date' },
+                            description: { name: 'description' }
                         }
                     }}>
 
@@ -105,6 +119,13 @@ const AdminCalendar = () => {
                     <Inject services={[Day, Week, Month]} />
                 </ScheduleComponent>
             </div>
+            <Popup
+                title="View Meeting Detail"
+                openPopup={openEditPopup}
+                setOpenPopup={setOpenEditPopup}
+            >
+                <AdminMeetingForm meetingData={meetingData} />
+            </Popup>
         </section>
     );
 };

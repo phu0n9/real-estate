@@ -28,6 +28,22 @@
   color: #61dafb;
 }
 
+.e-custom,
+.e-custom:hover,
+.e-custom:focus,
+.e-custom:active {
+  background-color: blue;
+  color: #fff;
+}
+
+.d-custom,
+.d-custom:hover,
+.d-custom:focus,
+.d-custom:active {
+  background-color: red;
+  color: #fff;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

@@ -30,6 +30,7 @@ import ViewAllDeposits from "./pages/ViewAllDeposits";
 import EditDeposit from "./pages/EditDeposit";
 import ViewUserDeposits from "./pages/ViewUserDeposit"
 import EditRental from "./pages/EditRental";
+import AdminEditMeeting from "./pages/AdminEditMeeting";
 
 function App() {
   const { isLoading, user, getAccessTokenSilently } = useAuth0();
@@ -49,6 +50,7 @@ function App() {
             ) / 10000
           );
       console.log(currentUserId)
+      console.log(token)
       // if user does not exist in the database
       if (user.sub.length > 21) {
         let data = {
@@ -105,6 +107,7 @@ function App() {
 
         {/* admin routes */}
         <Route path="/auth/admin/calendar" exact element={<AdminCalendar />} />
+        <Route path="/auth/admin/adminEditMeeting/:id" exact element={<AdminEditMeeting />} />
         <Route path="/auth/admin/addHouse" exact element={<AddHouse />} />
         <Route path="/auth/admin/addRentalHouses" exact element={<AdminAddRental />} />
         <Route path="/auth/admin/editRental/:id" exact element={<EditRental />} />

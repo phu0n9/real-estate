@@ -41,8 +41,6 @@ const EditRental = () => {
         fetchRental()
     }, []);
 
-    console.log(rental)
-
     const [showMessage, setShowMessage] = useState(false);
     const [formerrors, setFormErrors] = useState({});
 
@@ -283,7 +281,6 @@ const EditRental = () => {
                                     </Row>
                                 </div>
                             </Form>
-
                         </Card.Body>
                     </Card>
                 </Col>

@@ -5,6 +5,8 @@ import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
 import { useEnv } from '../context/env.context';
 import axios from 'axios';
 import { Navigate } from 'react-router-dom';
+import Popup from '../components/popup/Popup';
+import UserMeetingForm from '../components/bookMeeting/UserMeetingForm';
 
 const Calendar = () => {
     const { getAccessTokenSilently, user } = useAuth0()
@@ -44,7 +46,9 @@ const Calendar = () => {
                                         setMeetings(prevList => [...prevList, {
                                             meetingId: it.meetingId,
                                             houseId: it.userHouse.houseId,
+                                            houseName: result[i].name,
                                             userId: it.userHouse.userId,
+                                            note: it.note,
                                             date: new Date(it.date.concat(' ', it.time)),
                                             title: result[i].name,
                                         }])
@@ -61,6 +65,14 @@ const Calendar = () => {
         getCalendarData()
     }, [apiServerUrl, currentUserId, getAccessTokenSilently]);
 
+    const [openEditPopup, setOpenEditPopup] = useState(false)
+    const [meetingData, setMeetingData] = useState("")
+
+    const editMeeting = (e) => {
+        setMeetingData(e.event)
+        setOpenEditPopup(true)
+    }
+
     // if logged in user is admin
     if (user[role].length !== 0) {
         return (
@@ -76,7 +88,9 @@ const Calendar = () => {
                 <br />
                 <br />
                 <ScheduleComponent
-                    currentView='Month' selectedDate={new Date()} height='850px' style={{ marginLeft: "250px" }} readonly={true}
+                    currentView='Month' selectedDate={new Date()} height='850px' style={{ marginLeft: "250px" }}
+                    popupOpen={false} readonly={true}
+                    eventClick={editMeeting}
                     eventSettings={{
                         dataSource: meetings,
                         fields: {
@@ -95,7 +109,15 @@ const Calendar = () => {
                     <Inject services={[Day, Week, Month]} />
                 </ScheduleComponent>
             </div>
+            <Popup
+                title="View Meeting Detail"
+                openPopup={openEditPopup}
+                setOpenPopup={setOpenEditPopup}
+            >
+                <UserMeetingForm meetingData={meetingData} />
+            </Popup>
         </section>
+
     );
 };
 

@@ -9,6 +9,11 @@ const api_key = process.env.REACT_APP_API_KEY_GOOGLE_MAPS
 const isEnvValid = domain && clientId && audience && apiServerUrl && api_key;
 
 if (!isEnvValid) {
+  console.log(domain)
+  console.log(clientId)
+  console.log(audience)
+  console.log(apiServerUrl)
+  console.log(api_key)
   throw new Error("Missing environment variables.");
 }
 

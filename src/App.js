@@ -11,12 +11,11 @@ import AdminCalendar from "./pages/AdminCalendar";
 import AddHouse from "./pages/AddHouse";
 import ViewRentalHouses from "./pages/ViewRentalHouses";
 import ViewAllUsers from "./pages/ViewAllUsers";
-import React, { createContext } from "react";
+import React, { createContext, useState,useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import Loader from "./components/Loader";
 import { useAuth0 } from "@auth0/auth0-react";
 import Payment from "./components/payment";
-import Footer from "./components/Footer";
 import UpdateHouse from "./pages/UpdateHouse";
 import Success from "./redirect-pages/Success";
 import Processing from "./redirect-pages/Processing";
@@ -28,11 +27,26 @@ import ViewAllDeposits from "./pages/ViewAllDeposits";
 import EditDeposit from "./pages/EditDeposit";
 import ViewUserDeposits from "./pages/ViewUserDeposit";
 import EditRental from "./pages/EditRental";
+import { useEnv } from "./context/env.context";
+import axios from 'axios'
 
 export const UserContext = createContext();
 
 function App() {
-  const { isLoading, user } = useAuth0();
+  const { isLoading, user,getAccessTokenSilently } = useAuth0();
+  // const [isAdmin,setIsAdmin] = useState()
+
+  const { apiServerUrl } = useEnv()
+  // const role = `${audience}/roles`
+
+  // useEffect(()=>{
+  //   if (user !== undefined ) {
+  //     if (user[role].length !== 0){
+  //       setIsAdmin(true)
+  //     }
+  //   }
+  // },[role,user])
+
   const getUserId = () => {
     // if userid is bigger than 21, they use oauth2
     const currentUserId =
@@ -46,6 +60,45 @@ function App() {
           );
     return currentUserId;
   };
+
+  useEffect(() => {
+    const getUser = async () => {
+      const token = await getAccessTokenSilently();
+      // if userid is bigger than 21, they use oauth2
+      const currentUserId =
+        user.sub.length < 21
+          ? user.sub.substring(user.sub.lastIndexOf("|") + 1, user.sub.length)
+          : Math.trunc(
+            user.sub.substring(
+              user.sub.lastIndexOf("|") + 1,
+              user.sub.length
+            ) / 10000
+          );
+      // if user does not exist in the database
+      if (user.sub.length > 21) {
+        let data = {
+          auth0Id: currentUserId,
+          fullName: user.name,
+          email: user.email,
+        };
+        // Request made and server responded
+        await axios
+          .post(`${apiServerUrl}/api/v1/users`, data, {
+            headers: {
+              authorization: `Bearer ${token}`,
+            },
+          })
+          .then(() => { })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    };
+    if (user !== undefined) {
+      getUser();
+    }
+  }, [user, apiServerUrl, getAccessTokenSilently]);
+  
 
   if (isLoading) {
     return <Loader />;
@@ -122,11 +175,10 @@ function App() {
         <Route
           path="/auth/admin/payments"
           exact
-          element={<Payment isAdmin />}
+          element={<Payment isAdmin/>}
         />
-        <Route path="*" component={() => "404 NOT FOUND"} />
+        <Route path="*" element={<Error/>}/>
       </Routes>
-      <Footer />
     </UserContext.Provider>
   );
 }

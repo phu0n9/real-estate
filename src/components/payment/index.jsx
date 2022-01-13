@@ -12,24 +12,29 @@ import { useEnv } from "../../context/env.context";
 import Loader from "../Loader";
 import AddPayment from "./AddPayment";
 import PaymentItem from "./PaymentItem";
+import { Navigate } from 'react-router-dom';
 
-const Payment = ({ isAdmin }) => {
+const Payment = ({isAdmin}) => {
   const [paymentList, setPaymentList] = useState([]);
   const [rentalList, setRentalList] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const [selectedRentalId, setSelectedRentalId] = useState(0);
-  const [activePage, setActivePage] = useState(1);
+  const [activePage, setActivePage] = useState(0);
 
   const { getAccessTokenSilently } = useAuth0();
-  const { apiServerUrl } = useEnv();
   const currentUserId = useContext(UserContext);
+  const [totalItem,setTotalItem] = useState()
+
+  const { audience,apiServerUrl } = useEnv()
+  // const role = `${audience}/roles`
+  // const {user } = useAuth0();
 
   // getFilteredPayments
   const getAllPayments = async () => {
+    console.log(isAdmin)
     setLoading(true);
     const token = await getAccessTokenSilently();
-
     const params = {
       pageNo: activePage,
       userId: !isAdmin ? currentUserId : "",
@@ -40,13 +45,14 @@ const Payment = ({ isAdmin }) => {
       },
       params,
     });
-    setPaymentList(response.data);
+    setPaymentList(response.data.content);
+    setTotalItem(response.data.totalElements)
 
     // for user, get list of rentals for them to filter
     if (!isAdmin) {
       let tempRental = [];
       // get all rentalIds
-      response.data.forEach((p) => {
+      response.data.content.forEach((p) => {
         if (!tempRental.includes(p.rental.rentalId)) {
           tempRental.push(p.rental.rentalId);
         }
@@ -54,7 +60,7 @@ const Payment = ({ isAdmin }) => {
 
       // map rental with price
       const rentalWithPrice = tempRental.map((rental) => {
-        const price = response.data.find(
+        const price = response.data.content.find(
           (payment) => payment.rental.rentalId === rental
         ).amount;
         return {
@@ -83,6 +89,7 @@ const Payment = ({ isAdmin }) => {
       }
     );
     setPaymentList(response.data.content);
+    setTotalItem(response.data.totalElements)
     setLoading(false);
   };
 
@@ -139,6 +146,7 @@ const Payment = ({ isAdmin }) => {
   //   } else return false;
   // };
 
+
   return (
     <Container className="py-5" style={{ marginTop: "5rem" }}>
       {loading ? (
@@ -176,8 +184,8 @@ const Payment = ({ isAdmin }) => {
               );
             })}
           </div>
-          {!isAdmin && <AddPayment rentals={rentalList} />}
-          {paymentList.length > 10 && (
+          {!isAdmin && rentalList.length > 0 && <AddPayment rentals={rentalList} />}
+          {totalItem > 1 && (
             <Pagination>{paginationItems()}</Pagination>
           )}
         </div>

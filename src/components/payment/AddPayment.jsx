@@ -10,8 +10,8 @@ const AddPayment = ({ rentals }) => {
   const [show, setShow] = useState(false);
   const [formData, setFormData] = useState({
     note: "",
-    rentalId: 0,
-    amount: 0,
+    rentalId: rentals[0].rentalId,
+    amount: rentals[0].price,
   });
 
   // addNewPaymentByRentalId
@@ -19,14 +19,18 @@ const AddPayment = ({ rentals }) => {
     const today = new Date();
     const body = {
       amount: formData.amount,
-      date:
+      date: 
         today.getFullYear() +
         "-" +
+        today.getMonth().toString().length < 2 ?
+         `0`+today.getMonth() + 1 : 
         (today.getMonth() + 1) +
         "-" +
+        today.getDate().toString().length < 2 ? 
+        "0" + today.getDate() :
         today.getDate(),
       time:
-        today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds(),
+        today.getHours() + ":" + today.getMinutes(),
       note: formData.note,
     };
     const token = await getAccessTokenSilently();
@@ -41,11 +45,12 @@ const AddPayment = ({ rentals }) => {
     );
     setFormData({
       note: "",
-      rentalId: 0,
-      amount: 0,
+      rentalId: rentals[0].rentalId,
+      amount: rentals[0].price,
     });
     setShow(false);
   };
+  console.log(rentals)
   return (
     <>
       <Button variant="primary" onClick={() => setShow(true)} className="mx-2">
@@ -56,8 +61,8 @@ const AddPayment = ({ rentals }) => {
         onHide={() => {
           setFormData({
             note: "",
-            rentalId: 0,
-            amount: 0,
+            rentalId: rentals[0].rentalId,
+            amount: rentals[0].price,
           });
           setShow(false);
         }}
@@ -70,14 +75,19 @@ const AddPayment = ({ rentals }) => {
           <Form.Group className="mb-3">
             <Form.Label>Select rental</Form.Label>
             <Form.Select
-              onSelect={(e) =>
-                setFormData({
-                  ...formData,
-                  rentalId: e.target.value,
-                  amount: rentals.find(
-                    (rental) => rental.rentalId === e.target.value
-                  ).price,
-                })
+              onChange={
+                (e) =>{
+                
+                  setFormData({
+                    ...formData,
+                    rentalId: e.target.value,
+                    amount: rentals.find(
+                      (rental) => rental.rentalId == e.target.value
+                    ).price,
+                  })
+                }
+                
+                
               }
             >
               {rentals.map((rental) => (

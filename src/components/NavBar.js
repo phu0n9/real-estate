@@ -51,28 +51,6 @@ export default function NavBar() {
                   Rental
                 </a>
               </li>
-              <li className="dropdown">
-                <a
-                  href="/blog"
-                  className={currentPath === "/blog" ? "active" : ""}
-                >
-                  <span>Blog</span>{" "}
-                </a>
-                <ul>
-                  <li>
-                    <a href="/">Drop Down 1</a>
-                  </li>
-                  <li>
-                    <a href="/">Drop Down 2</a>
-                  </li>
-                  <li>
-                    <a href="/">Drop Down 3</a>
-                  </li>
-                  <li>
-                    <a href="/">Drop Down 4</a>
-                  </li>
-                </ul>
-              </li>
               {isAuthenticated ? (
                 user[role].length !== 0 ? (
                   <li className="dropdown">

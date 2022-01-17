@@ -8,6 +8,7 @@ import DatePicker from 'react-datepicker'
 import Loader from '../components/Loader';
 import TimePicker from 'react-time-picker';
 import "react-time-picker/dist/TimePicker.css"
+import * as moment from 'moment'
 
 const AdminEditMeeting = () => {
     const { id } = useParams();
@@ -75,7 +76,7 @@ const AdminEditMeeting = () => {
         // get access token from users to use api
         const token = await getAccessTokenSilently();
         console.log(meeting)
-        await axios.post(`${apiServerUrl}/api/v1/meetings`,{params:meeting}, {
+        await axios.post(`${apiServerUrl}/api/v1/meetings?meetingId=${meeting.meetingId}userId=${meeting.userHouse.userId}&houseId=${meeting.userHouse.houseId}&date=${moment(meeting.date).format('YYYY-MM-DD')}&time=${meeting.time}&note=${meeting.note}`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 "content-type": "application/json"

@@ -76,10 +76,9 @@ const AdminEditMeeting = () => {
         // get access token from users to use api
         const token = await getAccessTokenSilently();
         console.log(meeting)
-        await axios.post(`${apiServerUrl}/api/v1/meetings?meetingId=${meeting.meetingId}userId=${meeting.userHouse.userId}&houseId=${meeting.userHouse.houseId}&date=${moment(meeting.date).format('YYYY-MM-DD')}&time=${meeting.time}&note=${meeting.note}`, {
+        await axios.post(`${apiServerUrl}/api/v1/meetings?meetingId=${meeting.meetingId}&userId=${meeting.userHouse.userId}&houseId=${meeting.userHouse.houseId}&date=${moment(meeting.date).format('YYYY-MM-DD')}&time=${meeting.time}&note=${meeting.note}`, {
             headers: {
-                'Authorization': `Bearer ${token}`,
-                "content-type": "application/json"
+                authorization: `Bearer ${token}`,
             }
         }).then((res) => {
             console.log(res)

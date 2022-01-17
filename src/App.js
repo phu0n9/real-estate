@@ -2,8 +2,6 @@ import Calendar from "./pages/Calendar";
 import NavBar from "./components/NavBar";
 import Profile from "./pages/Profile";
 import Home from "./pages/Home";
-import MyPage from "./pages/MyPage";
-import Register from "./pages/Register";
 import Rental from "./pages/Rental";
 import ViewDetail from "./pages/ViewDetail";
 import BookMeeting from "./pages/BookMeeting";
@@ -112,11 +110,8 @@ function App() {
         {/* basic routes */}
         <Route path="/" exact={true} element={<Home />} />
         <Route path="/rental" exact={true} element={<Rental />} />
-        <Route path="/myPage" exact element={<MyPage />} />
         <Route path="/BookMeeting/:id" exact element={<BookMeeting />} />
         <Route path="/viewDetail/:id" exact element={<ViewDetail />} />
-        <Route path="/register" exact element={<Register />} />
-        <Route path="/myPage" exact element={<MyPage />} />
 
         {/* logged in users routes */}
         <Route path="/auth/payments" exact element={<Payment />} />

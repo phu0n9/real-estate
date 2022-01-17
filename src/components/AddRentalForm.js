@@ -251,4 +251,5 @@ const AddRentalForm = () => {
     );
 };
 
+
 export default AddRentalForm;

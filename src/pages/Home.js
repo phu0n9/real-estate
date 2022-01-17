@@ -5,7 +5,6 @@ import ValueSection from '../components/homepage/ValueSection'
 import Location from '../components/homepage/Location';
 import FAQ from '../components/homepage/FAQ';
 import HouseList from '../components/homepage/HouseList';
-import BlogRow from '../components/homepage/BlogRow';
 import Contact from '../components/homepage/Contact';
 
 const Home = () => {
@@ -21,8 +20,6 @@ const Home = () => {
             <FAQ />
             <br />
             <HouseList />
-            <br />
-            <BlogRow />
             <br />
             <Contact />
             <br />

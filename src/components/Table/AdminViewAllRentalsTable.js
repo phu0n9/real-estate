@@ -123,4 +123,5 @@ const AdminViewAllRentalsTable = () => {
     );
 };
 
+
 export default AdminViewAllRentalsTable;

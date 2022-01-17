@@ -30,8 +30,11 @@ const Payment = ({isAdmin}) => {
   const role = `${audience}/roles`
   const {user } = useAuth0();
 
+<<<<<<< HEAD
   const [userName,setUserName] = useState([])
 
+=======
+>>>>>>> dc52a23 (add)
   // getFilteredPayments
   const getAllPayments = async () => {
     setLoading(true);
@@ -87,6 +90,7 @@ const Payment = ({isAdmin}) => {
         params: {
           pageNo: activePage,
         },
+<<<<<<< HEAD
       }.then(Promise.all(
           await axios.get(`${apiServerUrl}/api/v1/users/${paymentList.rental.userHouse.userId}`,{
             headers:{
@@ -100,6 +104,10 @@ const Payment = ({isAdmin}) => {
       ))
     )
 
+=======
+      }
+    );
+>>>>>>> dc52a23 (add)
     setPaymentList(response.data.content);
     setTotalItem(response.data.totalElements)
     setLoading(false);
@@ -137,23 +145,40 @@ const Payment = ({isAdmin}) => {
         <Loader />
       ) : (
         <div>
+<<<<<<< HEAD
         
             {/* <DropdownButton
+=======
+          {!isAdmin && rentalList.length > 0 && (
+            // show dropdown rentalId list for user to filter
+            <DropdownButton
+>>>>>>> dc52a23 (add)
               id="dropdown-basic-button"
               className="mx-2 mb-3"
               title={`Rental ID ${
                 selectedRentalId > 0 ? selectedRentalId : ""
               }`}
+<<<<<<< HEAD
               onSelect={(e) => setSelectedRentalId(e)}>
+=======
+              onSelect={(e) => setSelectedRentalId(e)}
+            >
+>>>>>>> dc52a23 (add)
               {rentalList.map((rental) => (
                 <Dropdown.Item eventKey={rental.rentalId}>
                   Rental ID: {rental.rentalId}
                 </Dropdown.Item>
               ))}
+<<<<<<< HEAD
             </DropdownButton> */}
        
 
           <div className="d-flex flex-wrap" style={{ marginTop: 150 }}>
+=======
+            </DropdownButton>
+          )}
+          <div className="d-flex flex-wrap">
+>>>>>>> dc52a23 (add)
             {paymentList.map((p) => {
               return (
                 <PaymentItem
@@ -166,7 +191,10 @@ const Payment = ({isAdmin}) => {
                 />
               );
             })}
+<<<<<<< HEAD
 
+=======
+>>>>>>> dc52a23 (add)
           </div>
           {!isAdmin && rentalList.length > 0 && <AddPayment rentals={rentalList} />}
           {totalItem > 1 && (

@@ -89,16 +89,27 @@ const BookMeeting = () => {
     const saveMeeting = async () => {
         console.log(meeting)
         const token = await getAccessTokenSilently();
-        await axios.post(`${apiServerUrl}/api/v1/meetings?userId=${meeting.userHouse.userId}&houseId=${meeting.userHouse.houseId}&date=${moment(meeting.date).format('YYYY-MM-DD')}&time=${meeting.time}&note=${meeting.note}`, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                // "content-type": "application/json"
+        const headers = {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": true,
+            "Access-Control-Allow-Headers": "content-type",
+            "Access-Control-Allow-Methods": "PUT, POST, GET, DELETE, PATCH, OPTIONS",
+            "Authorization":`Bearer ${token}`
+          };
+        await axios.post(`${apiServerUrl}/api/v1/meetings`, {
+            headers: headers,
+            params:{
+                "userId": meeting.userHouse.userId,
+                "houseId": meeting.userHouse.houseId,
+                "date": moment(meeting.date).format('YYYY-MM-DD'),
+                "time": meeting.time,
+                "note": meeting.note
             }
         }).then((res) => {
             console.log(res)
-            if (res.status === 200) {
-                navigate("/auth/admin/calendar");
-            }
+            // if (res.status === 200) {
+            //     navigate("/auth/admin/calendar");
+            // }
         }).catch(error => console.log(error));
     }
 

@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, Col, Container, Row, Button, Form, FormGroup } from 'react-bootstrap';
 import 'react-datepicker/dist/react-datepicker.css'
 import { useNavigate } from 'react-router-dom';
+import moment from 'moment'
 
 const AdminMeetingForm = (props) => {
 
@@ -72,11 +73,11 @@ const AdminMeetingForm = (props) => {
                                 <FormGroup className="mb-3">
                                     <Form.Label>Date</Form.Label>
                                     <Form.Control
-                                        name="houseName"
+                                        name="date"
                                         type="text"
                                         placeholder="Enter the user Id"
                                         readOnly={true}
-                                        value={props.meetingData.date} />
+                                        value={moment(props.meetingData.date).format('YYYY-MM-DD')}/>
                                 </FormGroup >
 
                                 <FormGroup className="mb-3">

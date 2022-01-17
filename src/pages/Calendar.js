@@ -40,17 +40,17 @@ const Calendar = () => {
                         Promise.all(res.data.content.map((it) => {
                             cnt = 0
                             result.map((i) => {
-                                if (it.userHouse.userId === result[i].houseId) {
+                                if (it.userHouse.houseId === i.houseId) {
                                     cnt += 1
                                     if (cnt === 1) {
                                         setMeetings(prevList => [...prevList, {
                                             meetingId: it.meetingId,
                                             houseId: it.userHouse.houseId,
-                                            houseName: result[i].name,
+                                            houseName: i.name,
                                             userId: it.userHouse.userId,
                                             note: it.note,
                                             date: new Date(it.date.concat(' ', it.time)),
-                                            title: result[i].name,
+                                            title: i.name,
                                         }])
                                     } else {
                                         cnt = 0

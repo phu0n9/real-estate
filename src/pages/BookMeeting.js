@@ -9,6 +9,7 @@ import TimePicker from 'react-time-picker';
 import "react-time-picker/dist/TimePicker.css"
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import * as moment from 'moment'
 
 const BookMeeting = () => {
     const { id } = useParams();
@@ -18,6 +19,15 @@ const BookMeeting = () => {
     const role = `${audience}/roles`
 
     const [nowUser, setNowUser] = useState({})
+    const [meeting, setMeeting] = useState({
+        "userHouse": {
+            "userId": "",
+            "houseId": ""
+        },
+        "date": "",
+        "time": "",
+        "note": ""
+    });
 
     useEffect(() => {
         // get the calendar data
@@ -33,27 +43,21 @@ const BookMeeting = () => {
                             user.sub.length
                         ) / 10000
                     );
-            const getData = await axios.get(`${apiServerUrl}/api/v1/users/${currentUserId}`, {
+            await axios.get(`${apiServerUrl}/api/v1/users/${currentUserId}`, {
                 headers: {
                     authorization: `Bearer ${token}`
                 }
+            }).then(res => {
+                // setNowUser(res.data);
+                setMeeting({ userHouse: { userId: res.data.userId, houseId: id } })
             })
-            setNowUser(getData);
+            // setNowUser(getData.data);
+            // setMeeting()
         }
 
         getUserData()
 
     }, []);
-    console.log(nowUser)
-    const [meeting, setMeeting] = useState({
-        "userHouse": {
-            "userId": nowUser.userId,
-            "houseId": id
-        },
-        "date": "",
-        "time": "",
-        "note": ""
-    });
 
     const [showMessage, setShowMessage] = useState(false);
     const [formerrors, setFormErrors] = useState({});
@@ -82,14 +86,13 @@ const BookMeeting = () => {
         }
     };
 
-
     const saveMeeting = async () => {
-        // get access token from users to use api
+        console.log(meeting)
         const token = await getAccessTokenSilently();
-        await axios.post(`${apiServerUrl}/api/v1/meetings`, meeting, {
+        await axios.post(`${apiServerUrl}/api/v1/meetings?userId=${meeting.userHouse.userId}&houseId=${meeting.userHouse.houseId}&date=${moment(meeting.date).format('YYYY-MM-DD')}&time=${meeting.time}&note=${meeting.note}`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
-                "content-type": "application/json"
+                // "content-type": "application/json"
             }
         }).then((res) => {
             console.log(res)
@@ -108,7 +111,6 @@ const BookMeeting = () => {
             setShowMessage(false);
         }
     }
-
     return (
         <Container style={{ width: 800, marginTop: 100, marginBottom: 100 }}>
             <Row className="justify-content-md-center">
@@ -137,7 +139,7 @@ const BookMeeting = () => {
                                         selected={meeting.date}
                                         dateFormat='yyyy-MM-dd'
                                         name="date"
-                                        isClearable
+                                        // isClearable
                                         showYearDropdown
                                         scrollableMonthYearDropdown
                                         showMonthDropdown

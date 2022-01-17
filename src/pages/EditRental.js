@@ -291,3 +291,4 @@ const EditRental = () => {
 
 export default withAuthenticationRequired(EditRental, {
     onRedirecting: () => <Loader />,
+})

@@ -30,6 +30,8 @@ const Payment = ({isAdmin}) => {
   const role = `${audience}/roles`
   const {user } = useAuth0();
 
+  const [userName,setUserName] = useState([])
+
   // getFilteredPayments
   const getAllPayments = async () => {
     setLoading(true);
@@ -85,8 +87,19 @@ const Payment = ({isAdmin}) => {
         params: {
           pageNo: activePage,
         },
-      }
-    );
+      }.then(Promise.all(
+          await axios.get(`${apiServerUrl}/api/v1/users/${paymentList.rental.userHouse.userId}`,{
+            headers:{
+              authorization:`Bearer ${token}`
+            }
+          })
+          .then((res)=>{
+            setUserName(res.data.fullName)
+          })
+          .catch((err)=>{console.log(err)})
+      ))
+    )
+
     setPaymentList(response.data.content);
     setTotalItem(response.data.totalElements)
     setLoading(false);
@@ -124,24 +137,23 @@ const Payment = ({isAdmin}) => {
         <Loader />
       ) : (
         <div>
-          {!isAdmin && rentalList.length > 0 && (
-            // show dropdown rentalId list for user to filter
-            <DropdownButton
+        
+            {/* <DropdownButton
               id="dropdown-basic-button"
               className="mx-2 mb-3"
               title={`Rental ID ${
                 selectedRentalId > 0 ? selectedRentalId : ""
               }`}
-              onSelect={(e) => setSelectedRentalId(e)}
-            >
+              onSelect={(e) => setSelectedRentalId(e)}>
               {rentalList.map((rental) => (
                 <Dropdown.Item eventKey={rental.rentalId}>
                   Rental ID: {rental.rentalId}
                 </Dropdown.Item>
               ))}
-            </DropdownButton>
-          )}
-          <div className="d-flex flex-wrap">
+            </DropdownButton> */}
+       
+
+          <div className="d-flex flex-wrap" style={{ marginTop: 150 }}>
             {paymentList.map((p) => {
               return (
                 <PaymentItem
@@ -154,6 +166,7 @@ const Payment = ({isAdmin}) => {
                 />
               );
             })}
+
           </div>
           {!isAdmin && rentalList.length > 0 && <AddPayment rentals={rentalList} />}
           {totalItem > 1 && (

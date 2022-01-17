@@ -3,6 +3,7 @@ import axios from "axios";
 import { useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { useEnv } from "../../context/env.context";
+// import * as moment from 'moment'
 
 const AddPayment = ({ rentals }) => {
   const { getAccessTokenSilently } = useAuth0();
@@ -20,23 +21,15 @@ const AddPayment = ({ rentals }) => {
     const body = {
       amount: formData.amount,
       date: 
-        today.getFullYear() +
-        "-" +
-        today.getMonth().toString().length < 2 ?
-         `0`+today.getMonth() + 1 : 
-        (today.getMonth() + 1) +
-        "-" +
-        today.getDate().toString().length < 2 ? 
-        "0" + today.getDate() :
-        today.getDate(),
+        today,
+        // moment(today).format('YYYY-MM-DD'),
       time:
         today.getHours() + ":" + today.getMinutes(),
       note: formData.note,
     };
     const token = await getAccessTokenSilently();
     await axios.post(
-      `${apiServerUrl}/api/v1/payments/byRental/${formData.rentalId}`,
-      body,
+      `${apiServerUrl}/api/v1/payments/byRental/${formData.rentalId}`,body,
       {
         headers: {
           authorization: `Bearer ${token}`,

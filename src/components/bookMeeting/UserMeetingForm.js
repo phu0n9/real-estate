@@ -51,7 +51,6 @@ const UserMeetingForm = (props) => {
                                         readOnly={true}
                                         value={props.meetingData.date} />
                                 </FormGroup >
-
                                 <FormGroup className="mb-3">
                                     <Form.Label>Note</Form.Label>
                                     <Form.Control

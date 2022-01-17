@@ -52,9 +52,11 @@ function App() {
     return currentUserId;
   };
 
+
   useEffect(() => {
     const getUser = async () => {
       const token = await getAccessTokenSilently();
+      console.log(token)
       // if userid is bigger than 21, they use oauth2
       const currentUserId =
         user.sub.length < 21
@@ -169,6 +171,7 @@ function App() {
           exact
           element={<Payment isAdmin />}
         />
+        
         <Route path="*" element={<Error />} />
       </Routes>
     </UserContext.Provider>

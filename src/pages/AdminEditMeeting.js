@@ -74,7 +74,8 @@ const AdminEditMeeting = () => {
     const saveMeeting = async () => {
         // get access token from users to use api
         const token = await getAccessTokenSilently();
-        await axios.post(`${apiServerUrl}/api/v1/meetings`, meeting, {
+        console.log(meeting)
+        await axios.post(`${apiServerUrl}/api/v1/meetings`,{params:meeting}, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 "content-type": "application/json"

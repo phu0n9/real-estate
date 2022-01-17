@@ -50,10 +50,10 @@ const AddPayment = ({ rentals }) => {
     });
     setShow(false);
   };
-  console.log(rentals)
+
   return (
     <>
-      <Button variant="primary" onClick={() => setShow(true)} className="mx-2">
+      <Button variant="primary" onClick={() => setShow(true)} className="mx-2" style={{marginLeft:"50%"}}>
         Make payment
       </Button>
       <Modal

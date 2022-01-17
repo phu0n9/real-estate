@@ -21,6 +21,7 @@ const AdminCalendar = () => {
         const getCalendarData = async () => {
             let cnt = 0
             const token = await getAccessTokenSilently()
+            console.log(token)
             await axios.get(`${apiServerUrl}/api/v1/meetings`, {
                 headers: {
                     authorization: `Bearer ${token}`

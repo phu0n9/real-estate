@@ -7,12 +7,12 @@ import {
   DropdownButton,
   Pagination,
 } from "react-bootstrap";
+import { Navigate } from "react-router-dom";
 import { UserContext } from "../../App";
 import { useEnv } from "../../context/env.context";
 import Loader from "../Loader";
 import AddPayment from "./AddPayment";
 import PaymentItem from "./PaymentItem";
-import { Navigate } from 'react-router-dom';
 
 const Payment = ({isAdmin}) => {
   const [paymentList, setPaymentList] = useState([]);
@@ -27,12 +27,11 @@ const Payment = ({isAdmin}) => {
   const [totalItem,setTotalItem] = useState()
 
   const { audience,apiServerUrl } = useEnv()
-  // const role = `${audience}/roles`
-  // const {user } = useAuth0();
+  const role = `${audience}/roles`
+  const {user } = useAuth0();
 
   // getFilteredPayments
   const getAllPayments = async () => {
-    console.log(isAdmin)
     setLoading(true);
     const token = await getAccessTokenSilently();
     const params = {
@@ -104,8 +103,8 @@ const Payment = ({isAdmin}) => {
 
   const paginationItems = () => {
     let items = [];
-    for (let number = 1; number <= paymentList.length / 10 + 1; number++) {
-      items.push(
+    for (let number = 0; number <= paymentList.length / 10 + 1; number++) {
+      items.push( 
         <Pagination.Item
           key={number}
           active={number === activePage}
@@ -117,34 +116,6 @@ const Payment = ({isAdmin}) => {
     }
     return items;
   };
-
-  // const shouldPay = () => {
-  //   const lastPayment = paymentList[paymentList.length - 1].date.split("-");
-  //   const months = [
-  //     "",
-  //     "January",
-  //     "February",
-  //     "March",
-  //     "April",
-  //     "May",
-  //     "June",
-  //     "July",
-  //     "August",
-  //     "September",
-  //     "October",
-  //     "November",
-  //     "December",
-  //   ];
-  //   const d = new Date();
-  //   const month = d.getMonth() + 1;
-  //   const year = d.getFullYear();
-  //   if (
-  //     year > parseInt(lastPayment[0]) ||
-  //     (year === parseInt(lastPayment[0]) && month > parseInt(lastPayment[1]))
-  //   ) {
-  //     return months[month];
-  //   } else return false;
-  // };
 
 
   return (
@@ -186,7 +157,7 @@ const Payment = ({isAdmin}) => {
           </div>
           {!isAdmin && rentalList.length > 0 && <AddPayment rentals={rentalList} />}
           {totalItem > 1 && (
-            <Pagination>{paginationItems()}</Pagination>
+            <Pagination style={{marginTop:"20px"}}>{paginationItems()}</Pagination>
           )}
         </div>
       )}

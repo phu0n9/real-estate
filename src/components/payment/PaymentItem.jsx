@@ -1,6 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { useEnv } from "../../context/env.context";
 import { Button, Card, Form, Modal } from "react-bootstrap";
 import { FaEdit } from "react-icons/fa";
@@ -13,6 +13,8 @@ const PaymentItem = ({ payment, onPaymentChange }) => {
     amount: payment.amount,
     note: payment.note,
   });
+  const [houseName,setHouseName] = useState("")
+  const [userName,setUserName] = useState("")
 
   // deletePaymentById
   const deletePayment = async () => {
@@ -48,16 +50,41 @@ const PaymentItem = ({ payment, onPaymentChange }) => {
     onPaymentChange();
   };
 
+  // get house name
+  useEffect(()=>{
+    const getHouseName = async ()=>{
+      await axios.get(`${apiServerUrl}/api/v1/houses/${payment.rental.userHouse.houseId}`)
+      .then((res)=>{
+        setHouseName(res.data.name)
+      })
+      .then((err)=>{console.log(err)})
+    }
+    const getUserName = async () =>{
+      const token = await getAccessTokenSilently()
+      await axios.get(`${apiServerUrl}/api/v1/users/${payment.rental.userHouse.userId}`,{
+        headers:{
+          authorization:`Bearer ${token}`
+        }
+      })
+      .then((res)=>{
+        setUserName(res.data.fullName)
+      })
+      .catch((err)=>{console.log(err)})
+    }
+    getHouseName()
+    getUserName()
+  },[apiServerUrl,getAccessTokenSilently])
+
   return (
     <>
       <Card
-        style={{ width: "300px" }}
+        style={{ width: "400px",height:"250px" }}
         className="border-effect mx-2 mb-3"
         onClick={() => setShow(1)}
       >
         <Card.Header>
           <div className="d-flex justify-content-between align-items-center">
-            Payment of House {payment.rental.userHouse.houseId}
+            Payment of House {houseName}
             <FaEdit
               onClick={(e) => {
                 e.stopPropagation();
@@ -71,7 +98,7 @@ const PaymentItem = ({ payment, onPaymentChange }) => {
             Payment ID: {payment.paymentId}
           </Card.Subtitle>
           <Card.Text>
-            House owner ID: {payment.rental.userHouse.userId}
+            House owner name: {userName}
           </Card.Text>
           <Card.Text>Payment Date: {payment.date}</Card.Text>
           <Card.Text>Monthly Fee: $ {payment.amount}</Card.Text>

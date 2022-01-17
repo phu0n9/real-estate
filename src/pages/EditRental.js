@@ -107,7 +107,7 @@ const EditRental = () => {
         // get access token from users to use api
         const token = await getAccessTokenSilently();
         console.log(token);
-        await axios.delete(`${apiServerUrl}/api/v1/rentals/${id}`, rental, {
+        await axios.delete(`${apiServerUrl}/api/v1/rentals/${id}`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 "content-type": "application/json"

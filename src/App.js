@@ -30,6 +30,7 @@ import EditRental from "./pages/EditRental";
 import AdminEditMeeting from "./pages/AdminEditMeeting";
 import { useEnv } from "./context/env.context";
 import axios from 'axios'
+import UploadHouseImage from './pages/UploadHouseImage'
 
 export const UserContext = createContext();
 
@@ -49,6 +50,7 @@ function App() {
             user?.sub.length
           ) / 10000
         );
+      console.log(currentUserId)
     return currentUserId;
   };
 
@@ -134,7 +136,9 @@ function App() {
         {/* admin routes */}
         <Route path="/auth/admin/calendar" exact element={<AdminCalendar />} />
         <Route path="/auth/admin/adminEditMeeting/:id" exact element={<AdminEditMeeting />} />
+
         <Route path="/auth/admin/addHouse" exact element={<AddHouse />} />
+
         <Route
           path="/auth/admin/addRentalHouses"
           exact
@@ -171,6 +175,8 @@ function App() {
           exact
           element={<Payment isAdmin />}
         />
+
+        <Route path="/auth/admin/uploadImage/:id" exact element={<UploadHouseImage/>}/>
         
         <Route path="*" element={<Error />} />
       </Routes>

@@ -4,20 +4,28 @@ import axios from 'axios'
 import { useEnv } from '../context/env.context'
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth0 } from "@auth0/auth0-react"
+import { Card, Col, Container, Row, Button, Form, FormGroup,DropdownButton, Dropdown } from 'react-bootstrap';
 
 export default function HouseForm({ pageTitle }) {
     const { getAccessTokenSilently } = useAuth0()
 
-    const [name, setHouseName] = useState("")
-    const [price, setHousePrice] = useState(0)
-    const [description, setHouseDescription] = useState("")
-    const [address, setHouseAddress] = useState("")
-    const [type, setHouseType] = useState("")
-    const [status, setHouseStatus] = useState("")
-    const [numberOfBeds, setNumberOfBeds] = useState(0)
-    const [squareFeet, setSquareFeet] = useState(0)
+    const [houses,setHouses] = useState({
+        "name":"",
+        "price":0,
+        "description":"",
+        "address": "",
+        "type":"appartment",
+        "status":"",
+        "numberOfBeds":0,
+        "squareFeet":0,
+        "image":[],
+        "location":{
+            "city":"Ho Chi Minh",
+            "district":1
+        }
+    })
+
     const { id } = useParams();
-    const [image, setImage] = useState([])
     const [checked, setChecked] = useState(true)
     const [imageURL, setImageURL] = useState([])
 
@@ -25,41 +33,9 @@ export default function HouseForm({ pageTitle }) {
 
     let navigate = useNavigate()
 
-    const nameOnChange = (e) => {
-        setHouseName(e.target.value)
-    }
-
-    const priceOnChange = (e) => {
-        setHousePrice(e.target.value)
-    }
-
-    const descriptionOnChange = (e) => {
-        setHouseDescription(e.target.value)
-    }
-
-    const addressOnChange = (e) => {
-        setHouseAddress(e.target.value)
-    }
-
-    const typeOnChange = (e) => {
-        setHouseType(e.target.value)
-    }
-
-    const statusOnChange = (e) => {
-        setHouseStatus(e.target.value)
-    }
-
-    const numberOfBedsOnChange = (e) => {
-        setNumberOfBeds(e.target.value)
-    }
-
-    const squareFeetOnChange = (e) => {
-        setSquareFeet(e.target.value)
-    }
-
     const handleChange = (e) => {
         const files = Array.from(e.target.files)
-        setImage(files)
+        setHouses({image: files})
     }
 
     useEffect(() => {
@@ -72,16 +48,21 @@ export default function HouseForm({ pageTitle }) {
                     }
                 })
                     .then((res) => {
-                        setHouseName(res.data.name)
-                        setHousePrice(res.data.price)
-                        setHouseDescription(res.data.description)
-                        setHouseAddress(res.data.address)
-                        setHouseStatus(res.data.status)
-                        setHouseType(res.data.type)
-                        setNumberOfBeds(res.data.numberOfBeds)
-                        setSquareFeet(res.data.squareFeet)
-                        setImage(res.data.image)
-                        setImageURL(res.data.image)
+                        setHouses({
+                            name: res.data.name,
+                            price: res.data.price,
+                            description: res.data.description,
+                            address: res.data.address,
+                            type: res.data.type,
+                            status: res.data.status,
+                            numberOfBeds: res.data.numberOfBeds,
+                            squareFeet: res.data.squareFeet,
+                            image: res.data.image,
+                            location: {
+                                city: res.data.location.city,
+                                district: res.data.location.district
+                            }
+                        })
                     })
                     .catch((err) => { console.log(err) })
             }
@@ -99,22 +80,25 @@ export default function HouseForm({ pageTitle }) {
         }
     }
 
+    console.log(houses)
+
     const submitBtnOnClick = async () => {
         const formData = new FormData()
-        image.forEach(file => {
+        houses.image.forEach(file => {
             formData.append('files', file)
         })
+        
+        formData.append('name', houses.name)
+        formData.append('price', houses.price)
+        formData.append('description', houses.description)
+        formData.append('address', houses.address)
+        formData.append('type', houses.type)
+        formData.append('numberOfBeds', houses.numberOfBeds)
+        formData.append('squareFeet', houses.squareFeet)
+        formData.append('status', houses.status)
+        formData.append()
 
-        formData.append('name', name)
-        formData.append('price', price)
-        formData.append('description', description)
-        formData.append('address', address)
-        formData.append('type', type)
-        formData.append('numberOfBeds', numberOfBeds)
-        formData.append('squareFeet', squareFeet)
-        formData.append('status', status)
-
-        if (!image || !price || !description || !address || !type || !numberOfBeds || !squareFeet || !status) {
+        if (!houses.image || !houses.price || !houses.description || !houses.address || !houses.type || !houses.numberOfBeds || !houses.squareFeet || !houses.location.district || !houses.location.city) {
             alert('Please fill all the information in the form.')
         }
         else {
@@ -133,15 +117,16 @@ export default function HouseForm({ pageTitle }) {
             }
             else { // in update house page
                 let data = {
-                    "name": name,
+                    "name": houses.name,
                     "image": imageURL,
-                    "price": price,
-                    "description": description,
-                    "address": address,
-                    "type": type,
-                    "status": status,
-                    "numberOfBeds": numberOfBeds,
-                    "squareFeet": squareFeet
+                    "price": houses.price,
+                    "description": houses.description,
+                    "address": houses.address,
+                    "type": houses.type,
+                    "status": houses.status,
+                    "numberOfBeds": houses.numberOfBeds,
+                    "squareFeet": houses.squareFeet,
+
                 }
                 console.log(data)
                 const token = await getAccessTokenSilently()
@@ -163,117 +148,209 @@ export default function HouseForm({ pageTitle }) {
         navigate(`/auth/admin/uploadImage/${id}`)
     }
 
-    if (id != null && image === undefined) {
+    if (id != null && houses.image === undefined) {
         navigate('/processing')
     }
 
     return (
-        <div className="container">
-            <br />
-            <br />
-            <div className="row justify-content-center">
-                <div className="col-lg-10 col-md-12">
-                    <div className="wrapper">
-                        <div className="row no-gutters">
-                            <div className="contact-wrap w-100 p-md-5 p-4">
-                                <h3 className="mb-4">{pageTitle}</h3>
-                                <div className="row">
-                                    <div className="col-md-6">
-                                        <div className="form-group">
-                                            <input type="text" className="form-control" name="name" placeholder="House Name" onChange={nameOnChange} required value={name} />
-                                        </div>
-                                    </div>
+        <Container>
+            <br/>
+            <br/>
+            <br/>
+            <Row className="justify-content-md-center">
+                <Col xs="10" md="9" lg="8" xl="7">
 
-                                    <div className="col-md-6">
-                                        <div className="form-group">
-                                            <input type="number" min="0" max="900000" className="form-control" name="price" placeholder="House Price" onChange={priceOnChange} required value={price} />
-                                        </div>
-                                    </div>
+                    <Card className=" shadow border-0">
 
-                                    <div className="col-md-12">
-                                        <div className="form-group">
-                                            <textarea name="description" className="form-control description-box" cols="30" rows="7" placeholder="House Description" onChange={descriptionOnChange} required value={description}></textarea>
-                                        </div>
-                                    </div>
+                        <Card.Header className="bg-transparent pb-5">
+                            <div className="text-muted text-center mt-5 mb-3">
+                                <small style={{ fontSize: "25px", color: "black" }}>{pageTitle}</small>
+                            </div>
+                        </Card.Header>
 
-                                    <div className="col-md-12">
-                                        <div className="form-group">
-                                            <input type="text" className="form-control" name="address" placeholder="House Address" onChange={addressOnChange} required value={address} />
-                                        </div>
-                                    </div>
+                        <Card.Body className="px-lg-5 py-lg-5">
 
-                                    <div className="col-md-6">
-                                        <div className="form-group">
-                                            <input type="text" className="form-control" name="type" placeholder="House Type" onChange={typeOnChange} required value={type} />
-                                        </div>
-                                    </div>
+                            <Form role="form">
+                                <Row>
+                                    <Col>
+                                    <FormGroup className="mb-3">
+                                        <Form.Label>House Name</Form.Label>
+                                        <Form.Control name="name"
+                                            type="text"
+                                            placeholder="House Name"
+                                            value={houses.name} 
+                                            required
+                                            onChange={e => setHouses({ ...houses, name: e.target.value })}
+                                            />
+                                    </FormGroup>
+                                    </Col>
 
-                                    <div className="col-md-6">
-                                        <div className="form-group">
-                                            <input type="text" className="form-control" name="status" placeholder="House Status" onChange={statusOnChange} required value={status} />
-                                        </div>
-                                    </div>
+                                    <Col>
+                                    <FormGroup className="mb-3">
+                                        <Form.Label>Price</Form.Label>
+                                        <Form.Control name="price"
+                                            type="number"
+                                            placeholder="Price"
+                                            value={houses.price}
+                                            required
+                                            onChange={e => setHouses({ ...houses, price: e.target.value })}
+                                        />
+                                    </FormGroup>
+                                    </Col>
+                                </Row>
 
-                                    <div className="col-md-6">
-                                        <div className="form-group">
-                                            <input type="number" min="1" max="10" className="form-control" name="numberOfBeds" placeholder="Number of Bedroom" onChange={numberOfBedsOnChange} required value={numberOfBeds} />
-                                        </div>
-                                    </div>
+                                <FormGroup className="mb-3">
+                                    <Form.Label>Description</Form.Label>
+                                    <Form.Control
+                                        as="textarea"
+                                        name="description"
+                                        placeholder="Description"
+                                        value={houses.description}
+                                        rows={3}
+                                        style={{height:"10%"}}
+                                        required
+                                        onChange={e => setHouses({ ...houses, description: e.target.value })}
+                                    />
+                                </FormGroup >
 
-                                    <div className="col-md-6">
-                                        <div className="form-group">
-                                            <input type="text" min="100" max="10000" className="form-control" name="squareFeet" placeholder="Square Feet" onChange={squareFeetOnChange} required value={squareFeet} />
-                                        </div>
-                                    </div>
+                                <FormGroup className="mb-3">
+                                    <Form.Label>Address</Form.Label>
+                                    <Form.Control
+                                        name="address"
+                                        type="text"
+                                        placeholder="Address"
+                                        value={houses.address}
+                                        required
+                                        onChange={e => setHouses({ ...houses, address: e.target.value })}
+                                    />
+                                </FormGroup >
 
-                                    {
-                                        id == null ? "" :
-                                            <span className="col-md-12 image-slider">
-                                                {
-                                                    image.map((imageLink, key) => {
-                                                        return <span key={key} >
-                                                            <img src={imageLink} alt="house-pic" className='house-img' />
-                                                            <input type="checkbox" value={imageLink} onClick={handleCheck} defaultChecked="checked" />
-                                                        </span>
-                                                    })
-                                                }
-                                            </span>
-                                    }
+                                <FormGroup className="mb-3">
+                                    <Form.Label>House Type</Form.Label>
+                                    <DropdownButton id="dropdown-item-button" title={houses.type}
+                                        onSelect={e => setHouses({ ...houses, type: e })}
+                                    >
+                                        <Dropdown.Item eventKey="appartment">apartment</Dropdown.Item>
+                                        <Dropdown.Item eventKey="serviced">serviced</Dropdown.Item>
+                                        <Dropdown.Item eventKey="street">street</Dropdown.Item>
+                                    </DropdownButton>
+                                </FormGroup>
 
-                                    {
-                                        id == null ?
-                                            <div className="col-md-12">
-                                                <div className="form-group">
-                                                    <input type="file" multiple onChange={handleChange} className="form-control" required />
-                                                </div>
-                                            </div>
-                                            : ""
-                                    }
+                                <Row>
+                                    <Col>
+                                        <FormGroup className="mb-3">
+                                            <Form.Label>City</Form.Label>
+                                            <DropdownButton id="dropdown-item-button" title={houses.location.city}
+                                                onSelect={e => setHouses({ ...houses, location: { ...houses.location, city: e } })}
+                                                variant='success'
+                                            >
+                                                <Dropdown.Item eventKey="Ho Chi Minh">Ho Chi Minh</Dropdown.Item>
+                                                <Dropdown.Item eventKey="Ha Noi">Ha Noi</Dropdown.Item>
+                                                <Dropdown.Item eventKey="Da Nang">Da Nang</Dropdown.Item>
+                                                <Dropdown.Item eventKey="Ha Long Bay">Ha Long Bay</Dropdown.Item>
+                                            </DropdownButton>
+                                        </FormGroup>
+                                    </Col>
+                                    <Col>
+                                        <FormGroup className="mb-3">
+                                            <Form.Label>District</Form.Label>
+                                            <Form.Control name="district"
+                                                type={houses.location.city === "Ho Chi Minh"? "number": "text"}
+                                                placeholder="District"
+                                                value={houses.location.district} 
+                                                required
+                                                onChange={e => setHouses({ ...houses, location: { ...houses.location, district: e }})}
+                                                />
+                                        </FormGroup>
+                                    </Col>
+
+                                </Row>
 
 
-                                    <div className="col-md-12">
-                                        <div className="form-group">
+                                <Row>
+                                    <Col>
+                                    <FormGroup className="mb-3">
+                                        <Form.Label>Number of beds</Form.Label>
+                                        <Form.Control name="numOfBeds"
+                                            type="number"
+                                            placeholder="Number of beds"
+                                            value={houses.numberOfBeds} 
+                                            required
+                                            onChange={e => setHouses({ ...houses, numberOfBeds: e.target.value })}
+                                            />
+                                    </FormGroup>
+                                    </Col>
+
+                                    <Col>
+                                    <FormGroup className="mb-3">
+                                        <Form.Label>Price</Form.Label>
+                                        <Form.Control name="squareFeet"
+                                            type="number"
+                                            placeholder="Square Feet"
+                                            value={houses.squareFeet}
+                                            required
+                                            onChange={e => setHouses({ ...houses, squareFeet: e.target.value })}
+                                        />
+                                    </FormGroup>
+                                    </Col>
+                                </Row>
+
+                                {
+                                    id == null ? "" :
+                                        <span className="col-md-12 image-slider">
                                             {
-                                                id == null ?
-                                                    <input type="submit" value={pageTitle} className="btn btn-primary vertical-center" onClick={submitBtnOnClick} />
-                                                    :
-                                                    <>
-                                                        <input type="submit" value={pageTitle} className="btn btn-primary vertical-center" onClick={submitBtnOnClick} style={{ marginLeft: "46%" }} />
-                                                        <input type="submit" value="Upload more image" className="btn btn-info vertical-center" onClick={uploadMoreImage} />
-
-                                                    </>
-
+                                                houses.image.map((imageLink, key) => {
+                                                    return <span key={key} >
+                                                        <img src={imageLink} alt="house-pic" className='house-img' />
+                                                        <input type="checkbox" value={imageLink} onClick={handleCheck} defaultChecked="checked" />
+                                                    </span>
+                                                })
                                             }
+                                        </span>
+                                }
 
-                                        </div>
+                                {
+                                    id == null ?
+                                        <FormGroup className="mb-3">
+                                            <Form.Label>Image Upload</Form.Label>
+                                            <Form.Control name="uploadImage"
+                                                type="file"
+                                                required
+                                                multiple
+                                                onChange={handleChange}
+                                            />
+                                        </FormGroup>
+                                        : ""
+                                }
+
+                                <div className="text-center">
+                                    <div className='row'>
+
+                                        {
+                                            id == null ?
+                                            <Button className="my-4" color="primary" type="button" onClick={submitBtnOnClick} >
+                                                {pageTitle}
+                                            </Button>
+                                            :
+                                            <>
+                                                <Button className="my-4" color="primary" type="button" onClick={submitBtnOnClick}>
+                                                    {pageTitle}
+                                                </Button>
+                                                <Button className="my-4" color="primary" type="button" onClick={uploadMoreImage}>
+                                                    Upload more image
+                                                </Button>
+                                            </>
+                                        }
                                     </div>
                                 </div>
 
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
+                            </Form>
+
+                        </Card.Body>
+                    </Card>
+                </Col>
+            </Row>
+        </Container>
     )
 }

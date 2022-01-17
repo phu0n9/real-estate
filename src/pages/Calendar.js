@@ -23,60 +23,39 @@ const Calendar = () => {
                 ) / 10000
             );
 
-    useEffect(() => {
-        // get the calendar data
-        const getCalendarData = async () => {
-            let cnt = 0
-            const token = await getAccessTokenSilently()
-            await axios.get(`${apiServerUrl}/api/v1/meetings/search/byUser/${currentUserId}`, {
-                headers: {
-                    authorization: `Bearer ${token}`
-                }
-            }).then(res => {  // after fetched all meeting data, get the user data using userId in meeting data
-                Promise.all(res.data.content.map(i =>
-                    fetch(`${apiServerUrl}/api/v1/houses/${i.userHouse.houseId}`)
-                )).then(res2 => Promise.all(res2.map(r => r.json())))
-                    .then(result => {
-                        console.log(res.data)
-                        Promise.all(res.data.content.map((it, i) => {
-                            if (it.userHouse.houseId === result[i].houseId) {
-                                setMeetings(prevList => [...prevList, {
-                                    meetingId: it.meetingId,
-                                    houseId: it.userHouse.houseId,
-                                    houseName: result[i].name,
-                                    userId: it.userHouse.userId,
-                                    note: it.note,
-                                    date: new Date(it.date.concat(' ', it.time)),
-                                    title: result[i].name,
-                                }])
-                            }
-                        Promise.all(res.data.content.map((it) => {
-                            cnt = 0
-                            result.map((i) => {
-                                if (it.userHouse.houseId === i.houseId) {
-                                    cnt += 1
-                                    if (cnt === 1) {
+            useEffect(() => {
+                // get the calendar data
+                const getCalendarData = async () => {
+                    const token = await getAccessTokenSilently()
+                    await axios.get(`${apiServerUrl}/api/v1/meetings/search/byUser/${currentUserId}`, {
+                        headers: {
+                            authorization: `Bearer ${token}`
+                        }
+                    }).then(res => {  // after fetched all meeting data, get the user data using userId in meeting data
+                        Promise.all(res.data.content.map(i =>
+                            fetch(`${apiServerUrl}/api/v1/houses/${i.userHouse.houseId}`)
+                        )).then(res2 => Promise.all(res2.map(r => r.json())))
+                            .then(result => {
+                                console.log(res.data)
+                                Promise.all(res.data.content.map((it, i) => {
+                                    if (it.userHouse.houseId === result[i].houseId) {
                                         setMeetings(prevList => [...prevList, {
                                             meetingId: it.meetingId,
                                             houseId: it.userHouse.houseId,
-                                            houseName: i.name,
+                                            houseName: result[i].name,
                                             userId: it.userHouse.userId,
                                             note: it.note,
                                             date: new Date(it.date.concat(' ', it.time)),
-                                            title: i.name,
+                                            title: result[i].name,
                                         }])
-                                    } else {
-                                        cnt = 0
                                     }
-                                }
+                                })
+                                )
                             })
-                        })
-                        )
                     })
-            })
-        }
-        getCalendarData()
-    }, [apiServerUrl, currentUserId, getAccessTokenSilently]);
+                }
+                getCalendarData()
+            }, [apiServerUrl, currentUserId, getAccessTokenSilently]);
 
     const [openEditPopup, setOpenEditPopup] = useState(false)
     const [meetingData, setMeetingData] = useState("")

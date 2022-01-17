@@ -32,3 +32,4 @@ const AdminViewRentalHouses = () => {
 
 export default withAuthenticationRequired(AdminViewRentalHouses, {
     onRedirecting: () => <Loader />,
+})

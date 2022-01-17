@@ -26,10 +26,7 @@ const Calendar = () => {
     useEffect(() => {
         // get the calendar data
         const getCalendarData = async () => {
-<<<<<<< HEAD
-=======
             let cnt = 0
->>>>>>> dc52a23 (add)
             const token = await getAccessTokenSilently()
             await axios.get(`${apiServerUrl}/api/v1/meetings/search/byUser/${currentUserId}`, {
                 headers: {
@@ -40,7 +37,6 @@ const Calendar = () => {
                     fetch(`${apiServerUrl}/api/v1/houses/${i.userHouse.houseId}`)
                 )).then(res2 => Promise.all(res2.map(r => r.json())))
                     .then(result => {
-<<<<<<< HEAD
                         console.log(res.data)
                         Promise.all(res.data.content.map((it, i) => {
                             if (it.userHouse.houseId === result[i].houseId) {
@@ -54,7 +50,6 @@ const Calendar = () => {
                                     title: result[i].name,
                                 }])
                             }
-=======
                         Promise.all(res.data.content.map((it) => {
                             cnt = 0
                             result.map((i) => {
@@ -75,7 +70,6 @@ const Calendar = () => {
                                     }
                                 }
                             })
->>>>>>> dc52a23 (add)
                         })
                         )
                     })
@@ -96,11 +90,7 @@ const Calendar = () => {
     if (user[role].length !== 0) {
         return (
             <>
-<<<<<<< HEAD
                 <Navigate replace to="/auth/admin/calendar" />
-=======
-                {/* <Navigate replace to="/auth/admin/calendar" /> */}
->>>>>>> dc52a23 (add)
             </>
         )
     }

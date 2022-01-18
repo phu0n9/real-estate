@@ -1,6 +1,5 @@
 import Calendar from "./pages/Calendar";
 import NavBar from "./components/NavBar";
-import Profile from "./pages/Profile";
 import Home from "./pages/Home";
 import Rental from "./pages/Rental";
 import ViewDetail from "./pages/ViewDetail";
@@ -9,7 +8,7 @@ import AdminCalendar from "./pages/AdminCalendar";
 import AddHouse from "./pages/AddHouse";
 import ViewRentalHouses from "./pages/ViewRentalHouses";
 import ViewAllUsers from "./pages/ViewAllUsers";
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import Loader from "./components/Loader";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -37,7 +36,6 @@ function App() {
   const { isLoading, user, getAccessTokenSilently, isAuthenticated } = useAuth0();
   const { apiServerUrl, audience } = useEnv()
   const role = `${audience}/roles`
-  let isAdmin = false;
 
   const getUserId = () => {
     // if userid is bigger than 21, they use oauth2
@@ -50,16 +48,15 @@ function App() {
             user?.sub.length
           ) / 10000
         );
-    console.log(currentUserId)
     return currentUserId;
   };
 
-  // const getUserRole = () =>{
-  //   if (user[role].length !== 0 && isAuthenticated){
-  //     return true
-  //   }
-  //   return false
-  // }
+  const getUserRole = () => {
+    if (user !== undefined && user[role].length !== 0 && isAuthenticated) {
+      return true
+    }
+    return false
+  }
 
   useEffect(() => {
     const getUser = async () => {
@@ -96,13 +93,7 @@ function App() {
       }
     };
     if (user !== undefined) {
-      if (user[role].length === 0) {
-        isAdmin = false
-      } else {
-        isAdmin = true
-      }
       getUser()
-      console.log(isAdmin)
     }
   }, [user, apiServerUrl, getAccessTokenSilently]);
 
@@ -128,9 +119,8 @@ function App() {
           <Route path="/viewDetail/:id" exact element={<ViewDetail />} />
 
           {/* logged in users routes */}
-          <Route path="/auth/payments" exact element={<Payment isAdmin={isAdmin} />} />
+          <Route path="/auth/payments" exact element={<Payment />} />
           <Route path="/auth/calendar" exact element={<Calendar />} />
-          <Route path="/auth/profile" exact element={<Profile />} />
           <Route
             path="/auth/ViewRentalHouses"
             exact
@@ -182,7 +172,7 @@ function App() {
           <Route
             path="/auth/admin/payments"
             exact
-            element={<Payment isAdmin={isAdmin} />}
+            element={<Payment />}
           />
 
           <Route path="/auth/admin/uploadImage/:id" exact element={<UploadHouseImage />} />

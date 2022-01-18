@@ -1,7 +1,6 @@
 import React from 'react';
 import ViewAllUsersTable from '../components/Table/ViewAllUsersTable';
 import Loader from '../components/Loader'
-import AdminSidebarNav from '../components/AdminSidebarNav';
 
 import { Navigate } from 'react-router-dom';
 import { useEnv } from '../context/env.context'

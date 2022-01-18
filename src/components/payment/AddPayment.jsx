@@ -3,7 +3,8 @@ import axios from "axios";
 import { useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { useEnv } from "../../context/env.context";
-// import * as moment from 'moment'
+import moment from 'moment'
+import { Navigate, useNavigate } from "react-router-dom";
 
 const AddPayment = ({ rentals }) => {
   const { getAccessTokenSilently } = useAuth0();
@@ -14,6 +15,7 @@ const AddPayment = ({ rentals }) => {
     rentalId: rentals[0].rentalId,
     amount: rentals[0].price,
   });
+  const navigate = useNavigate()
 
   // addNewPaymentByRentalId
   const makePayment = async () => {
@@ -21,8 +23,7 @@ const AddPayment = ({ rentals }) => {
     const body = {
       amount: formData.amount,
       date: 
-        today,
-        // moment(today).format('YYYY-MM-DD'),
+        moment(today).format('YYYY-MM-DD'),
       time:
         today.getHours() + ":" + today.getMinutes(),
       note: formData.note,
@@ -35,13 +36,15 @@ const AddPayment = ({ rentals }) => {
           authorization: `Bearer ${token}`,
         },
       }
-    );
+    ).then(()=>{
+      navigate("/auth/payments")
+    })
     setFormData({
       note: "",
       rentalId: rentals[0].rentalId,
       amount: rentals[0].price,
     });
-    setShow(false);
+    setShow(true);
   };
 
   return (
@@ -79,8 +82,6 @@ const AddPayment = ({ rentals }) => {
                     ).price,
                   })
                 }
-                
-                
               }
             >
               {rentals.map((rental) => (

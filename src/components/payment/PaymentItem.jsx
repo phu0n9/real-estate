@@ -13,8 +13,6 @@ const PaymentItem = ({ payment, onPaymentChange }) => {
     amount: payment.amount,
     note: payment.note,
   });
-  const [houseName,setHouseName] = useState("")
-  const [userName,setUserName] = useState("")
 
   // deletePaymentById
   const deletePayment = async () => {
@@ -50,31 +48,6 @@ const PaymentItem = ({ payment, onPaymentChange }) => {
     onPaymentChange();
   };
 
-  // get house name
-  useEffect(()=>{
-    const getHouseName = async ()=>{
-      await axios.get(`${apiServerUrl}/api/v1/houses/${payment.rental.house.houseId}`)
-      .then((res)=>{
-        setHouseName(res.data.name)
-      })
-      .then((err)=>{console.log(err)})
-    }
-    const getUserName = async () =>{
-      const token = await getAccessTokenSilently()
-      await axios.get(`${apiServerUrl}/api/v1/users/${payment.rental.user.userId}`,{
-        headers:{
-          authorization:`Bearer ${token}`
-        }
-      })
-      .then((res)=>{
-        setUserName(res.data.fullName)
-      })
-      .catch((err)=>{console.log(err)})
-    }
-    getHouseName()
-    getUserName()
-  },[apiServerUrl,getAccessTokenSilently])
-
   return (
     <>
       <Card
@@ -84,7 +57,7 @@ const PaymentItem = ({ payment, onPaymentChange }) => {
       >
         <Card.Header>
           <div className="d-flex justify-content-between align-items-center">
-            Payment of House {houseName}
+            Payment of House {payment.rental.house.name}
             <FaEdit
               onClick={(e) => {
                 e.stopPropagation();
@@ -98,7 +71,7 @@ const PaymentItem = ({ payment, onPaymentChange }) => {
             Payment ID: {payment.paymentId}
           </Card.Subtitle>
           <Card.Text>
-            House owner name: {userName}
+            House owner name: {payment.rental.user.fullName}
           </Card.Text>
           <Card.Text>Payment Date: {payment.date}</Card.Text>
           <Card.Text>Monthly Fee: $ {payment.amount}</Card.Text>

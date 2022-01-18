@@ -3,7 +3,7 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { Container, Pagination } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../../App";
+import { UserContext, UserRoleContext } from "../../App";
 import { useEnv } from "../../context/env.context";
 import Loader from "../Loader";
 import AddPayment from "./AddPayment";
@@ -11,8 +11,8 @@ import PaymentItem from "./PaymentItem";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
-const Payment = ({ isAdmin }) => {
-  console.log(isAdmin);
+const Payment = () => {
+  let isAdmin = useContext(UserRoleContext)
 
   const navigate = useNavigate();
 
@@ -23,22 +23,22 @@ const Payment = ({ isAdmin }) => {
   const [selectedRentalId, setSelectedRentalId] = useState(0);
   const [activePage, setActivePage] = useState(0);
 
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently, user} = useAuth0();
   const currentUserId = useContext(UserContext);
   const [totalItem, setTotalItem] = useState();
 
-  const { audience, apiServerUrl } = useEnv();
-  const role = `${audience}/roles`;
-  const { user } = useAuth0();
+  const {apiServerUrl } = useEnv();
 
-  const [userName, setUserName] = useState([]);
+  // const [userName, setUserName] = useState([]);
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [btnPressed, setBtnPressed] = useState(false);
+  const [totalPages,setTotalPages] = useState(0)
 
   // getFilteredPayments
   const getAllPayments = async () => {
     setLoading(true);
     const token = await getAccessTokenSilently();
+<<<<<<< HEAD
     const params = {
       pageNo: activePage,
       userId: !isAdmin ? currentUserId : "",
@@ -46,15 +46,23 @@ const Payment = ({ isAdmin }) => {
     console.log(params);
     await axios
       .get(`${apiServerUrl}/api/v1/payments/byUser`, {
+=======
+    console.log(isAdmin)
+    await axios.get(`${apiServerUrl}/api/v1/payments/byUser?userId=${!isAdmin ? currentUserId : ""}&pageSize=${!isAdmin ? "":6}&pageNo=${activePage}`, {
+>>>>>>> d628271310e95432253a1713c9b22972835153e2
         headers: {
           authorization: `Bearer ${token}`,
-        },
-        params,
+        }
+        // params,
       })
       .then((res) => {
-        console.log(res);
-        setTotalItem(res.data.totalElements);
         console.log(res.data);
+        setTotalItem(res.data.totalElements);
+<<<<<<< HEAD
+        console.log(res.data);
+=======
+        setTotalPages(res.data.totalPages)
+>>>>>>> d628271310e95432253a1713c9b22972835153e2
 
         if (!isAdmin) {
           let tempRental = [];
@@ -77,35 +85,7 @@ const Payment = ({ isAdmin }) => {
           });
           setRentalList(rentalWithPrice);
         }
-        res.data.content.map((p) => {
-          axios
-            .get(`${apiServerUrl}/api/v1/users/${p.rental.user.userId}`, {
-              headers: {
-                authorization: `Bearer ${token}`,
-              },
-            })
-            .then((res2) => {
-              axios
-                .get(
-                  `${apiServerUrl}/api/v1/houses/${p.rental.house.houseId}`,
-                  {
-                    headers: {
-                      authorization: `Bearer ${token}`,
-                    },
-                  }
-                )
-                .then((res3) => {
-                  setPaymentList((prevList) => [
-                    ...prevList,
-                    {
-                      ...p,
-                      userName: res2.data.fullName,
-                      houseName: res3.data.name,
-                    },
-                  ]);
-                });
-            });
-        });
+      setPaymentList([...res.data.content])
       });
     setLoading(false);
   };
@@ -122,21 +102,23 @@ const Payment = ({ isAdmin }) => {
         },
         params: {
           pageNo: activePage,
+          pageSize: 6
         },
       }.then((res) => {
         setPaymentList(res.data.content);
+        // setUserName(res.data.content.rental.user.fullName)
         setTotalItem(res.data.totalElements);
-        res.data.content.forEach((p) => {
-          axios
-            .get(`${apiServerUrl}/api/v1/users/${p.rental.userHouse.userId}`, {
-              headers: {
-                authorization: `Bearer ${token}`,
-              },
-            })
-            .then((res2) => {
-              setUserName(res2.data.fullName);
-            });
-        });
+        // res.data.content.forEach((p) => {
+        //   axios
+        //     .get(`${apiServerUrl}/api/v1/users/${p.rental.userHouse.userId}`, {
+        //       headers: {
+        //         authorization: `Bearer ${token}`,
+        //       },
+        //     })
+        //     .then((res2) => {
+        //       setUserName(res2.data.fullName);
+        //     });
+        // });
       })
     );
     setLoading(false);
@@ -152,17 +134,17 @@ const Payment = ({ isAdmin }) => {
   }, [activePage, selectedRentalId, currentUserId]);
 
   const paginationItems = () => {
-    let items = [];
-    for (let number = 0; number <= paymentList.length / 10 + 1; number++) {
-      items.push(
-        <Pagination.Item
-          key={number}
-          active={number === activePage}
-          onClick={() => setActivePage(number)}
-        >
-          {number}
-        </Pagination.Item>
-      );
+    let items = [];    
+      for (let number = 0; number < totalPages ; number++) {
+        items.push(
+          <Pagination.Item
+            key={number}
+            active={number === activePage}
+            onClick={() => setActivePage(number)}
+          >
+            {number}
+          </Pagination.Item>
+        );
     }
     return items;
   };
@@ -184,7 +166,7 @@ const Payment = ({ isAdmin }) => {
               <Autocomplete
                 id="payments"
                 options={paymentList}
-                getOptionLabel={(option) => option.houseName}
+                getOptionLabel={(option) => option.rental.house.name}
                 style={{ width: 350, marginTop: 50 }}
                 value={selectedPayment}
                 clearOnBlur={true}
@@ -211,7 +193,7 @@ const Payment = ({ isAdmin }) => {
               <Autocomplete
                 id="payments"
                 options={paymentList}
-                getOptionLabel={(option) => option.userName}
+                getOptionLabel={(option) => option.rental.user.fullName}
                 style={{ width: 350, marginTop: 50 }}
                 value={selectedPayment}
                 clearOnBlur={true}

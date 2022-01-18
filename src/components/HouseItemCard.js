@@ -4,10 +4,10 @@ import { useNavigate } from 'react-router-dom';
 
 const HouseItemCard = ({ houses }) => {
     const navigate = useNavigate();
-
     const viewDetail = () => {
         navigate("/viewDetail/" + houses.houseId)
     }
+    console.log(houses)
 
     return (
         <Card onClick={viewDetail} style={{ width: '20rem' }}>

@@ -17,6 +17,9 @@ const AdminEditMeeting = () => {
     const { audience, apiServerUrl } = useEnv()
     const role = `${audience}/roles`
 
+    const [hour, setHour] = useState("09")
+    const [min, setMin] = useState("00")
+
     const [meeting, setMeeting] = useState({
         "meetingId": "",
         "userHouse": {
@@ -183,21 +186,52 @@ const AdminEditMeeting = () => {
                                         <p className="text-danger">{formerrors.date}</p>
                                     )}
                                 </FormGroup>
-                                <FormGroup className="mb-3">
-                                    <Form.Label>Time</Form.Label>
-                                    <br />
-                                    <TimePicker
-                                        required
-                                        value={meeting.time}
-                                        format='hh:mm'
-                                        name="time"
-                                        disableClock={true}
-                                        inputReadOnly={true}
-                                        onChange={date => setMeeting({ ...meeting, time: date })} />
-                                    {formerrors.time && (
-                                        <p className="text-danger">{formerrors.time}</p>
-                                    )}
-                                </FormGroup>
+                                <Row>
+                                    <Col>
+                                        <FormGroup className="mb-3">
+                                            <Form.Label>Time (hours)</Form.Label>
+                                            <Form.Select aria-label="house-type-select"
+                                                name="hour"
+                                                value={hour}
+                                                onChange={e => setHour(e.target.value)}
+                                                required>
+                                                <option value="09">09</option>
+                                                <option value="10">10</option>
+                                                <option value="11">11</option>
+                                                <option value="12">12</option>
+                                                <option value="13">13</option>
+                                                <option value="14">14</option>
+                                                <option value="15">15</option>
+                                                <option value="16">16</option>
+                                                <option value="17">17</option>
+                                                {formerrors.hour && (
+                                                    <p className="text-danger">{formerrors.hour}</p>
+                                                )}
+                                            </Form.Select>
+                                        </FormGroup >
+                                    </Col>
+
+                                    <Col>
+                                        <FormGroup className="mb-3">
+                                            <Form.Label>Time (minutes)</Form.Label>
+                                            <Form.Select aria-label="house-type-select"
+                                                name="min"
+                                                value={min}
+                                                onChange={e => setMin(e.target.value)}
+                                                required>
+                                                <option value="00">00</option>
+                                                <option value="10">10</option>
+                                                <option value="20">20</option>
+                                                <option value="30">30</option>
+                                                <option value="40">40</option>
+                                                <option value="50">50</option>
+                                                {formerrors.min && (
+                                                    <p className="text-danger">{formerrors.min}</p>
+                                                )}
+                                            </Form.Select>
+                                        </FormGroup >
+                                    </Col>
+                                </Row>
                                 <FormGroup className="mb-3">
                                     <Form.Label>Note</Form.Label>
                                     <Form.Control

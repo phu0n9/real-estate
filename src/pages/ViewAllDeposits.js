@@ -207,10 +207,10 @@ const ViewAllDeposit = () => {
                             </Col>
                             <Col xs={2} md={2} lg={5}>
                                 <Form.Label>Search By House ID</Form.Label>
-                                <input type="text" value={searchHouseId} style={{width: 500, height: 38}} onChange={handleForm} placeholder='Please Enter House Id'/>
+                                <input type="text" value={searchHouseId} style={{width: 475, height: 38}} onChange={handleForm} placeholder='Please Enter House Id'/>
                             </Col>  
                             <Col xs={2} md={2} lg={2.5}>
-                                <Button style={{height: 50, width: 200, marginTop: 20}} variant="secondary" onClick={handleSearch} placeholder='Please Enter House Id'>Search</Button>{' '}
+                                <Button style={{height: 47, width: 150, marginTop: 25}} variant="secondary" onClick={handleSearch} placeholder='Please Enter House Id'>Search</Button>{' '}
                             </Col>
                         </Row>
                     </Container>
@@ -228,7 +228,7 @@ const ViewAllDeposit = () => {
                             <th>Amount</th>
                             <th>Date</th>
                             <th>Time</th>
-                            <th>House Name</th>
+                            <th>Note</th>
                             <th>Edit</th>
                             <th>Delete</th>
                         </tr>

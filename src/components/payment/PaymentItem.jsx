@@ -4,8 +4,10 @@ import { useState,useEffect } from "react";
 import { useEnv } from "../../context/env.context";
 import { Button, Card, Form, Modal } from "react-bootstrap";
 import { FaEdit } from "react-icons/fa";
+import { useContext } from "react";
+import { UserRoleContext } from "../../App";
 
-const PaymentItem = ({ payment, onPaymentChange }) => {
+const PaymentItem = ({ payment, onPaymentChange, url}) => {
   const { getAccessTokenSilently } = useAuth0();
   const { apiServerUrl } = useEnv();
   const [show, setShow] = useState(0); // 0: hide modal, 1: show payment details, 2: show update payment form
@@ -13,6 +15,9 @@ const PaymentItem = ({ payment, onPaymentChange }) => {
     amount: payment.amount,
     note: payment.note,
   });
+
+  let isAdmin = useContext(UserRoleContext)
+
 
   // deletePaymentById
   const deletePayment = async () => {
@@ -29,14 +34,15 @@ const PaymentItem = ({ payment, onPaymentChange }) => {
   // updatePaymentById
   const updatePayment = async () => {
     const token = await getAccessTokenSilently();
+
     const body = {
       amount: formData.amount,
       note: formData.note,
       date: payment.date,
-      time: payment.time,
+      time: payment.time.substring(0,5),
     };
     await axios.put(
-      `${apiServerUrl}/api/v1/payments/byRental/${payment.rental.rentalId}/${payment.paymentId}`,
+      `${apiServerUrl}/api/v1/payments/${payment.paymentId}`,
       body,
       {
         headers: {
@@ -80,8 +86,8 @@ const PaymentItem = ({ payment, onPaymentChange }) => {
       <Modal show={show > 0} onHide={() => setShow(0)}>
         <Modal.Header closeButton>
           <Modal.Title>
-            {show === 1 ? "Payment" : "Update payment"} of House&nbsp;
-            {payment.rental.house.houseId}
+            {show === 1 ?  "Payment" : "Update payment"} of House&nbsp;
+            {payment.rental.house.name}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -124,12 +130,15 @@ const PaymentItem = ({ payment, onPaymentChange }) => {
           </p>
         </Modal.Body>
         <Modal.Footer>
-          {show === 2 && <Button onClick={updatePayment}>Update</Button>}
-          {show === 1 && (
+          {show === 2 && isAdmin ? <Button onClick={updatePayment}>Update</Button> : ""}
+          {show === 1 && isAdmin ? (
             <Button variant="danger" onClick={deletePayment}>
               Delete
             </Button>
-          )}
+          ) 
+          :
+          ""
+        }
         </Modal.Footer>
       </Modal>
     </>

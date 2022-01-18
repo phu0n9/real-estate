@@ -25,36 +25,17 @@ const AdminViewAllRentalsTable = () => {
                     authorization: `Bearer ${token}`
                 }
             }).then(res => {
-                Promise.all(res.data.content.map(i =>
-                    fetch(`${apiServerUrl}/api/v1/houses/${i.userHouse.houseId}`)
-                )).then(res2 => Promise.all(res2.map(r => r.json())))
-                    .then(result => {
-                        Promise.all(res.data.content.map(i =>
-                            fetch(`${apiServerUrl}/api/v1/users/${i.userHouse.userId}`, {
-                                headers: {
-                                    authorization: `Bearer ${token}`
-                                }
-                            })
-                        )).then(res3 => Promise.all(res3.map(r => r.json())))
-                            .then(result2 => {
-                                Promise.all(res.data.content.map((it, index) => {
-                                    console.log(result2)
-                                    if (it.userHouse.houseId === result[index].houseId && it.userHouse.userId === result2[index].userId)
-                                        setRentals((prevList) =>
-                                            [...prevList, {
-                                                rentalId: it.rentalId,
-                                                houseName: result[index].name,
-                                                startDate: it.startDate,
-                                                endDate: it.endDate,
-                                                depositAmount: it.depositAmount,
-                                                monthlyFee: it.monthlyFee,
-                                                payableFee: it.payableFee,
-                                                userName: result2[index].fullName
-                                            }]
-                                        )
-                                }))
-                            })
-                    })
+                res.data.content.forEach((rental)=>{
+                    setRentals((prevRental)=>[...prevRental,{
+                        rentalId: rental.rentalId,
+                        houseName: rental.house.name,
+                        startDate: rental.startDate,
+                        endDate: rental.endDate,
+                        depositAmount: rental.depositAmount,
+                        monthlyFee: rental.monthlyFee,
+                        payableFee: rental.payableFee
+                    }])
+                })
             })
         }
 

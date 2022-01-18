@@ -26,6 +26,7 @@ const Payment = () => {
   const { getAccessTokenSilently, user } = useAuth0();
   const currentUserId = useContext(UserContext);
   const [totalItem, setTotalItem] = useState();
+  let url = window.location.href.includes("admin")
 
   const { apiServerUrl } = useEnv();
 
@@ -38,21 +39,12 @@ const Payment = () => {
   const getAllPayments = async () => {
     setLoading(true);
     const token = await getAccessTokenSilently();
-    console.log(isAdmin);
-    await axios
-      .get(
-        `${apiServerUrl}/api/v1/payments/byUser?userId=${
-          !isAdmin ? currentUserId : ""
-        }&pageSize=${!isAdmin ? "" : 6}&pageNo=${activePage}`,
-        {
-          headers: {
-            authorization: `Bearer ${token}`,
-          },
-          // params,
+    await axios.get(`${apiServerUrl}/api/v1/payments/byUser?pageSize=${!isAdmin ? "":6}&pageNo=${activePage}&${!isAdmin ? "userId="+currentUserId : ""}`, {
+        headers: {
+          authorization: `Bearer ${token}`,
         }
-      )
+      })
       .then((res) => {
-        console.log(res.data);
         setTotalItem(res.data.totalElements);
         setTotalPages(res.data.totalPages);
 
@@ -98,19 +90,7 @@ const Payment = () => {
         },
       }.then((res) => {
         setPaymentList(res.data.content);
-        // setUserName(res.data.content.rental.user.fullName)
         setTotalItem(res.data.totalElements);
-        // res.data.content.forEach((p) => {
-        //   axios
-        //     .get(`${apiServerUrl}/api/v1/users/${p.rental.userHouse.userId}`, {
-        //       headers: {
-        //         authorization: `Bearer ${token}`,
-        //       },
-        //     })
-        //     .then((res2) => {
-        //       setUserName(res2.data.fullName);
-        //     });
-        // });
       })
     );
     setLoading(false);
@@ -126,20 +106,26 @@ const Payment = () => {
   }, [activePage, selectedRentalId, currentUserId]);
 
   const paginationItems = () => {
-    let items = [];
-    for (let number = 0; number < totalPages; number++) {
-      items.push(
-        <Pagination.Item
-          key={number}
-          active={number === activePage}
-          onClick={() => setActivePage(number)}
-        >
-          {number}
-        </Pagination.Item>
-      );
+    let items = [];    
+      if(selectedPayment === null){
+        for (let number = 0; number < totalPages ; number++) {
+          items.push(
+            <Pagination.Item
+              key={number}
+              active={number === activePage}
+              onClick={() => setActivePage(number)}
+            >
+              {number}
+            </Pagination.Item>
+          );
+      }
     }
     return items;
   };
+
+  if(!isAdmin && url){
+    navigate("/auth/payments")
+  }
 
   return (
     <Container className="py-5" style={{ marginTop: "5rem" }}>
@@ -220,6 +206,7 @@ const Payment = () => {
                     getPaymentsByRentalId();
                   } else getAllPayments();
                 }}
+                url={url}
               ></PaymentItem>
             ) : (
               paymentList.map((p) => {

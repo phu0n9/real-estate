@@ -20,21 +20,22 @@ const AddPayment = ({ rentals }) => {
   // addNewPaymentByRentalId
   const makePayment = async () => {
     const today = new Date();
+    const time = today.getHours() + ":" + today.getMinutes()
     const body = {
       amount: formData.amount,
       date: 
         moment(today).format('YYYY-MM-DD'),
-      time:
-        today.getHours() + ":" + today.getMinutes(),
+      time: time.toString().substring(0,5),
       note: formData.note,
     };
     const token = await getAccessTokenSilently();
     await axios.post(
-      `${apiServerUrl}/api/v1/payments/byRental/${formData.rentalId}`,body,
+      `${apiServerUrl}/api/v1/payments/byRental/${formData.rentalId}`,
       {
         headers: {
           authorization: `Bearer ${token}`,
         },
+        data: body
       }
     ).then(()=>{
       navigate("/auth/payments")

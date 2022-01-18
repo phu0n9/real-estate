@@ -13,7 +13,7 @@ export default function HouseForm({ pageTitle }) {
         "price":0,
         "description":"",
         "address": "",
-        "type":"appartment",
+        "type":"apartment",
         "status":"available",
         "numberOfBeds":0,
         "squareFeet":0,
@@ -105,8 +105,10 @@ export default function HouseForm({ pageTitle }) {
                         authorization: `Bearer ${token}`
                     }
                 })
-                .then(() => {
-                    navigate('/processing')
+                .then((res) => {
+                    navigate(`/viewDetail/${res.data.houseId}`)
+                    console.log(res.data)
+                    console.log(res)
                 })
                 .catch(error => console.log(error))
             }
@@ -132,8 +134,7 @@ export default function HouseForm({ pageTitle }) {
                     }
                 })
                     .then((res) => {
-                        console.log(res)
-                        navigate('/processing')
+                        navigate(`/viewDetail/${res.data.houseId}`)
                     })
                     .catch(error => console.log(error))
             }
@@ -288,7 +289,7 @@ export default function HouseForm({ pageTitle }) {
 
                                     <Col>
                                     <FormGroup className="mb-3">
-                                        <Form.Label>Price</Form.Label>
+                                        <Form.Label>Square feet</Form.Label>
                                         <Form.Control name="squareFeet"
                                             type="number"
                                             placeholder="Square Feet"

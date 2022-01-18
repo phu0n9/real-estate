@@ -52,8 +52,8 @@ const UploadHouseImage = () =>{
                 authorization: `Bearer ${token}`
             }
         })
-        .then(()=>{
-            navigate('/processing')
+        .then((res)=>{
+            navigate(`/viewDetail/${res.data.houseId}`)
         })
         .catch((err)=>{console.log(err)})
     }

@@ -122,7 +122,7 @@ export default function NavBar() {
                         <a href="/auth/ViewRentalHouses">My Rental</a>
                       </li>
                       <li>
-                        <a href="/auth/viewUserDeposit">Deposit</a>
+                        <a href="/auth/viewUserDeposit">My Deposits</a>
                       </li>
                       <li>
                         <a href="/auth/payments">Payments</a>

@@ -10,8 +10,8 @@ const HouseItemCard = ({ houses }) => {
     console.log(houses)
 
     return (
-        <Card onClick={viewDetail} style={{ width: '20rem' }}>
-            <Card.Img variant="top" src={houses.image[3]} />
+        <Card onClick={viewDetail} style={{ width: '20rem'}}>
+            <Card.Img variant="top" src={houses.image[3]} style={{height: 200, overflow: 'hidden'}} />
             <Card.Body>
                 <Card.Title>{houses.name}</Card.Title>
                 <Card.Text>{houses.price + " VND"}</Card.Text>

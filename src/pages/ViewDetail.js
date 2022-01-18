@@ -172,11 +172,12 @@ const ViewDetail = () => {
           <div className="col-lg-8">
             <Slider {...settings}>
               {images.map((image, index) => {
+                  
                 return (
                   <div key={index}>
                     <img
-                      className="d-inline-block w-100 h-100"
                       src={image}
+                      style={{height: 600, overflow: 'hidden'}}
                       alt="house"
                     />
                   </div>

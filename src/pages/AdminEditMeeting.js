@@ -6,7 +6,6 @@ import { useEnv } from '../context/env.context';
 import axios from 'axios';
 import DatePicker from 'react-datepicker'
 import Loader from '../components/Loader';
-import TimePicker from 'react-time-picker';
 import "react-time-picker/dist/TimePicker.css"
 import * as moment from 'moment'
 

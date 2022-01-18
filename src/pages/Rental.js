@@ -32,12 +32,11 @@ const Rental = () => {
 
     useEffect(() => {
         const getData = async() => {
-            await axios.get(`${apiServerUrl}/api/v1/houses/search/?pageSize=6`)
+            await axios.get(`${apiServerUrl}/api/v1/houses/random/6`)
                 .then((res) => {
-                    let content = res.content;
-                    console.log(res);
-                    content = res.data;
-                    setHouses(content.content);
+                    let content = res.data;
+                    console.log(content);
+                    setHouses(content);
                 })
                 .catch((err)=>{
                     console.log(err)
@@ -215,8 +214,8 @@ const Rental = () => {
                                     <Form.Group className="mb-3" controlId="formBasicRadio">
                                         <Form.Check 
                                             type="radio" 
-                                            checked={price[0] === 0 && price[1] === 3000000}
-                                            onChange={e => {setPrice([0, 3000000])}} 
+                                            checked={price[0] === 200 && price[1] === 400}
+                                            onChange={e => {setPrice([200, 400])}} 
                                             label="Under $400" />
                                         <Form.Check 
                                             type="radio" 

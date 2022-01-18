@@ -1,7 +1,9 @@
-import React from 'react';
+import React,{useContext} from 'react';
 import '../stylesheet/Footer.css'
+import { UserRoleContext } from '../App';
 
 const Footer = () => {
+  let userRole = useContext(UserRoleContext)
 return (
   <footer className="footer">
 
@@ -28,9 +30,9 @@ return (
             <h4>Our Services</h4>
             <ul>
               <li><i className="bi bi-chevron-right"></i> <a href="/rental">Rent a house</a></li>
-              <li><i className="bi bi-chevron-right"></i> <a href="/myPage">View Calendar</a></li>
-              <li><i className="bi bi-chevron-right"></i> <a href="/auth/ViewRentalHouses">View Rentals</a></li>
-              <li><i className="bi bi-chevron-right"></i> <a href="/auth/admin/viewAllDeposits">View Deposits</a></li>
+              <li><i className="bi bi-chevron-right"></i> <a href={!userRole ? "/auth/admin/calendar": "/auth/calendar"}>View Calendar</a></li>
+              <li><i className="bi bi-chevron-right"></i> <a href={!userRole ? "/auth/admin/ViewRentalHouses": "/auth/viewRentalHouses"}>View Rentals</a></li>
+              <li><i className="bi bi-chevron-right"></i> <a href={!userRole ? "/auth/admin/viewAllDeposits": "/auth/viewAllDeposits"}>View Deposits</a></li>
             </ul>
           </div>
 

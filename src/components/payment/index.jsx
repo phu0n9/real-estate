@@ -12,7 +12,7 @@ import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
 const Payment = () => {
-  let isAdmin = useContext(UserRoleContext)
+  let isAdmin = useContext(UserRoleContext);
 
   const navigate = useNavigate();
 
@@ -23,46 +23,38 @@ const Payment = () => {
   const [selectedRentalId, setSelectedRentalId] = useState(0);
   const [activePage, setActivePage] = useState(0);
 
-  const { getAccessTokenSilently, user} = useAuth0();
+  const { getAccessTokenSilently, user } = useAuth0();
   const currentUserId = useContext(UserContext);
   const [totalItem, setTotalItem] = useState();
 
-  const {apiServerUrl } = useEnv();
+  const { apiServerUrl } = useEnv();
 
   // const [userName, setUserName] = useState([]);
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [btnPressed, setBtnPressed] = useState(false);
-  const [totalPages,setTotalPages] = useState(0)
+  const [totalPages, setTotalPages] = useState(0);
 
   // getFilteredPayments
   const getAllPayments = async () => {
     setLoading(true);
     const token = await getAccessTokenSilently();
-<<<<<<< HEAD
-    const params = {
-      pageNo: activePage,
-      userId: !isAdmin ? currentUserId : "",
-    };
-    console.log(params);
+    console.log(isAdmin);
     await axios
-      .get(`${apiServerUrl}/api/v1/payments/byUser`, {
-=======
-    console.log(isAdmin)
-    await axios.get(`${apiServerUrl}/api/v1/payments/byUser?userId=${!isAdmin ? currentUserId : ""}&pageSize=${!isAdmin ? "":6}&pageNo=${activePage}`, {
->>>>>>> d628271310e95432253a1713c9b22972835153e2
-        headers: {
-          authorization: `Bearer ${token}`,
+      .get(
+        `${apiServerUrl}/api/v1/payments/byUser?userId=${
+          !isAdmin ? currentUserId : ""
+        }&pageSize=${!isAdmin ? "" : 6}&pageNo=${activePage}`,
+        {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+          // params,
         }
-        // params,
-      })
+      )
       .then((res) => {
         console.log(res.data);
         setTotalItem(res.data.totalElements);
-<<<<<<< HEAD
-        console.log(res.data);
-=======
-        setTotalPages(res.data.totalPages)
->>>>>>> d628271310e95432253a1713c9b22972835153e2
+        setTotalPages(res.data.totalPages);
 
         if (!isAdmin) {
           let tempRental = [];
@@ -85,7 +77,7 @@ const Payment = () => {
           });
           setRentalList(rentalWithPrice);
         }
-      setPaymentList([...res.data.content])
+        setPaymentList([...res.data.content]);
       });
     setLoading(false);
   };
@@ -102,7 +94,7 @@ const Payment = () => {
         },
         params: {
           pageNo: activePage,
-          pageSize: 6
+          pageSize: 6,
         },
       }.then((res) => {
         setPaymentList(res.data.content);
@@ -134,17 +126,17 @@ const Payment = () => {
   }, [activePage, selectedRentalId, currentUserId]);
 
   const paginationItems = () => {
-    let items = [];    
-      for (let number = 0; number < totalPages ; number++) {
-        items.push(
-          <Pagination.Item
-            key={number}
-            active={number === activePage}
-            onClick={() => setActivePage(number)}
-          >
-            {number}
-          </Pagination.Item>
-        );
+    let items = [];
+    for (let number = 0; number < totalPages; number++) {
+      items.push(
+        <Pagination.Item
+          key={number}
+          active={number === activePage}
+          onClick={() => setActivePage(number)}
+        >
+          {number}
+        </Pagination.Item>
+      );
     }
     return items;
   };

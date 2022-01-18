@@ -31,13 +31,8 @@ const Rental = () => {
     };
 
     useEffect(() => {
-<<<<<<< HEAD
         const getData = async () => {
-            await axios.get(`${apiServerUrl}/api/v1/houses/search/?pageSize=6`)
-=======
-        const getData = async() => {
             await axios.get(`${apiServerUrl}/api/v1/houses/random/6`)
->>>>>>> 802d061460b37123a193c164928afad45f002829
                 .then((res) => {
                     let content = res.data;
                     console.log(content);
@@ -217,17 +212,10 @@ const Rental = () => {
                                 <Col xs={2} md={2} lg={3}>
                                     <Form.Label>Price Range:</Form.Label>
                                     <Form.Group className="mb-3" controlId="formBasicRadio">
-<<<<<<< HEAD
                                         <Form.Check
                                             type="radio"
-                                            checked={price[0] === 0 && price[1] === 3000000}
-                                            onChange={e => { setPrice([0, 3000000]) }}
-=======
-                                        <Form.Check 
-                                            type="radio" 
                                             checked={price[0] === 200 && price[1] === 400}
-                                            onChange={e => {setPrice([200, 400])}} 
->>>>>>> 802d061460b37123a193c164928afad45f002829
+                                            onChange={e => { setPrice([200, 400]) }}
                                             label="Under $400" />
                                         <Form.Check
                                             type="radio"

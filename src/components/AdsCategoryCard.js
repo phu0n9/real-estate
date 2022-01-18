@@ -20,11 +20,11 @@ const AdsCategoryCard = ({ url, city, color }) => {
                     <li></li>
                     <li></li>
                 </ul>
-                <Link to='/rental' state={{ data: "hello" }}>
-                    Explore
-                </Link>
-
-                {/* <a href="/rental" city={city} className="btn-buy">Explore</a> */}
+                <Button className="btn-buy">
+                    <Link to='/rental'>
+                        Explore
+                    </Link>
+                </Button>
             </div>
         </div>
     );

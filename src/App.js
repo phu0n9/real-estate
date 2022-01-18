@@ -103,7 +103,7 @@ function App() {
   }
   return (
     <UserContext.Provider value={getUserId()}>
-      <UserRoleContext.Provider >
+      <UserRoleContext.Provider value={getUserRole()}>
         <NavBar />
         <Routes>
           {/* Redirect pages */}

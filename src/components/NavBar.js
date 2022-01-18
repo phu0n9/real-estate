@@ -113,9 +113,6 @@ export default function NavBar() {
                     </a>
                     <ul>
                       <li>
-                        <a href="/auth/profile">Profile</a>
-                      </li>
-                      <li>
                         <a href="/auth/calendar">Calendar</a>
                       </li>
                       <li>

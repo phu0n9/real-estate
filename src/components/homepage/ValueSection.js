@@ -10,7 +10,7 @@ export default function ValueSection() {
 
         <header className="section-header">
           <h2>Our Values</h2>
-          <p>Odit est perspiciatis laborum et dicta</p>
+          <p>Relax….We Do All The Work For You!</p>
         </header>
 
         <div className="row">

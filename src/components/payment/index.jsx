@@ -162,7 +162,7 @@ const Payment = () => {
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    label="Serch by House Name"
+                    label="Search by House Name"
                     variant="outlined"
                   />
                 )}
@@ -189,7 +189,7 @@ const Payment = () => {
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    label="Serch by User Name"
+                    label="Search by User Name"
                     variant="outlined"
                   />
                 )}

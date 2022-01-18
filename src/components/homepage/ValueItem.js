@@ -7,14 +7,14 @@ import img3 from '../../img/value/values-3.png'
 export default function ValueItem() {
     var valueList = [{
         'image':img1,
-        'title':'Ad cupiditate sed est odio',
-        'description':'Eum ad dolor et. Autem aut fugiat debitis voluptatem consequuntur sit. Et veritatis id.'},
+        'title':'PROPERTY MANAGEMENT',
+        'description':'Looking out for your best interest and we relive you of all the stress.'},
         {'image':img2,
-        'title':'Voluptatem voluptatum alias',
-        'description':'Repudiandae amet nihil natus in distinctio suscipit id. Doloremque ducimus ea sit non.'},
+        'title':'MORTGAGES & FINANCIAL SERVICES',
+        'description':'Looking for a mortgage? Refinancing, loans. We have accuss to over 30 banks & lenders.'},
         {'image':img3,
-        'title':'Fugit cupiditate alias nobis.',
-        'description':'Quam rem vitae est autem molestias explicabo debitis sint. Vero aliquid quidem commodi.'
+        'title':'TENANTS',
+        'description':'Download our application for a rental unit. Get your Equifax full Credit Report.'
         }]
     return (
         valueList.map((values,index)=>{

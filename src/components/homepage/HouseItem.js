@@ -23,7 +23,7 @@ export default function HouseItem() {
         houses.map((house,index)=>{
             return <div className="col-lg-4 col-md-6 item-item filter-web" key={index}>
             <div className="item-wrap">
-                <img src={house.image[3]} className="img-fluid" alt="house-frontal"/>
+                <img src={house.image[3]} className="img-fluid" alt="house-frontal" style={{width:400,height:300}}/>
                 <div className="item-info">
                 <h4>{house.name}</h4>
                 <p>Address: {house.address}</p>

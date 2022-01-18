@@ -17,6 +17,7 @@ const Calendar = () => {
     const currentUserId = useContext(UserContext)
     const isAdmin = useContext(UserRoleContext)
 
+
     useEffect(() => {
         // get the calendar data
         const getCalendarData = async () => {
@@ -55,7 +56,7 @@ const Calendar = () => {
     }
 
     // if logged in user is admin
-    if (!isAdmin) {
+    if (isAdmin) {
         return (
             <>
                 <Navigate replace to="/auth/admin/calendar" />
@@ -64,10 +65,8 @@ const Calendar = () => {
     }
     return (
         <section className="hero d-flex align-items-center">
-            <div className="col-lg-10">
-                <br />
-                <br />
-                <br />
+            <div className="col-lg-10" style={{marginTop:"25%"}}>
+
                 <ScheduleComponent
                     currentView='Month' selectedDate={new Date()} height='850px' style={{ marginLeft: "250px" }}
                     popupOpen={false} readonly={true}

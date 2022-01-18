@@ -15,13 +15,12 @@ return (
               <img src="logo.png" alt="logo"/>
               <span>Reado</span>
             </a>
-            <p>We are team of talented designers making websites with Bootstrap.</p>            
             <p>Team Project - Software Architecture and Design</p>
             <div className="social-links mt-3">
-              <a href="/" className="twitter"><i className="bi bi-twitter"></i></a>
-              <a href="/" className="facebook"><i className="bi bi-facebook"></i></a>
-              <a href="/" className="instagram"><i className="bi bi-instagram"></i></a>
-              <a href="/" className="linkedin"><i className="bi bi-linkedin"></i></a>
+              <a href="https://github.com/mnskgrayce/real-estate-mgt/" className="twitter">Github Backend Link<i className="bi bi-twitter"></i></a>
+               <br/>
+               <br/>
+              <a href="https://github.com/phu0n9/real-estate" className="facebook">Github Frontend Link<i className="bi bi-facebook"></i></a>
             </div>
           </div>
 

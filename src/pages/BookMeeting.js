@@ -84,24 +84,8 @@ const BookMeeting = () => {
     };
 
     const saveMeeting = async () => {
-<<<<<<< HEAD
         await axios.post(`${apiServerUrl}/api/v1/meetings?userId=${meeting.userId}&houseId=${meeting.houseId}&date=${moment(meeting.date).format('YYYY-MM-DD')}&time=${hour.concat(":", min)}&note=${meeting.note}`, {
         }).then((res) => {
-=======
-        console.log(typeof meeting.userId)
-        // console.log(typeof meeting.userId.toString())
-        console.log(meeting)
-        const params = 
-        {
-            "userId": (meeting.userId),
-            "houseId": meeting.houseId,
-            "date": moment(meeting.date).format('YYYY-MM-DD'),  
-            "time": hour.concat(":", min),
-            "note": meeting.note
-        }
-        await axios.post(`${apiServerUrl}/api/v1/meetings?userId=${meeting.userId}&houseId=${meeting.houseId}&date=${moment(meeting.date).format('YYYY-MM-DD')}&time=${hour.concat(":", min)}&note=${meeting.note}`
-        ).then((res) => {
->>>>>>> 0b492a7 (change meeting and payment)
             console.log(res)
             if (res.status === 200) {
                 navigate("/rental");

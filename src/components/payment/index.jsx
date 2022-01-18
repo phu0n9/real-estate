@@ -10,7 +10,6 @@ import AddPayment from "./AddPayment";
 import PaymentItem from "./PaymentItem";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import { Navigate } from 'react-router-dom';
 
 const Payment = () => {
   let isAdmin = useContext(UserRoleContext)
@@ -24,7 +23,7 @@ const Payment = () => {
   const [selectedRentalId, setSelectedRentalId] = useState(0);
   const [activePage, setActivePage] = useState(0);
 
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently, user} = useAuth0();
   const currentUserId = useContext(UserContext);
   const [totalItem, setTotalItem] = useState();
 
@@ -39,12 +38,6 @@ const Payment = () => {
   const getAllPayments = async () => {
     setLoading(true);
     const token = await getAccessTokenSilently();
-    // const params = {
-    //   pageNo: activePage,
-    //   pageSize: 6,
-    //   userId: !isAdmin ? currentUserId : "",
-    // };
-    // console.log(params)
     console.log(isAdmin)
     await axios.get(`${apiServerUrl}/api/v1/payments/byUser?userId=${!isAdmin ? currentUserId : ""}&pageSize=${!isAdmin ? "":6}&pageNo=${activePage}`, {
         headers: {
@@ -127,11 +120,8 @@ const Payment = () => {
   }, [activePage, selectedRentalId, currentUserId]);
 
   const paginationItems = () => {
-    let items = [];
-    const totalPage = totalItem / 5
-    
-    // if (totalPage > 0){
-      for (let number = 0; number <= totalPages -1 ; number++) {
+    let items = [];    
+      for (let number = 0; number < totalPages ; number++) {
         items.push(
           <Pagination.Item
             key={number}
@@ -141,19 +131,9 @@ const Payment = () => {
             {number}
           </Pagination.Item>
         );
-      // }
     }
     return items;
   };
-
-  // checking for if users is admin or not
-  if (!isAdmin) {
-    return (
-        <>
-            <Navigate replace to="/auth/payments" />
-        </>
-    )
-}
 
   return (
     <Container className="py-5" style={{ marginTop: "5rem" }}>

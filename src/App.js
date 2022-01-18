@@ -36,7 +36,6 @@ function App() {
   const { isLoading, user, getAccessTokenSilently, isAuthenticated} = useAuth0();
   const { apiServerUrl, audience} = useEnv()
   const role = `${audience}/roles`
-  let isAdmin = false;
 
   const getUserId = () => {
     // if userid is bigger than 21, they use oauth2
@@ -49,7 +48,6 @@ function App() {
             user?.sub.length
           ) / 10000
         );
-    console.log(currentUserId)
     return currentUserId;
   };
 
@@ -95,13 +93,7 @@ function App() {
       }
     };
     if (user !== undefined) {
-      if (user[role].length === 0) {
-        isAdmin = false
-      } else {
-        isAdmin = true
-      }
       getUser()
-      console.log(isAdmin)
     }
   }, [user, apiServerUrl, getAccessTokenSilently]);
 
@@ -127,7 +119,7 @@ function App() {
           <Route path="/viewDetail/:id" exact element={<ViewDetail />} />
 
           {/* logged in users routes */}
-          <Route path="/auth/payments" exact element={<Payment isAdmin={isAdmin} />} />
+          <Route path="/auth/payments" exact element={<Payment/>} />
           <Route path="/auth/calendar" exact element={<Calendar />} />
           <Route
             path="/auth/ViewRentalHouses"
@@ -180,7 +172,7 @@ function App() {
           <Route
             path="/auth/admin/payments"
             exact
-            element={<Payment isAdmin={isAdmin} />}
+            element={<Payment/>}
           />
 
           <Route path="/auth/admin/uploadImage/:id" exact element={<UploadHouseImage />} />

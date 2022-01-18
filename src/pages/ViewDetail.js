@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import MapSection from "../components/map/Map";
-import Button from "react-bootstrap/Button";
+import { Button, Container, Row } from "react-bootstrap";
 import "../App.css";
 import "../stylesheet/Details.css";
 import { useNavigate, useParams } from "react-router-dom";
@@ -15,6 +15,7 @@ import { useEnv } from "../context/env.context";
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
 import { FaBusinessTime } from "react-icons/fa";
 import { UserContext } from "../App";
+import HouseItemCard from "../components/HouseItemCard";
 
 const ViewDetail = () => {
   const [uid, setUID] = useState(0);
@@ -30,6 +31,20 @@ const ViewDetail = () => {
   const role = `${audience}/roles`;
   const navigate = useNavigate();
 
+  const [statusArr, setStatusArr] = useState([]);
+  const [typeArr, setTypeArr] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const data = {
+    city: "",
+    district: "",
+    priceFrom: 0,
+    priceTo: 0,
+    statusList: statusArr,
+    typeList: typeArr,
+    query: searchQuery
+  }
+
   const { currentUserId } = useContext(UserContext);
 
   const settings = {
@@ -42,6 +57,8 @@ const ViewDetail = () => {
     autoplaySpeed: 3000,
     cssEase: "linear",
   };
+
+  const [suggestion, setSuggestion] = useState([])
 
   const bookMeeting = () => {
     if (isAuthenticated) {
@@ -67,7 +84,14 @@ const ViewDetail = () => {
           setType(res.data.type);
           // let words = (user.sub).split('|')
           setUID(currentUserId);
-        })
+          data.district = res.data.location.district
+          data.city = res.data.location.city
+        }).then(
+          axios.post(`${apiServerUrl}/api/v1/houses/search/form?orderBy=asc&pageNo=1`, data)
+            .then(res2 => {
+              setSuggestion([...res2.data.content])
+            })
+        )
         .catch((err) => {
           console.log(err);
           navigate("/error");
@@ -165,6 +189,17 @@ const ViewDetail = () => {
     }
   };
 
+  const suggestionSettings = {
+    dots: true,
+    infinite: true,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    autoplay: true,
+    speed: 500,
+    autoplaySpeed: 3000,
+    cssEase: "linear"
+  };
+
   return (
     <section className="portfolio-details">
       <div className="container">
@@ -172,12 +207,12 @@ const ViewDetail = () => {
           <div className="col-lg-8">
             <Slider {...settings}>
               {images.map((image, index) => {
-                  
+
                 return (
                   <div key={index}>
                     <img
                       src={image}
-                      style={{height: 600, overflow: 'hidden'}}
+                      style={{ height: 600, overflow: 'hidden' }}
                       alt="house"
                     />
                   </div>
@@ -211,8 +246,8 @@ const ViewDetail = () => {
                       type === "street"
                         ? "warning"
                         : type === "apartment"
-                        ? "info"
-                        : "success"
+                          ? "info"
+                          : "success"
                     }
                   >
                     {house.type}
@@ -226,8 +261,8 @@ const ViewDetail = () => {
                       status === "reserved"
                         ? "info"
                         : status === "available"
-                        ? "success"
-                        : "warning"
+                          ? "success"
+                          : "warning"
                     }
                   >
                     {house.status}
@@ -236,83 +271,83 @@ const ViewDetail = () => {
               </ul>
             </div>
             <div className="portfolio-description" style={{ paddingLeft: 50 }}>
-            {
+              {
                 // isAuthenticated
-                !isAuthenticated ? 
-                (
-                  // && user[role].length !== 0 && user !== undefined
-                  // (
-                  // (
-                  // user === undefined
-                  // ?
-                  <span>
-                    <Button
-                      variant="primary"
-                      onClick={bookMeeting}
-                      style={{ height: "3rem" }}
-                    >
-                      Book Meeting
-                    </Button>
+                !isAuthenticated ?
+                  (
+                    // && user[role].length !== 0 && user !== undefined
+                    // (
+                    // (
+                    // user === undefined
+                    // ?
+                    <span>
+                      <Button
+                        variant="primary"
+                        onClick={bookMeeting}
+                        style={{ height: "3rem" }}
+                      >
+                        Book Meeting
+                      </Button>
 
-                    <Button
-                      variant="success"
-                      onClick={saveDeposit}
-                      style={{
-                        height: "3rem",
-                        display: status === "available" ? "block" : "none",
-                      }}
-                    >
-                      Deposit Money
-                    </Button>
+                      <Button
+                        variant="success"
+                        onClick={saveDeposit}
+                        style={{
+                          height: "3rem",
+                          display: status === "available" ? "block" : "none",
+                        }}
+                      >
+                        Deposit Money
+                      </Button>
 
-                  </span>
-                ) 
-                : 
-                (
-                    user !== undefined && user[role].length === 0 
-                    ? 
-                    (
+                    </span>
+                  )
+                  :
+                  (
+                    user !== undefined && user[role].length === 0
+                      ?
+                      (
                         <span>
-                        <Button
+                          <Button
                             variant="primary"
                             onClick={bookMeeting}
                             style={{ height: "3rem" }}
-                        >
+                          >
                             Book Meeting
-                        </Button>
-    
-                        <Button
+                          </Button>
+
+                          <Button
                             variant="success"
                             onClick={saveDeposit}
                             style={{
-                            height: "3rem",
-                            display: status === "available" ? "block" : "none",
+                              height: "3rem",
+                              display: status === "available" ? "block" : "none",
                             }}
-                        >
+                          >
                             Deposit Money
-                        </Button>
+                          </Button>
                         </span>
-                    ) 
-                    :
-                    (
+                      )
+                      :
+                      (
                         <span>
-                            <Button variant="danger" onClick={deleteHouse}>
-                                Delete House
-                            </Button>
-                            <Button variant="info" onClick={updateHouse}>
-                                Update House
-                            </Button>
+                          <Button variant="danger" onClick={deleteHouse}>
+                            Delete House
+                          </Button>
+                          <Button variant="info" onClick={updateHouse}>
+                            Update House
+                          </Button>
                         </span>
-                    )
-                    
-                )
+                      )
+
+                  )
                 // )
                 // )
                 // :
                 // (
                 //     <Button variant="primary" onClick={()=> loginWithRedirect()} style={{ height: '3rem'}}>Log in</Button>
                 // )
-            }
+              }
             </div>
 
             <div className="portfolio-description">
@@ -320,6 +355,16 @@ const ViewDetail = () => {
               <MapSection location={location} zoomLevel={3} />
             </div>
           </div>
+          <Container style={{ justifyContent: "center", marginTop: 100 }}>
+            <h2 style={{ marginTop: 30 }}>Another houses?</h2>
+            <Row>
+              <Slider {...suggestionSettings}>
+                {suggestion.map((e) => {
+                  return <HouseItemCard houses={e} />
+                })}
+              </Slider>
+            </Row>
+          </Container>
         </div>
       </div>
     </section>

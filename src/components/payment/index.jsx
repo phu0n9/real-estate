@@ -43,8 +43,9 @@ const Payment = ({ isAdmin }) => {
       pageNo: activePage,
       userId: !isAdmin ? currentUserId : "",
     };
-    console.log(params)
-    await axios.get(`${apiServerUrl}/api/v1/payments/byUser`, {
+    console.log(params);
+    await axios
+      .get(`${apiServerUrl}/api/v1/payments/byUser`, {
         headers: {
           authorization: `Bearer ${token}`,
         },
@@ -53,7 +54,7 @@ const Payment = ({ isAdmin }) => {
       .then((res) => {
         console.log(res);
         setTotalItem(res.data.totalElements);
-        console.log(res.data)
+        console.log(res.data);
 
         if (!isAdmin) {
           let tempRental = [];

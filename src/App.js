@@ -34,8 +34,8 @@ export const UserContext = createContext();
 export const UserRoleContext = createContext()
 
 function App() {
-  const { isLoading, user, getAccessTokenSilently, isAuthenticated} = useAuth0();
-  const { apiServerUrl, audience} = useEnv()
+  const { isLoading, user, getAccessTokenSilently, isAuthenticated } = useAuth0();
+  const { apiServerUrl, audience } = useEnv()
   const role = `${audience}/roles`
   let isAdmin = false;
 
@@ -54,12 +54,12 @@ function App() {
     return currentUserId;
   };
 
-  const getUserRole = () =>{
-    if (user[role].length !== 0 && isAuthenticated){
-      return true
-    }
-    return false
-  }
+  // const getUserRole = () =>{
+  //   if (user[role].length !== 0 && isAuthenticated){
+  //     return true
+  //   }
+  //   return false
+  // }
 
   useEffect(() => {
     const getUser = async () => {
@@ -112,7 +112,7 @@ function App() {
   }
   return (
     <UserContext.Provider value={getUserId()}>
-      <UserRoleContext.Provider value={getUserRole()}>
+      <UserRoleContext.Provider >
         <NavBar />
         <Routes>
           {/* Redirect pages */}
@@ -123,7 +123,7 @@ function App() {
 
           {/* basic routes */}
           <Route path="/" exact={true} element={<Home />} />
-          <Route path="/rental" exact={true} element={<Rental />} />
+          <Route path="/rental/" exact={true} element={<Rental />} />
           <Route path="/BookMeeting/:id" exact element={<BookMeeting />} />
           <Route path="/viewDetail/:id" exact element={<ViewDetail />} />
 
@@ -190,7 +190,7 @@ function App() {
           <Route path="*" element={<Error />} />
         </Routes>
       </UserRoleContext.Provider>
-    </UserContext.Provider>
+    </UserContext.Provider >
   );
 }
 

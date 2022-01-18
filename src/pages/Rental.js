@@ -11,6 +11,8 @@ import Footer from '../components/Footer'
 import { useEnv } from '../context/env.context'
 
 const Rental = () => {
+
+
     const [pagination, setPagination] = useState([])
     const { apiServerUrl } = useEnv()
     const [houses, setHouses] = useState([]);                           // Setting current list of houses
@@ -35,7 +37,6 @@ const Rental = () => {
             await axios.get(`${apiServerUrl}/api/v1/houses/random/6`)
                 .then((res) => {
                     let content = res.data;
-                    console.log(content);
                     setHouses(content);
                 })
                 .catch((err) => {
@@ -99,11 +100,8 @@ const Rental = () => {
             query: searchQuery
         }
 
-        console.log(data);
-
         axios.post(`${apiServerUrl}/api/v1/houses/search/form?orderBy=asc&pageNo=${pageNum}`, data)
             .then((res) => {
-                console.log(res);
                 content = res.data;
                 setHouses(content.content);
 

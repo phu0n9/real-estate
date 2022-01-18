@@ -10,14 +10,9 @@ export default function HouseItem() {
 
     useEffect(() =>{
         const fetchHouse = async () =>{
-            await axios.get(`${apiServerUrl}/api/v1/houses/search`,{
-                params:{
-                    pageNo:1,
-                    pageSize:9
-                }
-            })
+            await axios.get(`${apiServerUrl}/api/v1/houses/random/9`)
             .then((res)=>{
-                setHouses(res.data.content)
+                setHouses(res.data)
             })
             .catch((err)=>console.error(err))
         }

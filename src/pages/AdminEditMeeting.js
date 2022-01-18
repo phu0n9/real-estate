@@ -73,6 +73,7 @@ const AdminEditMeeting = () => {
 
     const editMeeting = async () => {
         // get access token from users to use api
+<<<<<<< HEAD
         await axios.post(`${apiServerUrl}/api/v1/meetings?meetingId${meeting.meetingId}=userId=${meeting.userId}&houseId=${meeting.houseId}&date=${moment(meeting.date).format('YYYY-MM-DD')}&time=${hour.concat(":", min)}&note=${meeting.note}`)
             .then((res) => {
                 console.log(res)
@@ -80,6 +81,15 @@ const AdminEditMeeting = () => {
                     navigate("/auth/admin/calendar");
                 }
             }).catch(error => console.log(error));
+=======
+        await axios.post(`${apiServerUrl}/api/v1/meetings?userId=${meeting.userId}&houseId=${meeting.houseId}&date=${moment(meeting.date).format('YYYY-MM-DD')}&time=${hour.concat(":", min)}&note=${meeting.note}&meetingId=${id}`)
+        .then((res) => {
+            console.log(res)
+            if (res.status === 200) {
+                navigate("/auth/admin/calendar");
+            }
+        }).catch(error => console.log(error));
+>>>>>>> 0b492a7 (change meeting and payment)
     }
 
     const deleteMeeting = async () => {

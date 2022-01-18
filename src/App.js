@@ -1,6 +1,5 @@
 import Calendar from "./pages/Calendar";
 import NavBar from "./components/NavBar";
-import Profile from "./pages/Profile";
 import Home from "./pages/Home";
 import Rental from "./pages/Rental";
 import ViewDetail from "./pages/ViewDetail";
@@ -9,7 +8,7 @@ import AdminCalendar from "./pages/AdminCalendar";
 import AddHouse from "./pages/AddHouse";
 import ViewRentalHouses from "./pages/ViewRentalHouses";
 import ViewAllUsers from "./pages/ViewAllUsers";
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import Loader from "./components/Loader";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -55,7 +54,7 @@ function App() {
   };
 
   const getUserRole = () =>{
-    if (user[role].length !== 0 && isAuthenticated){
+    if (user !== undefined && user[role].length !== 0 && isAuthenticated){
       return true
     }
     return false
@@ -130,7 +129,6 @@ function App() {
           {/* logged in users routes */}
           <Route path="/auth/payments" exact element={<Payment isAdmin={isAdmin} />} />
           <Route path="/auth/calendar" exact element={<Calendar />} />
-          <Route path="/auth/profile" exact element={<Profile />} />
           <Route
             path="/auth/ViewRentalHouses"
             exact

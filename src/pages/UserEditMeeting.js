@@ -238,3 +238,4 @@ const AdminEditMeeting = () => {
 
 export default withAuthenticationRequired(AdminEditMeeting, {
     onRedirecting: () => <Loader />,
+})

@@ -50,31 +50,6 @@ const PaymentItem = ({ payment, onPaymentChange }) => {
     onPaymentChange();
   };
 
-  // get house name
-  useEffect(()=>{
-    const getHouseName = async ()=>{
-      await axios.get(`${apiServerUrl}/api/v1/houses/${payment.rental.house.houseId}`)
-      .then((res)=>{
-        setHouseName(res.data.name)
-      })
-      .then((err)=>{console.log(err)})
-    }
-    const getUserName = async () =>{
-      const token = await getAccessTokenSilently()
-      await axios.get(`${apiServerUrl}/api/v1/users/${payment.rental.user.userId}`,{
-        headers:{
-          authorization:`Bearer ${token}`
-        }
-      })
-      .then((res)=>{
-        setUserName(res.data.fullName)
-      })
-      .catch((err)=>{console.log(err)})
-    }
-    getHouseName()
-    getUserName()
-  },[apiServerUrl,getAccessTokenSilently])
-
   return (
     <>
       <Card

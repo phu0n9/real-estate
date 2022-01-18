@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ScheduleComponent, Week, Month, ViewsDirective, ViewDirective, Inject, Day } from '@syncfusion/ej2-react-schedule'
 import Loader from '../components/Loader'
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
@@ -7,21 +7,15 @@ import axios from 'axios';
 import { Navigate } from 'react-router-dom';
 import Popup from '../components/popup/Popup';
 import UserMeetingForm from '../components/bookMeeting/UserMeetingForm';
+import { UserContext, UserRoleContext } from '../App';
 
 const Calendar = () => {
     const { getAccessTokenSilently, user } = useAuth0()
     const { apiServerUrl, audience } = useEnv()
     const role = `${audience}/roles`
     const [meetings, setMeetings] = useState([]);
-    const currentUserId =
-        user.sub.length < 21
-            ? user.sub.substring(user.sub.lastIndexOf("|") + 1, user.sub.length)
-            : Math.trunc(
-                user.sub.substring(
-                    user.sub.lastIndexOf("|") + 1,
-                    user.sub.length
-                ) / 10000
-            );
+    const currentUserId = useContext(UserContext)
+    const isAdmin = useContext(UserRoleContext)
 
     useEffect(() => {
         // get the calendar data
@@ -31,30 +25,23 @@ const Calendar = () => {
                 headers: {
                     authorization: `Bearer ${token}`
                 }
-            }).then(res => {  // after fetched all meeting data, get the user data using userId in meeting data
-                console.log(res)
-
-                Promise.all(res.data.content.map(i =>
-                    fetch(`${apiServerUrl}/api/v1/houses/${i.house.houseId}`)
-                )).then(res2 => Promise.all(res2.map(r => r.json())))
-                    .then(result => {
-                        // console.log(res.data)
-                        Promise.all(res.data.content.map((it, i) => {
-                            if (it.userHouse.houseId === result[i].houseId) {
-                                setMeetings(prevList => [...prevList, {
-                                    meetingId: it.meetingId,
-                                    houseId: it.userHouse.houseId,
-                                    houseName: result[i].name,
-                                    userId: it.userHouse.userId,
-                                    note: it.note,
-                                    date: new Date(it.date.concat(' ', it.time)),
-                                    title: result[i].name,
-                                }])
-                            }
-                        })
-                        )
-                    })
             })
+            .then(res => {  // after fetched all meeting data, get the user data using userId in meeting data
+                res.data.content.forEach(meeting =>{
+                    setMeetings((prevMeeting)=>[...prevMeeting,{
+                        meetingId: meeting.meetingId,
+                        title: "Meeting Id : ".concat(meeting.meetingId, "/", " house : ",  meeting.house.name),
+                        houseId: meeting.house.houseId,
+                        houseName: meeting.house.name,
+                        userId: meeting.user.userId,
+                        userName: meeting.user.fullName,
+                        date: new Date(meeting.date.concat(' ', meeting.time)),
+                        description: "meeting with : ".concat(meeting.user.fullName),
+                        note: meeting.note
+                    }])
+                })
+            })
+            .catch((err)=>console.log(err))
         }
         getCalendarData()
     }, [apiServerUrl, currentUserId, getAccessTokenSilently]);
@@ -68,7 +55,7 @@ const Calendar = () => {
     }
 
     // if logged in user is admin
-    if (user[role].length !== 0) {
+    if (!isAdmin) {
         return (
             <>
                 <Navigate replace to="/auth/admin/calendar" />

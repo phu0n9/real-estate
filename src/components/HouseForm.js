@@ -8,22 +8,22 @@ import { Card, Col, Container, Row, Button, Form, FormGroup,DropdownButton, Drop
 
 export default function HouseForm({ pageTitle }) {
     const { getAccessTokenSilently } = useAuth0()
-
     const [houses,setHouses] = useState({
         "name":"",
         "price":0,
         "description":"",
         "address": "",
         "type":"appartment",
-        "status":"",
+        "status":"available",
         "numberOfBeds":0,
         "squareFeet":0,
         "image":[],
-        "location":{
-            "city":"Ho Chi Minh",
-            "district":1
-        }
+        "city":"Saigon",
+        "district":1
     })
+
+    let districtList = houses.city === "Saigon" ? ["1","4","7","10"] : ["Ba Dinh","Cau Giay","Dong Da"]
+    const [citySelected,setCitySelected] = useState(false)
 
     const { id } = useParams();
     const [checked, setChecked] = useState(true)
@@ -35,18 +35,14 @@ export default function HouseForm({ pageTitle }) {
 
     const handleChange = (e) => {
         const files = Array.from(e.target.files)
-        setHouses({image: files})
+        setHouses({...houses,image: files})
     }
 
     useEffect(() => {
         if (id != null) {
             const fetchHouse = async () => {
                 const token = await getAccessTokenSilently()
-                await axios.get(`${apiServerUrl}/api/v1/houses/${id}`, {
-                    headers: {
-                        authorization: `Bearer ${token}`
-                    }
-                })
+                await axios.get(`${apiServerUrl}/api/v1/houses/${id}`)
                     .then((res) => {
                         setHouses({
                             name: res.data.name,
@@ -58,10 +54,8 @@ export default function HouseForm({ pageTitle }) {
                             numberOfBeds: res.data.numberOfBeds,
                             squareFeet: res.data.squareFeet,
                             image: res.data.image,
-                            location: {
-                                city: res.data.location.city,
-                                district: res.data.location.district
-                            }
+                            city: res.data.location.city,
+                            district: res.data.location.district
                         })
                     })
                     .catch((err) => { console.log(err) })
@@ -96,9 +90,10 @@ export default function HouseForm({ pageTitle }) {
         formData.append('numberOfBeds', houses.numberOfBeds)
         formData.append('squareFeet', houses.squareFeet)
         formData.append('status', houses.status)
-        formData.append()
+        formData.append('district',houses.district)
+        formData.append('city',houses.city)
 
-        if (!houses.image || !houses.price || !houses.description || !houses.address || !houses.type || !houses.numberOfBeds || !houses.squareFeet || !houses.location.district || !houses.location.city) {
+        if (!houses.image || !houses.price || !houses.description || !houses.address || !houses.type || !houses.numberOfBeds || !houses.squareFeet || !houses.district || !houses.city) {
             alert('Please fill all the information in the form.')
         }
         else {
@@ -110,10 +105,10 @@ export default function HouseForm({ pageTitle }) {
                         authorization: `Bearer ${token}`
                     }
                 })
-                    .then(() => {
-                        navigate('/processing')
-                    })
-                    .catch(error => console.log(error))
+                .then(() => {
+                    navigate('/processing')
+                })
+                .catch(error => console.log(error))
             }
             else { // in update house page
                 let data = {
@@ -126,7 +121,8 @@ export default function HouseForm({ pageTitle }) {
                     "status": houses.status,
                     "numberOfBeds": houses.numberOfBeds,
                     "squareFeet": houses.squareFeet,
-
+                    "city": houses.city,
+                    "district": houses.district
                 }
                 console.log(data)
                 const token = await getAccessTokenSilently()
@@ -147,6 +143,7 @@ export default function HouseForm({ pageTitle }) {
     const uploadMoreImage = () => {
         navigate(`/auth/admin/uploadImage/${id}`)
     }
+
 
     if (id != null && houses.image === undefined) {
         navigate('/processing')
@@ -240,27 +237,35 @@ export default function HouseForm({ pageTitle }) {
                                     <Col>
                                         <FormGroup className="mb-3">
                                             <Form.Label>City</Form.Label>
-                                            <DropdownButton id="dropdown-item-button" title={houses.location.city}
-                                                onSelect={e => setHouses({ ...houses, location: { ...houses.location, city: e } })}
+                                            <DropdownButton id="dropdown-item-button" title={houses.city}
+                                                onSelect={e => {
+                                                    setHouses({ ...houses, city: e })
+                                                    setCitySelected(!citySelected)
+                                                }}
                                                 variant='success'
                                             >
-                                                <Dropdown.Item eventKey="Ho Chi Minh">Ho Chi Minh</Dropdown.Item>
-                                                <Dropdown.Item eventKey="Ha Noi">Ha Noi</Dropdown.Item>
-                                                <Dropdown.Item eventKey="Da Nang">Da Nang</Dropdown.Item>
-                                                <Dropdown.Item eventKey="Ha Long Bay">Ha Long Bay</Dropdown.Item>
+                                                <Dropdown.Item eventKey="Saigon">Ho Chi Minh</Dropdown.Item>
+                                                <Dropdown.Item eventKey="Hanoi">Ha Noi</Dropdown.Item>
                                             </DropdownButton>
                                         </FormGroup>
                                     </Col>
+
                                     <Col>
                                         <FormGroup className="mb-3">
                                             <Form.Label>District</Form.Label>
-                                            <Form.Control name="district"
-                                                type={houses.location.city === "Ho Chi Minh"? "number": "text"}
-                                                placeholder="District"
-                                                value={houses.location.district} 
-                                                required
-                                                onChange={e => setHouses({ ...houses, location: { ...houses.location, district: e }})}
-                                                />
+                                            <DropdownButton id="dropdown-item-button" title={!citySelected ? houses.district : districtList[0]} 
+                                                onSelect={e => {
+                                                    setHouses({ ...houses, district: e })
+                                                    setCitySelected(!citySelected)
+                                                }}
+                                            >   
+                                                {
+                                                      districtList.map((district,key)=>{
+                                                        return <Dropdown.Item eventKey={district} key={key}>{district}</Dropdown.Item>
+                                                    })
+                                                }
+                                               
+                                            </DropdownButton>
                                         </FormGroup>
                                     </Col>
 

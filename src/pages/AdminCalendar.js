@@ -18,59 +18,30 @@ const AdminCalendar = () => {
     useEffect(() => {
         // get the calendar data
         const getCalendarData = async () => {
-            let cnt = 0
             const token = await getAccessTokenSilently()
             console.log(token)
-            await axios.get(`${apiServerUrl}/api/v1/meetings`, {
+            await axios.get(`${apiServerUrl}/api/v1/meetings/search/byDate/month`, {
                 headers: {
                     authorization: `Bearer ${token}`
                 }
-            }).then(res => {  // after fetched all meeting data, get the user data using userId in meeting data
-                Promise.all(res.data.map(i =>
-                    fetch(`${apiServerUrl}/api/v1/users/${i.userHouse.userId}`, {
-                        headers: {
-                            authorization: `Bearer ${token}`
-                        }
-                    })
-                ))
-                    .then(res2 => Promise.all(res2.map(r => r.json())))
-                    .then(res2Result => { // after fetched the user data, get the house data using houseId in meeting data
-                        Promise.all(res.data.map(i =>
-                            fetch(`${apiServerUrl}/api/v1/houses/${i.userHouse.houseId}`, {
-                                headers: {
-                                    authorization: `Bearer ${token}`
-                                }
-                            })
-                        )).then(res3 => Promise.all(res3.map(r => r.json())))
-                            .then(res3Result => { // after fetched the house data, spread user full name and house name
-                                Promise.all(res.data.map((it) => {
-                                    cnt = 0
-                                    res2Result.map((user, i) => {
-                                        res3Result.map((house, j) => {
-                                            if (it.userHouse.userId === res2Result[i].userId && it.userHouse.houseId === res3Result[j].houseId) {
-                                                cnt += 1
-                                                if (cnt === 1) {
-                                                    setMeetings(prevList => [...prevList, {
-                                                        meetingId: it.meetingId,
-                                                        title: "Meeting Id : ".concat(it.meetingId, "/", " house : ", res3Result[j].name),
-                                                        houseId: it.userHouse.houseId,
-                                                        houseName: res3Result[j].name,
-                                                        userId: it.userHouse.userId,
-                                                        userName: res2Result[i].fullName,
-                                                        date: new Date(it.date.concat(' ', it.time)),
-                                                        description: "meeting with : ".concat(res2Result[i].fullName),
-                                                        note: it.note
-                                                    }])
-                                                } else {
-                                                    cnt = 0
-                                                }
-                                            }
-                                        })
-                                    })
-                                }))
-                            })
-                    })
             })
+            .then(res => { 
+                res.data.forEach(meeting =>{
+                    setMeetings((prevMeeting)=>[...prevMeeting,{
+                        meetingId: meeting.meetingId,
+                        title: "Meeting Id : ".concat(meeting.meetingId, "/", " house : ",  meeting.house.name),
+                        houseId: meeting.house.houseId,
+                        houseName: meeting.house.name,
+                        userId: meeting.user.userId,
+                        userName: meeting.user.fullName,
+                        date: new Date(meeting.date.concat(' ', meeting.time)),
+                        description: "meeting with : ".concat(meeting.user.fullName),
+                        note: meeting.note
+                    }])
+                })
+                console.log(res.data)
+            })
+            .catch((err)=>console.log(err))
         }
         getCalendarData()
 
@@ -95,6 +66,9 @@ const AdminCalendar = () => {
 
     return (
         <section className="hero d-flex align-items-center" style={{ marginTop: 100 }}>
+            <br/>
+            <br/>
+            <br/>
             <div className="col-lg-10" >
                 <ScheduleComponent style={{ marginLeft: "250px" }}
                     currentView='Month' selectedDate={new Date()} height='850px' readonly={true} popupOpen={false}
@@ -111,7 +85,7 @@ const AdminCalendar = () => {
                         }
                     }}>
 
-                    <ViewsDirective>
+                    <ViewsDirective >
                         <ViewDirective option='Day' />
                         <ViewDirective option='Week' />
                         <ViewDirective option='Month' />

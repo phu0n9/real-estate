@@ -43,10 +43,8 @@ const Payment = ({ isAdmin }) => {
       pageNo: activePage,
       userId: !isAdmin ? currentUserId : "",
     };
-
-    console.log(params);
-    await axios
-      .get(`${apiServerUrl}/api/v1/payments/byUser`, {
+    console.log(params)
+    await axios.get(`${apiServerUrl}/api/v1/payments/byUser`, {
         headers: {
           authorization: `Bearer ${token}`,
         },
@@ -55,6 +53,8 @@ const Payment = ({ isAdmin }) => {
       .then((res) => {
         console.log(res);
         setTotalItem(res.data.totalElements);
+        console.log(res.data)
+
         if (!isAdmin) {
           let tempRental = [];
           // get all rentalIds
@@ -78,7 +78,7 @@ const Payment = ({ isAdmin }) => {
         }
         res.data.content.map((p) => {
           axios
-            .get(`${apiServerUrl}/api/v1/users/${p.rental.userHouse.userId}`, {
+            .get(`${apiServerUrl}/api/v1/users/${p.rental.user.userId}`, {
               headers: {
                 authorization: `Bearer ${token}`,
               },
@@ -86,7 +86,7 @@ const Payment = ({ isAdmin }) => {
             .then((res2) => {
               axios
                 .get(
-                  `${apiServerUrl}/api/v1/houses/${p.rental.userHouse.houseId}`,
+                  `${apiServerUrl}/api/v1/houses/${p.rental.house.houseId}`,
                   {
                     headers: {
                       authorization: `Bearer ${token}`,

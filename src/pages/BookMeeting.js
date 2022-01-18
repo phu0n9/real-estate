@@ -74,7 +74,7 @@ const BookMeeting = () => {
         if (!meeting.note) {
             errors.note = "Note is required";
         }
-        
+
         setFormErrors(errors);
         if (Object.keys(errors).length === 0) {
             return true;

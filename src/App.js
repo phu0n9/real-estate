@@ -34,8 +34,9 @@ export const UserContext = createContext();
 
 function App() {
   const { isLoading, user, getAccessTokenSilently } = useAuth0();
-
-  const { apiServerUrl } = useEnv()
+  const { apiServerUrl, audience } = useEnv()
+  const role = `${audience}/roles`
+  let isAdmin = false;
 
   const getUserId = () => {
     // if userid is bigger than 21, they use oauth2
@@ -48,7 +49,7 @@ function App() {
             user?.sub.length
           ) / 10000
         );
-      console.log(currentUserId)
+    console.log(currentUserId)
     return currentUserId;
   };
 
@@ -88,7 +89,13 @@ function App() {
       }
     };
     if (user !== undefined) {
-      getUser();
+      if (user[role].length === 0) {
+        isAdmin = false
+      } else {
+        isAdmin = true
+      }
+      getUser()
+      console.log(isAdmin)
     }
   }, [user, apiServerUrl, getAccessTokenSilently]);
 
@@ -96,7 +103,6 @@ function App() {
   if (isLoading) {
     return <Loader />;
   }
-
   return (
     <UserContext.Provider value={getUserId()}>
       <NavBar />
@@ -114,7 +120,7 @@ function App() {
         <Route path="/viewDetail/:id" exact element={<ViewDetail />} />
 
         {/* logged in users routes */}
-        <Route path="/auth/payments" exact element={<Payment />} />
+        <Route path="/auth/payments" exact element={<Payment isAdmin={isAdmin} />} />
         <Route path="/auth/calendar" exact element={<Calendar />} />
         <Route path="/auth/profile" exact element={<Profile />} />
         <Route
@@ -168,11 +174,11 @@ function App() {
         <Route
           path="/auth/admin/payments"
           exact
-          element={<Payment isAdmin />}
+          element={<Payment isAdmin={isAdmin} />}
         />
 
-        <Route path="/auth/admin/uploadImage/:id" exact element={<UploadHouseImage/>}/>
-        
+        <Route path="/auth/admin/uploadImage/:id" exact element={<UploadHouseImage />} />
+
         <Route path="*" element={<Error />} />
       </Routes>
     </UserContext.Provider>

@@ -1,8 +1,8 @@
-import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
-import { Container, Pagination, Button } from "react-bootstrap";
-import { Navigate } from "react-router-dom";
+import { Container, Pagination } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../App";
 import { useEnv } from "../../context/env.context";
 import Loader from "../Loader";
@@ -12,6 +12,10 @@ import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
 const Payment = ({ isAdmin }) => {
+  console.log(isAdmin);
+
+  const navigate = useNavigate();
+
   const [paymentList, setPaymentList] = useState([]);
   const [rentalList, setRentalList] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -88,7 +92,6 @@ const Payment = ({ isAdmin }) => {
                   }
                 )
                 .then((res3) => {
-                  console.log(res3);
                   setPaymentList((prevList) => [
                     ...prevList,
                     {
@@ -98,14 +101,6 @@ const Payment = ({ isAdmin }) => {
                     },
                   ]);
                 });
-
-              // setPaymentList((prevList) => [
-              //   ...prevList,
-              //   {
-              //     ...p,
-              //     userName: res2.data.fullName,
-              //   },
-              // ])
             });
         });
       });
@@ -141,9 +136,6 @@ const Payment = ({ isAdmin }) => {
         });
       })
     );
-
-    // setPaymentList(response.data.content);
-    // setTotalItem(response.data.totalElements)
     setLoading(false);
   };
 
@@ -171,7 +163,7 @@ const Payment = ({ isAdmin }) => {
     }
     return items;
   };
-  console.log(paymentList);
+
   return (
     <Container className="py-5" style={{ marginTop: "5rem" }}>
       {loading ? (
@@ -280,4 +272,7 @@ const Payment = ({ isAdmin }) => {
     </Container>
   );
 };
-export default Payment;
+export default withAuthenticationRequired(Payment, {
+  onRedirecting: () => <Loader />,
+});
+// export default Payment;

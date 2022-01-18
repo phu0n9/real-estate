@@ -26,7 +26,9 @@ const BookMeeting = () => {
     const [meeting, setMeeting] = useState({
         "date": "",
         "time": "",
-        "note": ""
+        "note": "",
+        "userId": currentUserId,
+        "houseId":""
     })
 
     const [house,setHouse] = useState({
@@ -49,6 +51,7 @@ const BookMeeting = () => {
                     name: res.data.name,
                     address: res.data.address
                 })
+                setMeeting({...meeting,houseId: res.data.houseId})
             })
             .catch((err)=>{
                 console.log(err)
@@ -71,7 +74,7 @@ const BookMeeting = () => {
         if (!meeting.note) {
             errors.note = "Note is required";
         }
-
+        
         setFormErrors(errors);
         if (Object.keys(errors).length === 0) {
             return true;
@@ -81,29 +84,21 @@ const BookMeeting = () => {
     };
 
     const saveMeeting = async () => {
+        console.log(typeof meeting.userId)
+        // console.log(typeof meeting.userId.toString())
         console.log(meeting)
-        console.log(typeof currentUserId)
-        console.log(typeof Number(currentUserId))
-
-        // const headers = {
-        //     "Access-Control-Allow-Origin": "*",
-        //     "Access-Control-Allow-Credentials": true,
-        //     "Access-Control-Allow-Headers": "content-type",
-        //     "Access-Control-Allow-Methods": "PUT, POST, GET, DELETE, PATCH, OPTIONS",
-        //   };
-        const token = await getAccessTokenSilently()
-        console.log(token)
+        const params = 
+        {
+            "userId": (meeting.userId),
+            "houseId": meeting.houseId,
+            "date": moment(meeting.date).format('YYYY-MM-DD'),  
+            "time": hour.concat(":", min),
+            "note": meeting.note
+        }
+        console.log(params)
+        console.log(typeof params.userId)
         await axios.post(`${apiServerUrl}/api/v1/meetings`, {
-            headers: {
-                "Authorization": `Bearer ${token}`
-            },
-            params:{
-                "userId": Number(currentUserId),
-                "houseId": house.houseId,
-                "date": moment(meeting.date).format('YYYY-MM-DD'),
-                "time": hour.concat(":", min),
-                "note": meeting.note
-            }
+            params:params
         }).then((res) => {
             console.log(res)
             // if (res.status === 200) {

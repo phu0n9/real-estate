@@ -14,7 +14,7 @@ import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 
 const ViewAllDeposit = () => {
-    let pagination = [];
+    const [pagination, setPagination] = useState([])
     const { user, getAccessTokenSilently } = useAuth0()
     const { audience } = useEnv()
     const role = `${audience}/roles`    
@@ -30,23 +30,32 @@ const ViewAllDeposit = () => {
     useEffect(() => {
         // Get The Deposit Data
         const getDepositsData = async () => {
-            const token = await getAccessTokenSilently()
-            await axios.get(`${apiServerUrl}/api/v1/deposits`, {
+            const token = await getAccessTokenSilently();
+            await axios.get(`${apiServerUrl}/api/v1/deposits/search?pageNo=${pageNum}&sortBy=${sortParam}&orderBy=${orderParam}`, {
                 headers: {
                     authorization: `Bearer ${token}`
                 }
             }).then(res => {
-                let content = res;
-                if (content.data.length === 0) {
-                    setContentState('No Result');
-                    setDeposits([]);
-                }
-                else {
-                    setDeposits(content.data);
-                    setContentState('');
-                }
-            })
-            .catch(error => console.log(error));
+            console.log(res);
+            let content = res.data;
+
+            // Set Pagination
+            if (content.totalPages === 1) setPagination([1]);
+            else {
+                for (let i = 1; i <= content.totalPages; i++) 
+                pagination.push(i);
+        }
+
+            if (content.content.length === 0) {
+                setContentState('No Result');
+                setDeposits([]);
+            }
+            else {
+                setDeposits(content.content);
+                setContentState('');
+            }
+        })
+        .catch(error => console.log(error));
 
         }
         getDepositsData();
@@ -56,7 +65,7 @@ const ViewAllDeposit = () => {
     if (user[role].length === 0) {
         return (
             <>
-                <Navigate replace to="/" />
+                <Navigate replace to="/auth/viewUserDeposit" />
             </>
         )
     }
@@ -88,25 +97,26 @@ const ViewAllDeposit = () => {
     }
 
     const getUpdatedDeposits = async () => {
-        const token = await getAccessTokenSilently()
-        await axios.get(`${apiServerUrl}/api/v1/deposits/`, {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        }).then(res => {
+        const token = await getAccessTokenSilently();
+            await axios.get(`${apiServerUrl}/api/v1/deposits/search?pageNo=${pageNum}&sortBy=${sortParam}&orderBy=${orderParam}`, {
+                headers: {
+                    authorization: `Bearer ${token}`
+                }
+            }).then(res => {
             console.log(res);
-            let content = res;
-            if (content.data.length === 0) {
+            let content = res.data;
+
+            if (content.content.length === 0) {
                 setContentState('No Result');
                 setDeposits([]);
             }
             else {
-                setDeposits(content.data);
+                setDeposits(content.content);
                 setContentState('');
             }
         })
         .catch(error => console.log(error));
-
+            
     }
 
     const handlePageChange = async (event) => {
@@ -169,15 +179,6 @@ const ViewAllDeposit = () => {
         .catch(error => console.log(error));
     }
 
-    // Set Pagination Bar
-    for (let number = 0; number <= 5; number++) {
-        pagination.push(
-            <Pagination.Item key={number} value={number} onClick={handlePageChange}>
-            {number}
-            </Pagination.Item>,
-        );
-    }
-
     const editDeposit = (event) => {
         navigate("/auth/admin/editDeposit/" + event.target.value)
     }
@@ -205,11 +206,11 @@ const ViewAllDeposit = () => {
                                 </Form.Select>
                             </Col>
                             <Col xs={2} md={2} lg={5}>
-                                <Form.Label>Search Deposit By Id</Form.Label>
-                                <input type="text" value={searchHouseId} style={{width: 500}} onChange={handleForm} placeholder='Search Bar'/>
+                                <Form.Label>Search By House ID</Form.Label>
+                                <input type="text" value={searchHouseId} style={{width: 500, height: 38}} onChange={handleForm} placeholder='Please Enter House Id'/>
                             </Col>  
                             <Col xs={2} md={2} lg={2.5}>
-                                <Button style={{height: 50, width: 200, marginTop: 20}} variant="secondary" onClick={handleSearch} placeholder='Please enter House Id'>Search By House Id</Button>{' '}
+                                <Button style={{height: 50, width: 200, marginTop: 20}} variant="secondary" onClick={handleSearch} placeholder='Please Enter House Id'>Search</Button>{' '}
                             </Col>
                         </Row>
                     </Container>
@@ -253,7 +254,11 @@ const ViewAllDeposit = () => {
                     </tbody>
                 </Table>
                 <Pagination>
-                    {pagination}    
+                    {pagination.map((page) => (
+                        <Pagination.Item key={page} value={page} active={page === pageNum} onClick={handlePageChange}>
+                        {page}
+                        </Pagination.Item>
+                    ))}
                 </Pagination>
             </div>
         </div>

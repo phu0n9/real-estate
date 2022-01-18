@@ -13,7 +13,8 @@ return (
               <img src="logo.png" alt="logo"/>
               <span>Reado</span>
             </a>
-            <p>Cras fermentum odio eu feugiat lide par naso tierra. Justo eget nada terra videa magna derita valies darta donna mare fermentum iaculis eu non diam phasellus.</p>
+            <p>We are team of talented designers making websites with Bootstrap.</p>            
+            <p>Team Project - Software Architecture and Design</p>
             <div className="social-links mt-3">
               <a href="/" className="twitter"><i className="bi bi-twitter"></i></a>
               <a href="/" className="facebook"><i className="bi bi-facebook"></i></a>
@@ -22,33 +23,34 @@ return (
             </div>
           </div>
 
+         
           <div className="col-lg-2 col-6 footer-links">
-            <h4>Useful Links</h4>
+            <h4>Our Services</h4>
             <ul>
-              <li><i className="bi bi-chevron-right"></i> <a href="/">Home</a></li>
-              <li><i className="bi bi-chevron-right"></i> <a href="/">About us</a></li>
-              <li><i className="bi bi-chevron-right"></i> <a href="/">Services</a></li>
-              <li><i className="bi bi-chevron-right"></i> <a href="/">Terms of service</a></li>
-              <li><i className="bi bi-chevron-right"></i> <a href="/">Privacy policy</a></li>
+              <li><i className="bi bi-chevron-right"></i> <a href="/rental">Rent a house</a></li>
+              <li><i className="bi bi-chevron-right"></i> <a href="/myPage">View Calendar</a></li>
+              <li><i className="bi bi-chevron-right"></i> <a href="/auth/ViewRentalHouses">View Rentals</a></li>
+              <li><i className="bi bi-chevron-right"></i> <a href="/auth/admin/viewAllDeposits">View Deposits</a></li>
             </ul>
           </div>
 
           <div className="col-lg-2 col-6 footer-links">
-            <h4>Our Services</h4>
-            <ul>
-              <li><i className="bi bi-chevron-right"></i> <a href="/">Rent a house</a></li>
-              <li><i className="bi bi-chevron-right"></i> <a href="/">Book a meeting</a></li>
-            </ul>
+            <h4>Our Team Members</h4>
+            <p>
+              Trang Nguyen - s3751450 <br/>
+              Anh Phuong - s3695662 <br/>
+              Nguyen Le - s3777242 <br/>
+              Sung Jin - s3695340 <br/>
+              Long Tran - s3755614 <br/>
+            </p>
           </div>
 
           <div className="col-lg-3 col-md-12 footer-contact text-center text-md-start">
             <h4>Contact Us</h4>
             <p>
-              A108 Adam Street <br/>
-              New York, NY 535022<br/>
-              United States <br/><br/>
-              <strong>Phone:</strong> +1 5589 55488 55<br/>
-              <strong>Email:</strong> info@example.com<br/>
+              RMIT University <br/>
+              702 Nguyen Van Linh, District 7<br/>
+              Ho Chi Minh City, Viet Nam <br/><br/>
             </p>
 
           </div>

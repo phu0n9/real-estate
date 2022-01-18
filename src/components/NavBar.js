@@ -3,7 +3,7 @@ import "../stylesheet/Navbar.css";
 import { AuthenticationButton } from "../login-button/AuthenticationButton";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEnv } from "../context/env.context";
-
+import logo from "./../img/logo.png"
 export default function NavBar() {
   const { user, isAuthenticated } = useAuth0();
   const { audience } = useEnv();
@@ -21,7 +21,7 @@ export default function NavBar() {
       <header className="header fixed-top">
         <div className="container-fluid container-xl d-flex align-items-center justify-content-between">
           <a href="/" className="logo d-flex align-items-center">
-            <img src="./logo.png" alt="logo" />
+            <img src={logo} alt="logo" />
             <span>Reado</span>
           </a>
 
@@ -83,6 +83,11 @@ export default function NavBar() {
                         </a>
                       </li>
                       <li>
+                        <a href="/auth/admin/viewAllDeposits">
+                          View All Deposits
+                        </a>
+                      </li>
+                      <li>
                         <a href="/auth/admin/viewUsers">View users</a>
                       </li>
                       <li>
@@ -115,6 +120,9 @@ export default function NavBar() {
                       </li>
                       <li>
                         <a href="/auth/ViewRentalHouses">My Rental</a>
+                      </li>
+                      <li>
+                        <a href="/auth/viewUserDeposit">My Rental</a>
                       </li>
                       <li>
                         <a href="/auth/payments">Payments</a>

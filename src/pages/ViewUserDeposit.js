@@ -14,7 +14,7 @@ import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 
 const ViewUserDeposit = () => {
-    let pagination = [];
+    const [pagination, setPagination] = useState([])
     // const { id } = useParams();
     const { user, getAccessTokenSilently } = useAuth0()
     const [uid, setUID] = useState(0);
@@ -31,8 +31,9 @@ const ViewUserDeposit = () => {
             let split = (user.sub).split('|')
             let temp_id = Math.trunc(split[1])/10000;
             setUID(temp_id);
-
+            console.log(temp_id);
             const token = await getAccessTokenSilently();
+            console.log(token);
             await axios.get(`${apiServerUrl}/api/v1/deposits/search/byUser/${temp_id}?pageNo=${pageNum}&sortBy=${sortParam}&orderBy=${orderParam}`, {
                 headers: {
                     authorization: `Bearer ${token}`

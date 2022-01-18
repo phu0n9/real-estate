@@ -190,7 +190,7 @@ const ViewDetail = () => {
                         ) :
                         (
                             <span>
-                                <Button variant="primary" onClick={bookMeeting} style={{ height: '3rem' }}>Book A Meeting</Button>
+                                <Button variant="primary" onClick={bookMeeting} style={{ height: '3rem'}}>Book Meeting</Button>
                                 <Button variant="success" onClick={saveDeposit} style={{ height: '3rem', display: status === 'available' ? 'block' : 'none' }}>Deposit Money</Button>
                             </span>
                         )

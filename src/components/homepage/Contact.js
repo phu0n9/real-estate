@@ -19,7 +19,11 @@ export default function Contact() {
                 <div className="info-box">
                   <i className="bi bi-geo-alt"></i>
                   <h3>Address</h3>
-                  <p>A108 Adam Street,<br/>New York, NY 535022</p>
+                  <p>
+                  RMIT University <br/>
+                  702 Nguyen Van Linh, District 7<br/>
+                  Ho Chi Minh City, Viet Nam <br/><br/>
+                </p>
                 </div>
               </div>
 
@@ -27,9 +31,13 @@ export default function Contact() {
                 <div className="info-box">
                   <i className="bi bi-telephone"></i>
                   <h3>Call Us</h3>
-                  <p>+1 5589 55488 55
-                      <br/>
-                      +1 6678 254445 41</p>
+                  <p>
+                    Long: (+84) 063-881-2763
+                  <br/>
+                    Trang: (+84) 029-266-9621
+                  <br/>
+                    Phuong: (+84) 024-612-4518
+                  </p>
                 </div>
               </div>
 
@@ -37,7 +45,7 @@ export default function Contact() {
                 <div className="info-box">
                   <i className="bi bi-envelope"></i>
                   <h3>Email Us</h3>
-                  <p>info@example.com<br/>contact@example.com</p>
+                  <p>Real Estate Agency<br/>eeet2582.realestatemgt@gmail.com</p>
                 </div>
               </div>
 

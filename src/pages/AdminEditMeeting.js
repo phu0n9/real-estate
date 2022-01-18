@@ -41,7 +41,7 @@ const AdminEditMeeting = () => {
             }).then(res => {
                 setMeeting({
                     meetingId: res.data.meetingId,
-                    userHouse: { userId: res.data.userHouse.userId, houseId: res.data.userHouse.houseId },
+                    userHouse: { userId: res.data.user.userId, houseId: res.data.house.houseId },
                     date: new Date(res.data.date),
                     time: res.data.time,
                     note: res.data.note
@@ -79,11 +79,8 @@ const AdminEditMeeting = () => {
         // get access token from users to use api
         const token = await getAccessTokenSilently();
         console.log(meeting)
-        await axios.post(`${apiServerUrl}/api/v1/meetings?meetingId=${meeting.meetingId}&userId=${meeting.userHouse.userId}&houseId=${meeting.userHouse.houseId}&date=${moment(meeting.date).format('YYYY-MM-DD')}&time=${meeting.time}&note=${meeting.note}`, {
-            headers: {
-                authorization: `Bearer ${token}`,
-            }
-        }).then((res) => {
+        await axios.post(`${apiServerUrl}/api/v1/meetings`,
+        ).then((res) => {
             console.log(res)
             if (res.status === 200) {
                 navigate("/auth/admin/calendar");

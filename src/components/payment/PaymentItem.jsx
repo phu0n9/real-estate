@@ -53,7 +53,7 @@ const PaymentItem = ({ payment, onPaymentChange }) => {
   // get house name
   useEffect(()=>{
     const getHouseName = async ()=>{
-      await axios.get(`${apiServerUrl}/api/v1/houses/${payment.rental.userHouse.houseId}`)
+      await axios.get(`${apiServerUrl}/api/v1/houses/${payment.rental.house.houseId}`)
       .then((res)=>{
         setHouseName(res.data.name)
       })
@@ -61,7 +61,7 @@ const PaymentItem = ({ payment, onPaymentChange }) => {
     }
     const getUserName = async () =>{
       const token = await getAccessTokenSilently()
-      await axios.get(`${apiServerUrl}/api/v1/users/${payment.rental.userHouse.userId}`,{
+      await axios.get(`${apiServerUrl}/api/v1/users/${payment.rental.user.userId}`,{
         headers:{
           authorization:`Bearer ${token}`
         }
@@ -108,7 +108,7 @@ const PaymentItem = ({ payment, onPaymentChange }) => {
         <Modal.Header closeButton>
           <Modal.Title>
             {show === 1 ? "Payment" : "Update payment"} of House&nbsp;
-            {payment.rental.userHouse.houseId}
+            {payment.rental.house.houseId}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>

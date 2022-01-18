@@ -75,6 +75,10 @@ const BookMeeting = () => {
             errors.note = "Note is required";
         }
 
+        // if(!meeting.time){
+        //     errors.note = "Must change time";
+        // }
+
         setFormErrors(errors);
         if (Object.keys(errors).length === 0) {
             return true;

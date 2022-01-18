@@ -114,8 +114,8 @@ const ViewUserDeposit = () => {
                     <thead>
                         <tr>
                             <th>Deposit Id</th>
-                            <th>User Id</th>
-                            <th>House Id</th>
+                            <th>House Name</th>
+                            <th>User Name</th>
                             <th>Amount</th>
                             <th>Date</th>
                             <th>Time</th>
@@ -126,8 +126,8 @@ const ViewUserDeposit = () => {
                         {deposits.map((deposit) => (
                             <tr>
                                 <td>{deposit.depositId}</td>
-                                <td>{deposit.userHouse.userId}</td>
-                                <td>{deposit.userHouse.houseId}</td>
+                                <td>{deposit.house.name}</td>
+                                <td>{deposit.user.fullName}</td>
                                 <td>{deposit.amount}</td>
                                 <td>{deposit.date}</td>
                                 <td>{deposit.time}</td>

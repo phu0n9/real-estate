@@ -31,10 +31,11 @@ import axios from 'axios'
 import UploadHouseImage from './pages/UploadHouseImage'
 
 export const UserContext = createContext();
+export const UserRoleContext = createContext()
 
 function App() {
-  const { isLoading, user, getAccessTokenSilently } = useAuth0();
-  const { apiServerUrl, audience } = useEnv()
+  const { isLoading, user, getAccessTokenSilently, isAuthenticated} = useAuth0();
+  const { apiServerUrl, audience} = useEnv()
   const role = `${audience}/roles`
   let isAdmin = false;
 
@@ -53,6 +54,12 @@ function App() {
     return currentUserId;
   };
 
+  const getUserRole = () =>{
+    if (user[role].length !== 0 && isAuthenticated){
+      return true
+    }
+    return false
+  }
 
   useEffect(() => {
     const getUser = async () => {
@@ -105,82 +112,84 @@ function App() {
   }
   return (
     <UserContext.Provider value={getUserId()}>
-      <NavBar />
-      <Routes>
-        {/* Redirect pages */}
-        <Route path="/success" exact={true} element={<Success />} />
-        <Route path="/error" exact={true} element={<Error />} />
-        <Route path="/processing" exact={true} element={<Processing />} />
-        <Route path="/unauthorized" exact={true} element={<Unauthorized />} />
+      <UserRoleContext.Provider value={getUserRole()}>
+        <NavBar />
+        <Routes>
+          {/* Redirect pages */}
+          <Route path="/success" exact={true} element={<Success />} />
+          <Route path="/error" exact={true} element={<Error />} />
+          <Route path="/processing" exact={true} element={<Processing />} />
+          <Route path="/unauthorized" exact={true} element={<Unauthorized />} />
 
-        {/* basic routes */}
-        <Route path="/" exact={true} element={<Home />} />
-        <Route path="/rental" exact={true} element={<Rental />} />
-        <Route path="/BookMeeting/:id" exact element={<BookMeeting />} />
-        <Route path="/viewDetail/:id" exact element={<ViewDetail />} />
+          {/* basic routes */}
+          <Route path="/" exact={true} element={<Home />} />
+          <Route path="/rental" exact={true} element={<Rental />} />
+          <Route path="/BookMeeting/:id" exact element={<BookMeeting />} />
+          <Route path="/viewDetail/:id" exact element={<ViewDetail />} />
 
-        {/* logged in users routes */}
-        <Route path="/auth/payments" exact element={<Payment isAdmin={isAdmin} />} />
-        <Route path="/auth/calendar" exact element={<Calendar />} />
-        <Route path="/auth/profile" exact element={<Profile />} />
-        <Route
-          path="/auth/ViewRentalHouses"
-          exact
-          element={<ViewRentalHouses />}
-        />
-        <Route
-          path="/auth/viewUserDeposit"
-          exact
-          element={<ViewUserDeposits />}
-        />
+          {/* logged in users routes */}
+          <Route path="/auth/payments" exact element={<Payment isAdmin={isAdmin} />} />
+          <Route path="/auth/calendar" exact element={<Calendar />} />
+          <Route path="/auth/profile" exact element={<Profile />} />
+          <Route
+            path="/auth/ViewRentalHouses"
+            exact
+            element={<ViewRentalHouses />}
+          />
+          <Route
+            path="/auth/viewUserDeposit"
+            exact
+            element={<ViewUserDeposits />}
+          />
 
-        {/* admin routes */}
-        <Route path="/auth/admin/calendar" exact element={<AdminCalendar />} />
-        <Route path="/auth/admin/adminEditMeeting/:id" exact element={<AdminEditMeeting />} />
+          {/* admin routes */}
+          <Route path="/auth/admin/calendar" exact element={<AdminCalendar />} />
+          <Route path="/auth/admin/adminEditMeeting/:id" exact element={<AdminEditMeeting />} />
 
-        <Route path="/auth/admin/addHouse" exact element={<AddHouse />} />
+          <Route path="/auth/admin/addHouse" exact element={<AddHouse />} />
 
-        <Route
-          path="/auth/admin/addRentalHouses"
-          exact
-          element={<AdminAddRental />}
-        />
-        <Route
-          path="/auth/admin/editRental/:id"
-          exact
-          element={<EditRental />}
-        />
-        <Route
-          path="/auth/admin/viewAllDeposits"
-          exact
-          element={<ViewAllDeposits />}
-        />
-        <Route
-          path="/auth/admin/editDeposit/:id"
-          exact
-          element={<EditDeposit />}
-        />
-        <Route
-          path="/auth/admin/viewRentalHouses"
-          exact
-          element={<AdminViewRentalHouses />}
-        />
-        <Route path="/auth/admin/viewUsers" exact element={<ViewAllUsers />} />
-        <Route
-          path="/auth/admin/updateHouse/:id"
-          exact
-          element={<UpdateHouse />}
-        />
-        <Route
-          path="/auth/admin/payments"
-          exact
-          element={<Payment isAdmin={isAdmin} />}
-        />
+          <Route
+            path="/auth/admin/addRentalHouses"
+            exact
+            element={<AdminAddRental />}
+          />
+          <Route
+            path="/auth/admin/editRental/:id"
+            exact
+            element={<EditRental />}
+          />
+          <Route
+            path="/auth/admin/viewAllDeposits"
+            exact
+            element={<ViewAllDeposits />}
+          />
+          <Route
+            path="/auth/admin/editDeposit/:id"
+            exact
+            element={<EditDeposit />}
+          />
+          <Route
+            path="/auth/admin/viewRentalHouses"
+            exact
+            element={<AdminViewRentalHouses />}
+          />
+          <Route path="/auth/admin/viewUsers" exact element={<ViewAllUsers />} />
+          <Route
+            path="/auth/admin/updateHouse/:id"
+            exact
+            element={<UpdateHouse />}
+          />
+          <Route
+            path="/auth/admin/payments"
+            exact
+            element={<Payment isAdmin={isAdmin} />}
+          />
 
-        <Route path="/auth/admin/uploadImage/:id" exact element={<UploadHouseImage />} />
+          <Route path="/auth/admin/uploadImage/:id" exact element={<UploadHouseImage />} />
 
-        <Route path="*" element={<Error />} />
-      </Routes>
+          <Route path="*" element={<Error />} />
+        </Routes>
+      </UserRoleContext.Provider>
     </UserContext.Provider>
   );
 }

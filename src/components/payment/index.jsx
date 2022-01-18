@@ -277,4 +277,3 @@ const Payment = ({ isAdmin }) => {
 export default withAuthenticationRequired(Payment, {
   onRedirecting: () => <Loader />,
 });
-// export default Payment;

@@ -26,7 +26,6 @@ const ViewUserDeposit = () => {
     const [orderParam, setOrderParam] = useState('');
 
     useEffect(() => {
-        // get the calendar data
         const getUserDeposit = async () => {
             let split = (user.sub).split('|')
             let temp_id = Math.trunc(split[1])/10000;
@@ -40,13 +39,21 @@ const ViewUserDeposit = () => {
                 }
             }).then(res => {
                 console.log(res);
-                let content = res.data.content;
-                if (content.length === 0) {
+                let content = res.data;
+
+                // Set Pagination
+                if (content.totalPages === 1) setPagination([1]);
+                else {
+                    for (let i = 1; i <= content.totalPages; i++) {
+                        pagination.push(i);
+                    }
+                }
+                if (content.content.length === 0) {
                     setContentState('No Result');
                     setDeposits([]);
                 }
                 else {
-                    setDeposits(content);
+                    setDeposits(content.content);
                     setContentState('');
                 }
             })
@@ -79,14 +86,14 @@ const ViewUserDeposit = () => {
         setPageNum(page);
     }
 
-    // Set Pagination Bar
-    for (let number = 0; number <= 5; number++) {
-        pagination.push(
-            <Pagination.Item key={number} value={number} onClick={handlePageChange}>
-            {number}
-            </Pagination.Item>,
-        );
-    }
+    // // Set Pagination Bar
+    // for (let number = 0; number <= 5; number++) {
+    //     pagination.push(
+    //         <Pagination.Item key={number} value={number} onClick={handlePageChange}>
+    //         {number}
+    //         </Pagination.Item>,
+    //     );
+    // }
 
     return (
         <div style={{ position: "relative", width: "90%", padding: "10px 20px", margin: "0 auto", letterSpacing: "-.2px", boxShadow: "5px 10px 8px #888888" }}>
@@ -100,7 +107,7 @@ const ViewUserDeposit = () => {
                 </h2>
                 <br/>
                 <h5>
-                    {contentState === 'No Result' ? 'There are no deposits that match your query. Please try something else.' : ''}
+                    {contentState === 'No Result' ? 'You have not deposit on any houses' : 'Here is the list of all the house you deposited'}
                 </h5>
                 <br/>
                 <Table striped bordered hover>
@@ -130,7 +137,11 @@ const ViewUserDeposit = () => {
                     </tbody>
                 </Table>
                 <Pagination>
-                    {pagination}    
+                    {pagination.map((page) => (
+                        <Pagination.Item key={page} value={page} active={page === pageNum} onClick={handlePageChange}>
+                        {page}
+                        </Pagination.Item>
+                    ))}
                 </Pagination>
             </div>
         </div>

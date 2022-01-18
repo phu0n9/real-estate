@@ -42,11 +42,7 @@ export default function HouseForm({ pageTitle }) {
         if (id != null) {
             const fetchHouse = async () => {
                 const token = await getAccessTokenSilently()
-                await axios.get(`${apiServerUrl}/api/v1/houses/${id}`, {
-                    headers: {
-                        authorization: `Bearer ${token}`
-                    }
-                })
+                await axios.get(`${apiServerUrl}/api/v1/houses/${id}`)
                     .then((res) => {
                         setHouses({
                             name: res.data.name,

@@ -43,10 +43,15 @@ const Payment = ({ isAdmin }) => {
       pageNo: activePage,
       userId: !isAdmin ? currentUserId : "",
     };
+<<<<<<< HEAD
 
     console.log(params);
     await axios
       .get(`${apiServerUrl}/api/v1/payments/byUser`, {
+=======
+    console.log(params)
+    await axios.get(`${apiServerUrl}/api/v1/payments/byUser`, {
+>>>>>>> 58dbc27 (add pages)
         headers: {
           authorization: `Bearer ${token}`,
         },
@@ -55,6 +60,11 @@ const Payment = ({ isAdmin }) => {
       .then((res) => {
         console.log(res);
         setTotalItem(res.data.totalElements);
+<<<<<<< HEAD
+=======
+        console.log(res.data)
+
+>>>>>>> 58dbc27 (add pages)
         if (!isAdmin) {
           let tempRental = [];
           // get all rentalIds

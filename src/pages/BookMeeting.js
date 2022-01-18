@@ -1,5 +1,5 @@
 import { useAuth0, withAuthenticationRequired } from '@auth0/auth0-react';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Loader from '../components/Loader';
 import { useEnv } from '../context/env.context';
 import { Card, Col, Container, Row, Button, Form, FormGroup } from 'react-bootstrap';
@@ -9,54 +9,53 @@ import TimePicker from 'react-time-picker';
 import "react-time-picker/dist/TimePicker.css"
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import * as moment from 'moment'
+import moment from 'moment'
+import { UserContext } from '../App';
 
 const BookMeeting = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { user, getAccessTokenSilently } = useAuth0()
+    const { getAccessTokenSilently } = useAuth0()
     const { audience, apiServerUrl } = useEnv()
     const role = `${audience}/roles`
+    const currentUserId = useContext(UserContext)
 
     const [hour, setHour] = useState("09")
     const [min, setMin] = useState("00")
 
     const [meeting, setMeeting] = useState({
-        "userHouse": {
-            "userId": "",
-            "houseId": ""
-        },
         "date": "",
         "time": "",
         "note": ""
-    });
+    })
+
+    const [house,setHouse] = useState({
+        "houseId": "",
+        "name":"",
+        "address":""
+    })
 
     useEffect(() => {
-        // get the calendar data
-        const getUserData = async () => {
-            const token = await getAccessTokenSilently();
-            // if userid is bigger than 21, they use oauth2
-            const currentUserId =
-                user.sub.length < 21
-                    ? user.sub.substring(user.sub.lastIndexOf("|") + 1, user.sub.length)
-                    : Math.trunc(
-                        user.sub.substring(
-                            user.sub.lastIndexOf("|") + 1,
-                            user.sub.length
-                        ) / 10000
-                    );
-            await axios.get(`${apiServerUrl}/api/v1/users/${currentUserId}`, {
+        const getHouse = async ()=>{
+            const token = await getAccessTokenSilently()
+            await axios.get(`${apiServerUrl}/api/v1/houses/${id}`,{
                 headers: {
-                    authorization: `Bearer ${token}`
+                    "Authorization": `Bearer ${token}`
                 }
-            }).then(res => {
-                setMeeting({ userHouse: { userId: res.data.userId, houseId: id } })
+            })
+            .then((res)=>{
+                setHouse({
+                    houseId: res.data.houseId,
+                    name: res.data.name,
+                    address: res.data.address
+                })
+            })
+            .catch((err)=>{
+                console.log(err)
             })
         }
-
-        getUserData()
-
-    }, []);
+        getHouse()
+    }, [apiServerUrl,getAccessTokenSilently])
 
     const [showMessage, setShowMessage] = useState(false);
     const [formerrors, setFormErrors] = useState({});
@@ -83,19 +82,24 @@ const BookMeeting = () => {
 
     const saveMeeting = async () => {
         console.log(meeting)
-        const token = await getAccessTokenSilently();
-        const headers = {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Credentials": true,
-            "Access-Control-Allow-Headers": "content-type",
-            "Access-Control-Allow-Methods": "PUT, POST, GET, DELETE, PATCH, OPTIONS",
-            "Authorization": `Bearer ${token}`
-        };
+        console.log(typeof currentUserId)
+        console.log(typeof Number(currentUserId))
+
+        // const headers = {
+        //     "Access-Control-Allow-Origin": "*",
+        //     "Access-Control-Allow-Credentials": true,
+        //     "Access-Control-Allow-Headers": "content-type",
+        //     "Access-Control-Allow-Methods": "PUT, POST, GET, DELETE, PATCH, OPTIONS",
+        //   };
+        const token = await getAccessTokenSilently()
+        console.log(token)
         await axios.post(`${apiServerUrl}/api/v1/meetings`, {
-            headers: headers,
-            params: {
-                "userId": meeting.userHouse.userId,
-                "houseId": meeting.userHouse.houseId,
+            headers: {
+                "Authorization": `Bearer ${token}`
+            },
+            params:{
+                "userId": Number(currentUserId),
+                "houseId": house.houseId,
                 "date": moment(meeting.date).format('YYYY-MM-DD'),
                 "time": hour.concat(":", min),
                 "note": meeting.note
@@ -130,14 +134,25 @@ const BookMeeting = () => {
                         <Card.Body className="px-lg-5 py-lg-5">
                             <Form role="form">
                                 <FormGroup className="mb-3">
-                                    <Form.Label>House Id</Form.Label>
+                                    <Form.Label>House Name</Form.Label>
                                     <Form.Control
-                                        name="houseId"
-                                        type="number"
-                                        placeholder="Enter the house Id"
-                                        value={meeting.userHouse.houseId}
+                                        name="house name"
+                                        type="text"
+                                        placeholder="House Name"
+                                        value={house.name}
                                         readOnly={true} />
                                 </FormGroup >
+
+                                <FormGroup className="mb-3">
+                                    <Form.Label>House Address</Form.Label>
+                                    <Form.Control
+                                        name="house address"
+                                        type="text"
+                                        placeholder="House Address"
+                                        value={house.address}
+                                        readOnly={true} />
+                                </FormGroup >
+
                                 <FormGroup className="mb-3">
                                     <Form.Label>Date</Form.Label>
                                     <DatePicker

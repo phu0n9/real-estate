@@ -30,7 +30,6 @@ const AddPayment = ({ rentals }) => {
     const token = await getAccessTokenSilently();
     await axios.post(
       `${apiServerUrl}/api/v1/payments/byRental/${formData.rentalId}`,body,
-
       {
         headers: {
           authorization: `Bearer ${token}`,

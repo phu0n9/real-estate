@@ -22,10 +22,8 @@ const AdminEditMeeting = () => {
 
     const [meeting, setMeeting] = useState({
         "meetingId": "",
-        "userHouse": {
-            "userId": "",
-            "houseId": ""
-        },
+        "userId": "",
+        "houseId": "",
         "date": "",
         "time": "",
         "note": ""
@@ -41,7 +39,8 @@ const AdminEditMeeting = () => {
             }).then(res => {
                 setMeeting({
                     meetingId: res.data.meetingId,
-                    userHouse: { userId: res.data.user.userId, houseId: res.data.house.houseId },
+                    userId: res.data.user.userId,
+                    houseId: res.data.house.houseId,
                     date: new Date(res.data.date),
                     time: res.data.time,
                     note: res.data.note
@@ -75,12 +74,11 @@ const AdminEditMeeting = () => {
         }
     };
 
-    const saveMeeting = async () => {
+    const editMeeting = async () => {
         // get access token from users to use api
-        const token = await getAccessTokenSilently();
-        console.log(meeting)
-        await axios.post(`${apiServerUrl}/api/v1/meetings`,
-        ).then((res) => {
+        await axios.post(`${apiServerUrl}/api/v1/meetings`,{
+            params: meeting
+        }).then((res) => {
             console.log(res)
             if (res.status === 200) {
                 navigate("/auth/admin/calendar");
@@ -116,7 +114,7 @@ const AdminEditMeeting = () => {
         if (validate()) {
             setShowMessage(true)
             console.log(meeting)
-            saveMeeting()
+            editMeeting()
         } else {
             setShowMessage(false);
         }

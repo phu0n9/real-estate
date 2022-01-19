@@ -20,7 +20,7 @@ const AdsCategoryCard = ({ url, city, color }) => {
                     <li></li>
                     <li></li>
                 </ul>
-                <Button className="btn-buy">
+                <Button className="btn-buy" style={{color:"white"}}>
                     <Link to='/rental'>
                         Explore
                     </Link>
